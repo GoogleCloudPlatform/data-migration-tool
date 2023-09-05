@@ -1,0 +1,22 @@
+[
+  {
+    "name": "transfer_config_id",
+    "type": "STRING",
+    "description": "transfer_id unique to each data transfer service config"
+  },
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "uniqe_id given in config file uploaded by user"
+  },
+  {
+    "name": "config_bucket_id",
+    "type": "STRING",
+    "description": "GCS bucket id for respective transfer config file uploaded by user"
+  },
+  {
+    "name": "config_object_path",
+    "type": "STRING",
+    "description": "GCS path for the transfer config file uploaded by user"
+  }
+]

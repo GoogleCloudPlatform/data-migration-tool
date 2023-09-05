@@ -1,0 +1,37 @@
+[
+    {
+        "name": "unique_id",
+        "type": "STRING",
+        "description": "Unique ID common to extraction, translation, schema and validation phases"
+    },
+    {
+        "name": "source_db",
+        "type": "STRING",
+        "description": "Source database name (i.e. Oracle, Teradata)"
+    },
+    {
+        "name": "database",
+        "type": "STRING",
+        "description": "Extracted ddl statements database name"
+    },
+    {
+        "name": "schema",
+        "type": "STRING",
+        "description": "Extracted ddl statements schema name"
+    },
+    {
+        "name": "table_name",
+        "type": "STRING",
+        "description": "Extracted ddl statements table name"
+    },
+    {
+        "name": "file_path",
+        "type": "STRING",
+        "description": "GCS bucket path of extracted SQL file"
+    },
+    {
+        "name": "extraction_time",
+        "type": "DATETIME",
+        "description": "Timestamp of ddl extraction"
+    }
+]

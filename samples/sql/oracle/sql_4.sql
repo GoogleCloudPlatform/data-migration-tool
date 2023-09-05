@@ -1,0 +1,1 @@
+select * from EDW_ODB.COUNTRIES where COUNTRY_ID = 'IN';

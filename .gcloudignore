@@ -1,0 +1,17 @@
+.gcloudignore
+.git
+.gitignore
+
+docs/
+images/
+samples/
+
+# This will insert the content of a .gitignore-style file named .gitignore at
+# the point of the include line. It does not recurse
+# (that is, the included file cannot #!include another file) and cannot be
+# anywhere but the top-level directory to be uploaded.
+#
+# Refer to the following for more details:
+#   https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore
+
+#!include:.gitignore

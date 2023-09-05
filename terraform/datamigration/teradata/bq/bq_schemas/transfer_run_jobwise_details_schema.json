@@ -1,0 +1,92 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "Unique_id provided by user to identify set of tables"
+  },
+  {
+    "name": "transfer_config_id",
+    "type": "STRING",
+    "description": "Data transfer service genrated transfer_config_id"
+  },
+  {
+    "name": "agent_id",
+    "type": "STRING",
+    "description": "Unique_id for migration agent for each Data transfer service config"
+  },
+  {
+    "name": "transfer_run_id",
+    "type": "STRING",
+    "description": "Run_id for data transfer run"
+  },
+  {
+    "name": "run_date",
+    "type": "STRING",
+    "description": "Run date of job"
+  },
+  {
+    "name": "src_table_name",
+    "type": "STRING",
+    "description": "Name of the table being migrated"
+  },
+  {
+    "name": "job_status",
+    "type": "STRING",
+    "description": "Job status"
+  },
+  {
+    "name": "bq_job_id",
+    "type": "STRING",
+    "description": "Big query load job_id for each table in transfer run"
+  },
+  {
+    "name": "gcs_file_path",
+    "type": "STRING",
+    "description": "GCS path for extracted data"
+  },
+  {
+    "name": "transfer_mode",
+    "type": "STRING",
+    "description": "Nature of transfer - Snapshot/Incremental"
+  },
+  {
+    "name": "success_records",
+    "type": "STRING",
+    "description": "Number of succesful record migrated from table"
+  },
+  {
+    "name": "error_records",
+    "type": "INTEGER",
+    "description": "Number of failed records"
+  },
+  {
+    "name": "extract_duration",
+    "type": "STRING",
+    "description": "Time taken for data extraction locally in VM"
+  },
+  {
+    "name": "extract_data_size",
+    "type": "STRING",
+    "description": "Size of data being extracted"
+  },
+  {
+    "name": "extract_files",
+    "type": "INTEGER",
+    "description": "Number of files being extracted"
+  },
+  {
+    "name": "extract_partitions",
+    "type": "STRING",
+    "description": "Partitions range use for extraction"
+  },
+  {
+    "name": "extract_sessions",
+    "type": "INTEGER",
+    "description": "Number of sessions to extract the data"
+  },
+  {
+    "name": "message",
+    "type": "STRING",
+    "description": "Error or warning message for table"
+  }
+]

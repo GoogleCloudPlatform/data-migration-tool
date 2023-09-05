@@ -1,0 +1,52 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "Unique_id provided by user to identify set of tables"
+  },
+  {
+    "name": "transfer_config_id",
+    "type": "STRING",
+    "description": "Data transfer service genrated transfer_config_id"
+  },
+  {
+    "name": "transfer_run_id",
+    "type": "STRING",
+    "description": "Run_id for data transfer run"
+  },
+  {
+    "name": "run_date",
+    "type": "STRING",
+    "description": "Run date of job"
+  },
+  {
+    "name": "src_table_name",
+    "type": "STRING",
+    "description": "Name of the table being migrated"
+  },
+  {
+    "name": "job_status",
+    "type": "STRING",
+    "description": "Job status"
+  },
+  {
+    "name": "bq_job_id",
+    "type": "STRING",
+    "description": "Big query load job_id for each table in transfer run"
+  },
+  {
+    "name": "success_records",
+    "type": "STRING",
+    "description": "Number of succesful record migrated from table"
+  },
+  {
+    "name": "error_records",
+    "type": "INTEGER",
+    "description": "Number of failed records"
+  },
+  {
+    "name": "message",
+    "type": "STRING",
+    "description": "Error or warning message for table"
+  }
+]

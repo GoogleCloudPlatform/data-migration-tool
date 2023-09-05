@@ -1,0 +1,1 @@
+select count(*) from EDW_ODB.COUNTRIES;

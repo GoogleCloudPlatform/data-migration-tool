@@ -1,0 +1,9 @@
+{
+    "attributes": {
+        "eventType":"OBJECT_FINALIZE",
+        "payloadFormat":"JSON_API_V1",
+        "bucketId": "foo",
+        "objectId": "data/bar.json"
+    },
+    "otherFields": {}
+}

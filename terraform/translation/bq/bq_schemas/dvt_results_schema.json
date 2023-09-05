@@ -1,0 +1,142 @@
+[
+  {
+    "name": "run_id",
+    "type": "STRING",
+    "description": "Unique validation run id"
+  },
+  {
+    "name": "validation_name",
+    "type": "STRING",
+    "description": "Unique name of the validation"
+  },
+  {
+    "name": "validation_type",
+    "type": "STRING",
+    "description": "Enum value of validation types [Column, GroupedColumn]"
+  },
+  {
+    "name": "start_time",
+    "type": "TIMESTAMP",
+    "description": "Timestamp when the validation starts"
+  },
+  {
+    "name": "end_time",
+    "type": "TIMESTAMP",
+    "description": "Timestamp when the validation finishes"
+  },
+  {
+    "name": "source_table_name",
+    "type": "STRING",
+    "description": "Source table name with schema info"
+  },
+  {
+    "name": "target_table_name",
+    "type": "STRING",
+    "description": "Target table name with schema info"
+  },
+  {
+    "name": "source_column_name",
+    "type": "STRING",
+    "description": "Source column name"
+  },
+  {
+    "name": "target_column_name",
+    "type": "STRING",
+    "description": "Target column name"
+  },
+  {
+    "name": "aggregation_type",
+    "type": "STRING",
+    "description": "Aggregation type: count, min, max, avg, sum"
+  },
+  {
+    "name": "group_by_columns",
+    "type": "STRING",
+    "description": "Group by columns, stored as a key-value JSON mapping"
+  },
+  {
+    "name": "primary_keys",
+    "type": "STRING",
+    "description": "Primary keys for the validation"
+  },
+  {
+    "name": "num_random_rows",
+    "type": "INTEGER",
+    "description": "Number of random row batch size"
+  },
+  {
+    "name": "source_agg_value",
+    "type": "STRING",
+    "description": "Source aggregation result, casted to a string"
+  },
+  {
+    "name": "target_agg_value",
+    "type": "STRING",
+    "description": "Target aggregation result, casted to a string"
+  },
+  {
+    "name": "difference",
+    "type": "FLOAT",
+    "description": "Difference between the source and target aggregation result (derived from target_agg_value and source_agg_value for convenience)"
+  },
+  {
+    "name": "pct_difference",
+    "type": "FLOAT",
+    "description": "Percentage difference between the source and target aggregation result, based on source_agg_value."
+  },
+  {
+    "name": "pct_threshold",
+    "type": "FLOAT",
+    "description": "Percentage difference threshold set by the user, based on source_agg_value."
+  },
+  {
+    "name": "validation_status",
+    "type": "STRING",
+    "description": "Status of the validation. If the pct_difference is less than pc_threshold, it is considered as success. [success, fail]"
+  },
+  {
+    "name": "labels",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "Validation run labels.",
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING",
+        "description": "Label key."
+      },
+      {
+        "name": "value",
+        "type": "STRING",
+        "description": "Label value."
+      }
+    ]  
+  },
+  {
+    "name": "configuration_json",
+    "type": "STRING",
+    "description": "JSON representation of the validation metadata"
+  },
+  {
+    "name": "error_result",
+    "type": "RECORD",
+    "description": "Error info for debugging purpose",
+    "fields": [
+      {
+        "name": "code",
+        "type": "INTEGER",
+        "description": "Error code. See: https://cloud.google.com/apis/design/errors#handling_errors"
+      },
+      {
+        "name": "message",
+        "type": "STRING",
+        "description": "A developer-facing error message, which should be in English."
+      },
+      {
+        "name": "details",
+        "type": "STRING",
+        "description": "JSON-encoded information about the error(s)."
+      }
+    ]
+  }
+]

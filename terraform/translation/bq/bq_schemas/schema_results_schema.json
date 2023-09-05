@@ -1,0 +1,37 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "unique_id common to translation, schema and validation phases"
+  },
+  {
+    "name": "sql_file_name",
+    "type": "STRING",
+    "description": "Executed Schema SQL File Name"
+  },
+  {
+    "name": "job_id",
+    "type": "STRING",
+    "description": "BigQuery Job Id"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "description": "Job SUCCESS or FAIL status"
+  },
+  {
+    "name": "error_details",
+    "type": "STRING",
+    "description": "Exception Trace in case of Job Failure"
+  },
+  {
+    "name": "execution_start_time",
+    "type": "DATETIME",
+    "description": "Job Execution Start Time"
+  },
+  {
+    "name": "gcs_source_path",
+    "type": "STRING",
+    "description": "GCS Source path of all SQL files"
+  }
+]

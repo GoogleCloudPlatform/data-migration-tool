@@ -1,0 +1,89 @@
+{
+    "type" : "ddl",
+    "source" : "hive",
+    "batchDistribution": 10,
+    "extract_ddl" : "yes",
+    "unique_id": "run-16-Mar",
+    "dryRunOnly": true,
+    "translationErrorFilterRules":[
+      {
+         "field":"Category",
+         "matchType":"equals",
+         "value":"NoTargetSupportForFeature"
+      },
+      {
+          "field": "Category",
+          "matchType": "equals",
+          "value": "FileRead"
+      },
+      {
+          "field": "Category",
+          "matchType": "equals",
+          "value": "EmitterSuccess"
+      },
+      {
+          "field": "Category",
+          "matchType": "equals",
+          "value": "TranspilerOutputQuality"
+      }
+   ],
+    "migrationTask": {
+        "type": "Translation_HiveQL2BQ",
+        "translationConfigDetails": {
+            "sourceDialect": {
+                "hiveql_dialect":{}
+            },
+            "sourceEnv": {
+                "defaultDatabase": "<project-id>"
+            },
+            "targetDialect": {
+                "bigqueryDialect": {}
+            },
+            "gcsSourcePath": "gs://dmt-translation-<project-id>/input/ddl",
+            "gcsTargetPath": "gs://dmt-translation-<project-id>/output/ddl",
+            "nameMappingList": {
+                "name_map": [
+                    {
+                        "source": {
+                            "type": "SCHEMA",
+                            "database": "<project-id>",
+                            "schema": "hive_db1"
+                        },
+                        "target": {
+                            "database": "<project-id>",
+                            "schema": "bq_dataset1"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "source_ddl_extract_table_list":"*",
+    "gcs_temp_bucket":"dmt-temp-<project-id>",
+    "validation_config": {
+        "source_config": {
+            "source_type": "Impala",
+            "host": "10.128.0.12",
+            "port": 10000
+        },
+        "target_config": {
+            "source_type": "BigQuery",
+            "project-id": "<project-id>"
+        },
+        "validation_type": "schema",
+        "validation_mode" : "gke",
+        "validation_params_file_path" : "gs://dmt-config-dmt-demo-project/validation/hive/validation_params.csv"
+    },
+   "hive_config":{
+      "transfer-configuration":{
+         "project_id":"<project-id>",
+         "region":"us-central1"
+      },
+      "source-type":"hive",
+      "server_config":{
+         "connection":{
+            "host": "10.128.0.12",
+            "port": 9083         }
+      }
+   }
+}

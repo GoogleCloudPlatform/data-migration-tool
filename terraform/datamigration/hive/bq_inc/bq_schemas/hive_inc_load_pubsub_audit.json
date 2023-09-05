@@ -1,0 +1,8 @@
+[
+  {"name":"subscription_name","type": "STRING"},                        
+  {"name":"message_id","type": "STRING"},                          
+  {"name":"publish_time","type": "TIMESTAMP"},                    
+  {"name":"data","type": "JSON"},                        
+  {"name":"attributes","type": "JSON"}
+             
+]

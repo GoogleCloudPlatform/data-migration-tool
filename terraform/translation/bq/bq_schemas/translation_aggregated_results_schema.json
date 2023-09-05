@@ -1,0 +1,37 @@
+[
+    {
+        "name": "unique_id",
+        "type": "STRING",
+        "description": "unique_id common to translation, schema and validation phases"
+    },
+    {
+        "name": "total_files",
+        "type": "INTEGER",
+        "description": "Count of total files in this translation workflow"
+    },
+    {
+        "name": "successful_files",
+        "type": "INTEGER",
+        "description": "Count of successful files in this translation workflow"
+    },
+    {
+        "name": "failed_files",
+        "type": "INTEGER",
+        "description": "Count of failed files in this translation workflow"
+    },
+    {
+        "name": "input_files_path",
+        "type": "STRING",
+        "description": "GCS Path Location for Input Files for this workflow"
+    },
+    {
+        "name": "output_files_path",
+        "type": "STRING",
+        "description": "GCS Path Location for Output Files for this workflow"
+    },
+    {
+        "name": "translation_summary_csv_path",
+        "type": "STRING",
+        "description": "GCS Path Location for Translation Summary CSV File for this workflow"
+    }
+]

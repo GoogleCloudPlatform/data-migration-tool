@@ -1,0 +1,47 @@
+[
+    {
+        "name": "unique_id",
+        "type": "STRING",
+        "description": "Unique ID common to translation, schema and validation phases"
+    },
+    {
+        "name": "file_name",
+        "type": "STRING",
+        "description": "Executed Schema DML File Name"
+    },
+    {
+        "name": "status",
+        "type": "STRING",
+        "description": "Job SUCCESS or FAIL status"
+    },
+    {
+        "name": "error_details",
+        "type": "STRING",
+        "description": "Exception Trace in case of Job Failure"
+    },
+    {
+        "name": "execution_start_time",
+        "type": "DATETIME",
+        "description": "Job Execution Start Time"
+    },
+    {
+        "name": "gcs_input_path",
+        "type": "STRING",
+        "description": "GCS input path of SQL File"
+    },
+    {
+        "name": "gcs_output_path",
+        "type": "STRING",
+        "description": "GCS output path of SQL File"
+    },
+    {
+        "name": "bq_table_name",
+        "type": "STRING",
+        "description": "Destination Table name"
+    },
+    {
+        "name": "statement_type",
+        "type": "STRING",
+        "description": "Type of DML statement"
+    }
+]

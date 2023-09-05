@@ -1,0 +1,24 @@
+steps:
+- name: gcr.io/cloud-builders/gsutil
+  entrypoint: 'bash'
+  id: download
+  args:
+    - '-c'
+    - '[ -z "${_ORACLE_INSTANTCLIENT_FILE_PATH}" ] && echo "File name is blank..." || gsutil cp ${_ORACLE_INSTANTCLIENT_FILE_PATH} ${_FILE_NAME}'
+- name: 'gcr.io/cloud-builders/docker'
+  waitFor: ['download']
+  args: ['build',
+          '--tag',
+          '${_TAG}',
+          '.',
+          '--build-arg=_oracle_instant_client_file_path=${_ORACLE_INSTANTCLIENT_FILE_PATH}',
+          '--build-arg=_oracle_odbc_version_number=${_ORACLE_ODBC_VERSION_NUMBER}'
+         ]
+substitutions:
+    _ORACLE_INSTANTCLIENT_FILE_PATH: ""
+    _ORACLE_ODBC_VERSION_NUMBER: ""
+    _FILE_NAME: ""
+    _TAG: ""
+images: [
+    '${_TAG}',
+]

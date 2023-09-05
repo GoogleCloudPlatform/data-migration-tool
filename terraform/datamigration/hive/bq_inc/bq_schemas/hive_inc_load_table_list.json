@@ -1,0 +1,13 @@
+[
+  {"name":"unique_id","type": "STRING"},                        
+  {"name":"job_run_time","type": "TIMESTAMP"},   
+  {"name":"load_start_time","type": "TIMESTAMP"},     
+  {"name":"load_end_time","type": "TIMESTAMP"},  
+  {"name":"hive_db","type": "STRING"},                                        
+  {"name":"bq_dataset","type": "STRING"},                        
+  {"name":"table_name","type": "STRING"},
+  {"name":"source_path","type": "STRING"},
+  {"name":"destination_path","type": "STRING"},
+  {"name":"file_copy_status","type": "STRING"}
+             
+]

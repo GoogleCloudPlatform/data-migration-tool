@@ -1,0 +1,50 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "unique_id common to translation, schema, data and validation phases"
+  },
+  {
+    "name": "source_db",
+    "type": "STRING",
+    "description": "Source database name"
+  },
+  {
+    "name": "dag_name",
+    "type": "STRING",
+    "description": "Composer DAG name for reporting"
+  },
+  {
+    "name": "execution_time",
+    "type": "TIMESTAMP",
+    "description": "DAG execution start time"
+  },
+  {
+    "name": "dag_status",
+    "type": "STRING",
+    "description": "DAG status, either - Success, Partial Success or Failed"
+  },
+  {
+    "name": "Error",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "List of DAG tasks which are failed",
+    "fields": [
+      {
+        "name": "task_name",
+        "type": "STRING",
+        "description": "Name of the failed task"
+      },
+      {
+        "name": "error_message",
+        "type": "STRING",
+        "description": "Failed task error/exception message"
+      },
+      {
+        "name": "log_link",
+        "type": "STRING",
+        "description": "DAG task airflow log link for detail level log"
+      }
+    ]  
+  }
+]

@@ -1,0 +1,10 @@
+[Unit]
+Description=Agent Controller : A daemon service to manage migration agent jobs
+After=network.target
+
+[Service]
+ExecStart=python3 /opt/migration_project_teradata_bq/agent_controller/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

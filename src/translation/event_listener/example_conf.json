@@ -1,0 +1,7 @@
+{ 
+    "projects/data-poc-1234/subscriptions/logs-dag-trigger": {
+        "api_url": "https://cd1caaae4a554795897fed9eae24e14a-dot-us-central1.composer.googleusercontent.com",
+        "dag_id": "teradata_transfer_run_log_dag",
+        "transformation": "transfer_notification"
+    }
+}

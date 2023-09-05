@@ -1,0 +1,53 @@
+[
+      {
+        "mode": "NULLABLE",
+        "name": "run_id",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "start_time",
+        "type": "TIMESTAMP"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "database",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "bq_dataset",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "table",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "field_delimiter",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "partition_flag",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "cluster_flag",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "format",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "ddl_extracted",
+        "type": "STRING"
+      }
+]
+

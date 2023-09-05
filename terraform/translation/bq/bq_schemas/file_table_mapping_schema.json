@@ -1,0 +1,22 @@
+[
+    {
+        "name": "unique_id",
+        "type": "STRING",
+        "description": "unique_id common to translation, schema and validation phases"
+    },
+    {
+        "name": "sql_file_name",
+        "type": "STRING",
+        "description": "Name of SQL file containing SQL Queries"
+    },
+    {
+        "name": "table_name",
+        "type": "STRING",
+        "description": "BQ Table Name parsed out of Translated SQL Query"
+    },
+    {
+        "name": "table_creation_status",
+        "type": "STRING",
+        "description": "Boolean (success/fail) stating whether table got created successfully"
+    }
+]

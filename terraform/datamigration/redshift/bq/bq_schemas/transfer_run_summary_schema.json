@@ -1,0 +1,57 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "Unique_id provided by user to identify set of tables"
+  },
+  {
+    "name": "transfer_config_id",
+    "type": "STRING",
+    "description": "Data transfer service genrated transfer_config_id"
+  },
+  {
+    "name": "transfer_run_id",
+    "type": "STRING",
+    "description": "Run_id for data transfer run"
+  },
+  {
+    "name": "run_date",
+    "type": "STRING",
+    "description": "Load date of job"
+  },
+  {
+    "name": "transfer_run_status",
+    "type": "STRING",
+    "description": "Status of the transfer run"
+  },
+  {
+    "name": "start_time",
+    "type": "STRING",
+    "description": "Start date of transfer run"
+  },
+  {
+    "name": "end_time",
+    "type": "STRING",
+    "description": "End date of transfer run"
+  },
+  {
+    "name": "succeeded_jobs",
+    "type": "INTEGER",
+    "description": "Number of successful bigquery load jobs"
+  },
+  {
+    "name": "failed_jobs",
+    "type": "INTEGER",
+    "description": "Number of failed bigquery load jobs"
+  },
+  {
+    "name": "error_message",
+    "type": "STRING",
+    "description": "Error message for failed transfer run"
+  },
+  {
+    "name": "gcs_log_path",
+    "type": "STRING",
+    "description": "GCS file path for transfer run logs"
+  }
+]

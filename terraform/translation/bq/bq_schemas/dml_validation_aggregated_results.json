@@ -1,0 +1,27 @@
+[
+    {
+        "name": "unique_id",
+        "type": "STRING",
+        "description": "Unique ID common to translation, schema and validation phases"
+    },
+    {
+        "name": "total_files",
+        "type": "INTEGER",
+        "description": "Count of total files in this workflow"
+    },
+    {
+        "name": "total_queries",
+        "type": "INTEGER",
+        "description": "Count of total queries in this workflow"
+    },
+    {
+        "name": "successful_queries",
+        "type": "INTEGER",
+        "description": "Count of successful queries in this workflow"
+    },
+    {
+        "name": "failed_queries",
+        "type": "INTEGER",
+        "description": "Count of failed queries in this workflow"
+    }
+]

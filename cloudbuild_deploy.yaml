@@ -1,0 +1,55 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Deploy DMT for Teradata using the following command:
+#
+#   gcloud builds submit . \
+#     --config cloudbuild_deploy.yaml \
+#     --substitutions _DATA_SOURCE="teradata"
+#
+# for hive, set _DATA_SOURCE="hive" in the previous command.
+#
+# If you only want to deploy DMT translation tool with no data movement
+# then use the following command:
+#
+#   gcloud builds submit . --config cloudbuild_deploy.yaml
+#
+steps:
+
+- id: deploy
+  name: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+  args: [ bash, ./ci/deploy.sh ]
+  env:
+  - PROJECT_ID=${PROJECT_ID}
+  - _MY_BUCKET_NAME=${_MY_BUCKET_NAME}
+  - _MY_CUSTOMER_NAME=${_MY_CUSTOMER_NAME}
+  - _DATA_SOURCE=${_DATA_SOURCE}
+  - _TERRAGRUNT_WORKING_DIR=${_TERRAGRUNT_WORKING_DIR}
+  - _DELETE_BQ_TABLES=${_DELETE_BQ_TABLES}
+  - _ORACLE_INSTANTCLIENT_FILE_PATH=${_ORACLE_INSTANTCLIENT_FILE_PATH}
+  - _ORACLE_ODBC_VERSION_NUMBER=${_ORACLE_ODBC_VERSION_NUMBER}
+
+substitutions:
+  _MY_BUCKET_NAME: ${PROJECT_ID}-dmt-state-bucket
+  _MY_CUSTOMER_NAME: ${PROJECT_ID}
+  _DATA_SOURCE: ""
+  _TERRAGRUNT_WORKING_DIR: ""
+  _DELETE_BQ_TABLES: "false"
+  _ORACLE_INSTANTCLIENT_FILE_PATH: ""
+  _ORACLE_ODBC_VERSION_NUMBER: ""
+
+timeout: 7200s # 2 hours
+options:
+  machineType: N1_HIGHCPU_8
+  dynamic_substitutions: true

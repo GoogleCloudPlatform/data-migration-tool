@@ -1,0 +1,52 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+# If the terragrunt linter fails, run the following from the repo root to
+# correctly format your terraform files:
+#     terragrunt hclfmt
+- id: terragrunt_lint
+  name: 'alpine/terragrunt'
+  args: [ 'terragrunt', 'hclfmt', '--terragrunt-check' ]
+  waitFor: [ '-' ]
+
+# If the terraform linter fails, run the following from the repo root to
+# correctly format your terraform files:
+#     terragrunt run-all fmt
+- id: terraform_lint
+  name: 'alpine/terragrunt'
+  args: [ 'terraform', 'fmt', '-recursive', '-check' ]
+  waitFor: [ '-' ]
+
+# If the python linter fails, run the following from the repo root to
+# correctly format your terraform files:
+#     pip install --user --upgrade nox
+#     nox --session=format_all
+- id: python_lint
+  name: 'gcr.io/cloud-devrel-public-resources/python-multi'
+  args: [ 'bash', './ci/build.sh' ]
+  env:
+  - 'NOX_SESSION=lint'
+  waitFor: [ '-' ]
+
+- id: unittest
+  name: 'gcr.io/cloud-devrel-public-resources/python-multi'
+  args: [ 'bash', './ci/build.sh' ]
+  env:
+  - 'NOX_SESSION=unit'
+  waitFor: [ '-' ]
+
+timeout: 1800s # 30 minutes
+options:
+  machineType: N1_HIGHCPU_8

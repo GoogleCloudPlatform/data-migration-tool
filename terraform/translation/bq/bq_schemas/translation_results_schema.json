@@ -1,0 +1,42 @@
+[
+  {
+    "name": "unique_id",
+    "type": "STRING",
+    "description": "unique_id common to translation, schema and validation phases"
+  },
+  {
+    "name": "name",
+    "type": "STRING",
+    "description": "Workflow path"
+  },
+  {
+    "name": "create_time",
+    "type": "TIMESTAMP",
+    "description": "Translation start time"
+  },
+  {
+    "name": "file_name",
+    "type": "STRING",
+    "description": "SQL File name in output directory"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "description": "status of translation"
+  },
+  {
+    "name": "status_description",
+    "type": "STRING",
+    "description": "status description"
+  },
+  {
+    "name": "filtered_error",
+    "type": "BOOLEAN",
+    "description": "error filter"
+  },
+  {
+    "name": "type",
+    "type": "STRING",
+    "description": "translation type ddl or sql"
+  }
+]
