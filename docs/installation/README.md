@@ -98,7 +98,7 @@ The code repository is hosted on Github and can be cloned using below command.
 
 
 ```
-git clone https://github.com/GoogleCloudPlatform/dmt
+git clone https://github.com/GoogleCloudPlatform/data-migration-tool
 ```
 
 
