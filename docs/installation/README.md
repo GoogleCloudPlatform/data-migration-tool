@@ -234,7 +234,7 @@ Service Usage Consumer
 ```
 
 
-**To assign these roles, you can execute the Bash script iam-setup.sh present in the dmt**
+**To assign these roles, you can execute the Bash script iam-setup.sh present in the root directory**
 
 
 ```
@@ -246,13 +246,6 @@ export BUILD_ACCOUNT=<CLOUDBUILD_SERVICE_ACCOUNT>
 ```
 export SOURCE_PROJECT=<YOUR_PROJECT_ID>
 ```
-
-
-
-```
-cd dmt
-```
-
 
 
 ```
@@ -648,7 +641,7 @@ It is recommended to use the same VPC and subnet for Cloud Composer and Teradata
 7. Navigate inside the dmt repo
 
 ```
-cd dmt
+cd data-migration-tool
 ```
 
 
