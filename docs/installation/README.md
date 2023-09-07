@@ -106,7 +106,7 @@ Navigate to clone directory using below command
 
 
 ```
-cd dmt
+cd data-migration-tool
 ```
 
 Checkout the main branch using below command
