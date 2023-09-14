@@ -1,5 +1,5 @@
-# Data Transfer Tool User Guide - Data Transfer
-* For Data Transfer Tool introduction, please refer to [/README.md](/README.md)
+# Data Migration Tool User Guide - Data Transfer
+* For Data Migration Tool introduction, please refer to [/README.md](/README.md)
 * For Installation user guide, please refer to [/docs/installation/README.md](/docs/installation/README.md)
 
 ## About the service
