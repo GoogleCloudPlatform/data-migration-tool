@@ -4,7 +4,7 @@ A daemon service to run on agent vm to manage migration agent jobs
 
 ## Manual Installation
 * Install the dependencies: `pip install -r requirements.txt`
-* Create `config.yaml` file
+* Create `config/config.yaml` file
 ```yaml
 project_id: <project-id>
 subscription_id: <agent-controller-subscription-id>

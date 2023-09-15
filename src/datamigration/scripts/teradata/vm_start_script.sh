@@ -48,7 +48,7 @@ echo ""
 echo "Agent Controller setup - "
 sudo apt --assume-yes install python3-pip
 pip3 install -r ./agent_controller/requirements.txt
-echo -e "project_id: $project_id\nsubscription_id: $controller_sub" > ./agent_controller/config.yaml
+echo -e "project_id: $project_id\nsubscription_id: $controller_sub" > ./agent_controller/config/config.yaml
 sudo cp ./agent_controller/agent-controller.service /lib/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable agent-controller
