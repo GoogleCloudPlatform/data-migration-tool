@@ -73,9 +73,7 @@ class Controller:
             password = agent_config["teradata-config"]["connection"]["password"]
             if password.startswith("secret:"):
                 secret_key = password.split("secret:")[1]
-                secret_resource_id = (
-                    f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
-                )
+                secret_resource_id = f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
             else:
                 secret_resource_id = None
 
