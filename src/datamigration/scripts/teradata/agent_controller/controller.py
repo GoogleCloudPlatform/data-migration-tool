@@ -16,6 +16,11 @@ _LOGGER = logging.getLogger(__name__)
 
 class Controller:
     def __init__(self, data):
+        """Instantiates controller instance for each PUB/SUB payload
+
+        Args:
+            data (dict): PUB/SUB payload parsed as a dictionary
+        """
         self.data = data
         try:
             self.transfer_id = data["transfer_id"]
