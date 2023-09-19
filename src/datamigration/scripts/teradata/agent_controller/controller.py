@@ -6,10 +6,10 @@ import subprocess
 
 from config import config
 
-PROJECT_ID = config["project_id"]
-TRANSFER_RUN_BASE_DIR = "/opt/transfer_configs_and_logs"
-AGENT_START_SCRIPT = "/opt/migration_project_teradata_bq/start_agent.sh"
-AGENT_KILL_SCRIPT = "/opt/migration_project_teradata_bq/kill_agent.sh"
+_PROJECT_ID = config["project_id"]
+_TRANSFER_RUN_BASE_DIR = "/opt/transfer_configs_and_logs"
+_AGENT_START_SCRIPT = "/opt/migration_project_teradata_bq/start_agent.sh"
+_AGENT_KILL_SCRIPT = "/opt/migration_project_teradata_bq/kill_agent.sh"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class Controller:
             self.action = data["action"]
         except KeyError as e:
             raise KeyError(f"Missing key in JSON payload: {e}")
-        self.transfer_run_dir = os.path.join(TRANSFER_RUN_BASE_DIR, self.transfer_id)
+        self.transfer_run_dir = os.path.join(_TRANSFER_RUN_BASE_DIR, self.transfer_id)
 
     def run_action(self):
         """
@@ -69,7 +69,7 @@ class Controller:
             if password.startswith("secret:"):
                 secret_key = password.split("secret:")[1]
                 secret_resource_id = (
-                    f"projects/{PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
+                    f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
                 )
             else:
                 secret_resource_id = None
@@ -101,7 +101,7 @@ class Controller:
             None
         """
         _LOGGER.info("Starting migration agent")
-        cmd = f"sudo bash {AGENT_START_SCRIPT} {self.transfer_id}"
+        cmd = f"sudo bash {_AGENT_START_SCRIPT} {self.transfer_id}"
         _LOGGER.info(f"Executing command: {cmd}")
         subprocess.Popen(cmd, shell=True)
 
@@ -113,6 +113,6 @@ class Controller:
             None
         """
         _LOGGER.info("Killing migration agent")
-        cmd = f"sudo bash {AGENT_KILL_SCRIPT} {self.transfer_id}"
+        cmd = f"sudo bash {_AGENT_KILL_SCRIPT} {self.transfer_id}"
         _LOGGER.info(f"Executing command: {cmd}")
         subprocess.Popen(cmd, shell=True)

@@ -9,16 +9,16 @@ from google.cloud import pubsub_v1
 from config import config
 from controller import Controller
 
-PROJECT_ID = config["project_id"]
-SUBSCRIPTION_ID = config["subscription_id"]
-SUBSCRIPTION_NAME = "projects/{project_id}/subscriptions/{sub}".format(
-    project_id=PROJECT_ID,
-    sub=SUBSCRIPTION_ID,
+_PROJECT_ID = config["project_id"]
+_SUBSCRIPTION_ID = config["subscription_id"]
+_SUBSCRIPTION_NAME = "projects/{project_id}/subscriptions/{sub}".format(
+    project_id=_PROJECT_ID,
+    sub=_SUBSCRIPTION_ID,
 )
 
-LOGGING_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-LOGGING_MAX_BACKUP_DAYS = 30
-LOGGING_LOG_FILE_NAME = "agent-controller.log"
+_LOGGING_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+_LOGGING_MAX_BACKUP_DAYS = 30
+_LOGGING_LOG_FILE_NAME = "agent-controller.log"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,9 +30,9 @@ def _init_logger():
     Returns:
         None
     """
-    logs_dir = os.path.join(LOGGING_ROOT_DIR, "logs")
+    logs_dir = os.path.join(_LOGGING_ROOT_DIR, "logs")
     os.makedirs(logs_dir, exist_ok=True)
-    log_file = os.path.join(logs_dir, LOGGING_LOG_FILE_NAME)
+    log_file = os.path.join(logs_dir, _LOGGING_LOG_FILE_NAME)
 
     # Create and configure logger
     logging.basicConfig(
@@ -42,7 +42,7 @@ def _init_logger():
     logger.addHandler(logging.StreamHandler())
     logger.addHandler(
         TimedRotatingFileHandler(
-            log_file, when="D", interval=1, backupCount=LOGGING_MAX_BACKUP_DAYS
+            log_file, when="D", interval=1, backupCount=_LOGGING_MAX_BACKUP_DAYS
         )
     )
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     _init_logger()
     _LOGGER.info("Starting controller")
     with pubsub_v1.SubscriberClient() as subscriber:
-        future = subscriber.subscribe(SUBSCRIPTION_NAME, callback)
+        future = subscriber.subscribe(_SUBSCRIPTION_NAME, callback)
         try:
             result = future.result()
         except KeyboardInterrupt:
