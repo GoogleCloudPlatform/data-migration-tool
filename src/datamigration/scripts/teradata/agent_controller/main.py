@@ -4,10 +4,9 @@ import os
 from json.decoder import JSONDecodeError
 from logging.handlers import TimedRotatingFileHandler
 
-from google.cloud import pubsub_v1
-
 from config import config
 from controller import Controller
+from google.cloud import pubsub_v1
 
 _PROJECT_ID = config["project_id"]
 _SUBSCRIPTION_ID = config["subscription_id"]
