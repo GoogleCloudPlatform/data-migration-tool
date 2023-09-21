@@ -70,7 +70,7 @@ def unit(session):
     _setup_session_requirements(session)
     test_paths = [
         os.path.join("src", "tests"),
-        os.path.join("src", "translation", "event_listener")
+        os.path.join("src", "translation", "event_listener"),
     ]
     session.install(
         "--upgrade",
