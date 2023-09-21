@@ -41,8 +41,8 @@ controller_sub=$(curl "http://metadata.google.internal/computeMetadata/v1/instan
 gsutil -m cp -r gs://$script_bucket/scripts/datamigration/teradata/* .
 
 echo "Wrapper Scripts to Start/Kill Migration Agent - "
-chmod 775 start_agent.sh
-chmod 775 kill_agent.sh
+chmod 775 ./agent_controller/scripts/start_agent.sh
+chmod 775 ./agent_controller/scripts/kill_agent.sh
 echo ""
 
 echo "Agent Controller setup - "

@@ -8,8 +8,9 @@ from config import config
 
 _PROJECT_ID = config["project_id"]
 _TRANSFER_RUN_BASE_DIR = "/opt/transfer_configs_and_logs"
-_AGENT_START_SCRIPT = "/opt/migration_project_teradata_bq/start_agent.sh"
-_AGENT_KILL_SCRIPT = "/opt/migration_project_teradata_bq/kill_agent.sh"
+_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+_AGENT_START_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "start_agent.sh")
+_AGENT_KILL_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "kill_agent.sh")
 
 _LOGGER = logging.getLogger(__name__)
 
