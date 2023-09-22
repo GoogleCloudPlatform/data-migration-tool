@@ -62,3 +62,12 @@ class Test_Controller(unittest.TestCase):
 
         self.assertEqual(data["action"], "kill")
         self.assertEqual(c._kill_agent.call_count, 1)
+
+    def test_script_exists(self):
+        from controller import _AGENT_START_SCRIPT, _AGENT_KILL_SCRIPT
+        self.assertTrue(
+            os.path.exists(_AGENT_START_SCRIPT)
+        )
+        self.assertTrue(
+            os.path.exists(_AGENT_KILL_SCRIPT)
+        )
