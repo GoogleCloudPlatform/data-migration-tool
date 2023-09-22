@@ -65,9 +65,6 @@ class Test_Controller(unittest.TestCase):
 
     def test_script_exists(self):
         from controller import _AGENT_KILL_SCRIPT, _AGENT_START_SCRIPT
-        self.assertTrue(
-            os.path.exists(_AGENT_START_SCRIPT)
-        )
-        self.assertTrue(
-            os.path.exists(_AGENT_KILL_SCRIPT)
-        )
+
+        self.assertTrue(os.path.exists(_AGENT_START_SCRIPT))
+        self.assertTrue(os.path.exists(_AGENT_KILL_SCRIPT))
