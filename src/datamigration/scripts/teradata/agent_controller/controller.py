@@ -7,7 +7,7 @@ import subprocess
 from config import config
 
 _PROJECT_ID = config["project_id"]
-_TRANSFER_RUN_BASE_DIR = "/opt/transfer_configs_and_logs"
+_TRANSFER_RUN_BASE_DIR = config["transfer_run_base_dir"]
 _ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 _AGENT_START_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "start_agent.sh")
 _AGENT_KILL_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "kill_agent.sh")

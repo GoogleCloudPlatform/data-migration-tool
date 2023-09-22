@@ -21,9 +21,12 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
+BASEDIR=$(dirname $0)
+source $BASEDIR/config.sh
+
 transfer_id=$1
 
-transfer_run_dir=/opt/transfer_configs_and_logs/$transfer_id
+transfer_run_dir=$TRANSFER_RUN_BASE_DIR/$transfer_id
 if [ ! -d "$transfer_run_dir" ]; then
   echo "Agent not initialized : $transfer_run_dir does not exist"
   exit 1
@@ -46,7 +49,7 @@ done
 echo "Memory Free: $mem_free%"
 echo "Starting agent"
 cd $transfer_run_dir
-agent_cmd="nohup java -cp /opt/migration_project_teradata_bq/terajdbc4.jar:/opt/migration_project_teradata_bq/mirroring-agent.jar com.google.cloud.bigquery.dms.Agent --configuration-file=$transfer_run_dir/$transfer_id.json &> $transfer_run_dir/$transfer_id.out &"
+agent_cmd="nohup java -cp $TERAJDBC_JAR:$AGENT_JAR com.google.cloud.bigquery.dms.Agent --configuration-file=$transfer_run_dir/$transfer_id.json &> $transfer_run_dir/$transfer_id.out &"
 echo $agent_cmd
 eval $agent_cmd
 echo "Agent Started"

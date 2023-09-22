@@ -21,9 +21,12 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
+BASEDIR=$(dirname $0)
+source $BASEDIR/config.sh
+
 transfer_id=$1
 
-transfer_run_dir=/opt/transfer_configs_and_logs/$transfer_id
+transfer_run_dir=$TRANSFER_RUN_BASE_DIR/$transfer_id
 if [ ! -d "$transfer_run_dir" ]; then
   echo "Agent not initialized : $transfer_run_dir does not exist"
   exit 0

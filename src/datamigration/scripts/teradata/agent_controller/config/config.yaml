@@ -1,2 +1,3 @@
 project_id: <project-id>
 subscription_id: <agent-controller-subscription-id>
+transfer_run_base_dir: <agent-configs-and-logs-dir>

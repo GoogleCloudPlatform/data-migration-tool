@@ -4,14 +4,24 @@ A daemon service to run on agent vm to manage migration agent jobs
 
 ## Manual Installation
 * Install the dependencies: `pip install -r requirements.txt`
-* Create `config/config.yaml` file
+* Create `config/config.yaml` file as below:
 ```yaml
 project_id: <project-id>
 subscription_id: <agent-controller-subscription-id>
+transfer_run_base_dir: <agent-configs-and-logs-dir>
 ```
+&nbsp;&nbsp;&nbsp;&nbsp; Check [sample-config.yaml](./config/sample-config.yaml)
+
+* Modify `scripts/config.sh` file as below:
+```shell
+export TRANSFER_RUN_BASE_DIR="<agent-configs-and-logs-dir>"
+export TERAJDBC_JAR="<teradata-jdbc-driver-jar-path>"
+export AGENT_JAR="<bigquery-mirroring-agent-jar-path>"
+```
+&nbsp;&nbsp;&nbsp;&nbsp; Check [config.sh](./scripts/config.sh)
 
 ## Usage
-`python main.py`
+`sudo python main.py`
 
 ## Actions
 1. Setup 

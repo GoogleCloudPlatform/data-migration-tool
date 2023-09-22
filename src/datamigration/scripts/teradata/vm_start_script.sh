@@ -37,6 +37,7 @@ echo ""
 script_bucket=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/scripts-bucket" -H "Metadata-Flavor: Google")
 project_id=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/project-id" -H "Metadata-Flavor: Google")
 controller_sub=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/controller-sub" -H "Metadata-Flavor: Google")
+transfer_run_base_dir="/opt/transfer_configs_and_logs"
 
 gsutil -m cp -r gs://$script_bucket/scripts/datamigration/teradata/* .
 
@@ -48,7 +49,7 @@ echo ""
 echo "Agent Controller setup - "
 sudo apt --assume-yes install python3-pip
 pip3 install -r ./agent_controller/requirements.txt
-echo -e "project_id: $project_id\nsubscription_id: $controller_sub" > ./agent_controller/config/config.yaml
+echo -e "project_id: $project_id\nsubscription_id: $controller_sub\ntransfer_run_base_dir: $transfer_run_base_dir" > ./agent_controller/config/config.yaml
 sudo cp ./agent_controller/agent-controller.service /lib/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable agent-controller
