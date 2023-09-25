@@ -72,7 +72,7 @@ def unit(session):
     test_paths = [
         os.path.join("src", "tests"),
         os.path.join("src", "translation", "event_listener"),
-        os.path.join("src", "tests", "common_utils"),
+        os.path.join("src", "common_utils"),
     ]
     session.install(
         "--upgrade",

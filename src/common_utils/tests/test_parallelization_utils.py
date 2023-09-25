@@ -1,7 +1,8 @@
 import pytest
 from airflow.utils import timezone
 
-from src.common_utils import parallelization_utils
+# from src.common_utils import parallelization_utils
+from common_utils import parallelization_utils
 
 
 def test_make_run_batches_valid():
