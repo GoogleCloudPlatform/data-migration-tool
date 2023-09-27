@@ -1,4 +1,4 @@
-apache-airflow==2.3.4
+apache-airflow==2.7.1
 apache-airflow-providers-cncf-kubernetes==5.0.0
 apache-airflow-providers-google
 apache-airflow-providers-ssh==3.3.0
