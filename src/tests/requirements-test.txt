@@ -7,3 +7,4 @@ google-api-core==2.8.1
 protobuf==3.20.0
 redshift_connector==2.0.910
 oracledb==1.2.2
+configparser
