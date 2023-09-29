@@ -1,9 +1,8 @@
+import json
 import re
 import sys
+import time
 import uuid
-import json
-import ast
-
 from pathlib import Path
 from typing import Any, List
 
@@ -12,10 +11,8 @@ from google.api_core.extended_operation import ExtendedOperation
 from google.cloud import compute_v1, secretmanager_v1, storage
 from googleapiclient.discovery import build
 from jinja2 import Environment, FileSystemLoader
-
 from test_utils import parse_config
 
-import time
 
 def load_test_config(config_file=None, config=None):
     env = Environment(loader=FileSystemLoader("config"))
@@ -27,22 +24,42 @@ def load_test_config(config_file=None, config=None):
         unique_id=uuid.uuid4(),
         bucket_name=TRANSLATION_BUCKET_NAME,
         config_bucket_name=CONFIG_BUCKET_NAME,
-        source_ip=config['SOURCE_IP'] if 'SOURCE_IP' in config else "",
-        source_schema=config['SOURCE_SCHEMA'] if 'SOURCE_SCHEMA' in config else "",
-        target_schema=config['TARGET_SCHEMA'] if 'TARGET_SCHEMA' in config else "",
-        source_username=config['SOURCE_USERNAME'] if 'SOURCE_USERNAME' in config else "",
-        secret_name=config['SECRET_NAME'] if 'SECRET_NAME' in config else "",
-        source_dbname=config['SOURCE_DBNAME'] if 'SOURCE_DBNAME' in config else "",
-        validation_mode=config['VALIDATION_MODE'] if 'VALIDATION_MODE' in config else "",
-        validation_type=config['VALIDATION_TYPE'] if 'VALIDATION_TYPE' in config else "",
-        validation_mapping_file=config['VALIDATION_MAPPING_FILE'] if 'VALIDATION_MAPPING_FILE' in config else "",
-        data_mig_table_list_file=config['DATA_MIG_TABLE_LIST_FILE'] if 'DATA_MIG_TABLE_LIST_FILE' in config else "",
-        data_bucket_name=DATA_FILE_BUCKET_NAME
+        source_ip=config["SOURCE_IP"] if "SOURCE_IP" in config else "",
+        source_schema=config["SOURCE_SCHEMA"] if "SOURCE_SCHEMA" in config else "",
+        target_schema=config["TARGET_SCHEMA"] if "TARGET_SCHEMA" in config else "",
+        source_username=config["SOURCE_USERNAME"]
+        if "SOURCE_USERNAME" in config
+        else "",
+        secret_name=config["SECRET_NAME"] if "SECRET_NAME" in config else "",
+        source_dbname=config["SOURCE_DBNAME"] if "SOURCE_DBNAME" in config else "",
+        validation_mode=config["VALIDATION_MODE"]
+        if "VALIDATION_MODE" in config
+        else "",
+        validation_type=config["VALIDATION_TYPE"]
+        if "VALIDATION_TYPE" in config
+        else "",
+        validation_mapping_file=config["VALIDATION_MAPPING_FILE"]
+        if "VALIDATION_MAPPING_FILE" in config
+        else "",
+        data_mig_table_list_file=config["DATA_MIG_TABLE_LIST_FILE"]
+        if "DATA_MIG_TABLE_LIST_FILE" in config
+        else "",
+        data_bucket_name=DATA_FILE_BUCKET_NAME,
     )
 
     print(config)
 
-    config_file_name = (config_file.split('.')[0]+'_' + config['VALIDATION_MODE'] + '.' + config_file.split('.')[1]) if (config['VALIDATION_MODE'] is not None) else config_file
+    config_file_name = (
+        (
+            config_file.split(".")[0]
+            + "_"
+            + config["VALIDATION_MODE"]
+            + "."
+            + config_file.split(".")[1]
+        )
+        if (config["VALIDATION_MODE"] is not None)
+        else config_file
+    )
     print(config_file_name)
     storage_client.bucket(CONFIG_BUCKET_NAME).blob(config_file_name).upload_from_string(
         rendered_config
@@ -209,12 +226,12 @@ bash iam-setup.sh &&
 gcloud builds submit . --config cloudbuild_deploy.yaml --substitutions _DATA_SOURCE="teradata"
 """
 
-cfg = parse_config('input.properties')
+cfg = parse_config("input.properties")
 
-PROJECT_ID = cfg.get('inputs', 'PROJECT_ID')
-CONFIG_BUCKET_NAME = cfg.get('inputs', 'CONFIG_BUCKET_NAME')
-TRANSLATION_BUCKET_NAME = cfg.get('inputs', 'TRANSLATION_BUCKET_NAME')
-DATA_FILE_BUCKET_NAME = cfg.get('inputs', 'DATA_FILE_BUCKET_NAME')
+PROJECT_ID = cfg.get("inputs", "PROJECT_ID")
+CONFIG_BUCKET_NAME = cfg.get("inputs", "CONFIG_BUCKET_NAME")
+TRANSLATION_BUCKET_NAME = cfg.get("inputs", "TRANSLATION_BUCKET_NAME")
+DATA_FILE_BUCKET_NAME = cfg.get("inputs", "DATA_FILE_BUCKET_NAME")
 
 storage_client = storage.Client(project=PROJECT_ID)
 
@@ -222,37 +239,41 @@ storage_client = storage.Client(project=PROJECT_ID)
 load_test_data()
 
 print("Upload DDL config files")
-ddl_config_list = cfg.get('inputs', 'DDL_CONFIG_LIST')
+ddl_config_list = cfg.get("inputs", "DDL_CONFIG_LIST")
 print(ddl_config_list)
 ddl_config_list_obj = json.loads(ddl_config_list)
 print(ddl_config_list_obj)
 for ddl_config_file in ddl_config_list_obj:
     for ddl_config_item in ddl_config_list_obj[ddl_config_file]:
         load_test_config(ddl_config_file, ddl_config_item)
-        time.sleep(120) # Delay for 2 minute (120 seconds).  
+        time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 print("Delete data transfer configs")
 delete_transfer_configs()
 
 print("Upload data migration config files")
-data_config_list = cfg.get('inputs', 'DATA_CONFIG_LIST')
+data_config_list = cfg.get("inputs", "DATA_CONFIG_LIST")
 
 data_config_list_obj = json.loads(data_config_list)
 
 for data_config_file in data_config_list_obj:
     for data_config_item in data_config_list_obj[data_config_file]:
-        load_test_config(data_config_file, data_config_item)  # First set up tables via DDLs
-        time.sleep(120) # Delay for 2 minute (120 seconds). 
+        load_test_config(
+            data_config_file, data_config_item
+        )  # First set up tables via DDLs
+        time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 # time.sleep(1200) # Delay for 20 minute (1200 seconds) for data-migration completion
 print("Upload SQL config files")
-sql_config_list = cfg.get('inputs', 'SQL_CONFIG_LIST')
+sql_config_list = cfg.get("inputs", "SQL_CONFIG_LIST")
 
 sql_config_list_obj = json.loads(sql_config_list)
 
 for sql_config_file in sql_config_list_obj:
     for sql_config_item in sql_config_list_obj[sql_config_file]:
-        load_test_config(sql_config_file, sql_config_item)  # First set up tables via DDLs
-        time.sleep(120) # Delay for 2 minute (120 seconds).
+        load_test_config(
+            sql_config_file, sql_config_item
+        )  # First set up tables via DDLs
+        time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 print("Finished...")
