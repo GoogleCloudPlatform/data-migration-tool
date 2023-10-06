@@ -1,6 +1,6 @@
 Flask
 gunicorn
-google-pso-data-validator==3.0.0
+google-pso-data-validator==4.2.0
 google-cloud-secret-manager
 hdfs
 thrift-sasl
