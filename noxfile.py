@@ -68,6 +68,11 @@ def format_all(session):
 @nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
 def unit(session):
     _setup_session_requirements(session)
+    test_paths = [
+        os.path.join("src", "tests"),
+        os.path.join("src", "translation", "event_listener"),
+        os.path.join("src", "datamigration", "scripts", "teradata", "agent_controller"),
+    ]
     session.install(
         "--upgrade",
         "-r",
@@ -77,9 +82,10 @@ def unit(session):
             "requirements-test.txt",
         ),
     )
-    # Run py.test against the unit tests.
-    session.run(
-        "pytest",
-        "--quiet",
-        "src",
-    )
+    # Run pytest against the unit tests in all test paths assigned above.
+    for test_path in test_paths:
+        session.run(
+            "pytest",
+            "--quiet",
+            test_path,
+        )
