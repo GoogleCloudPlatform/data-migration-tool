@@ -77,8 +77,6 @@ _DATA_SOURCE=teradata
 total 115608
 drwxrwxr-x 5 54380 30000     4096 Jan 27 06:22 TeradataToolsAndUtilitiesBase
 -rw-r--r-- 1 root  root  60156986 May 11 06:07 mirroring-agent.jar
--rwxrwxr-x 1 root  root      1204 May 17 07:04 kill_agent.sh
--rwxrwxr-x 1 root  root      1623 May 17 07:04 start_agent.sh
 -rw-r--r-- 1 root  root      3086 May 17 07:04 vm_start_script.sh
 drwxr-xr-x 4 root  root      4096 May 17 07:05 agent_controller
 -rwxr--r-- 1 root  root    192307 May 17 07:05 startup.log
@@ -115,7 +113,7 @@ drwxrwxrwx 4 root  root      4096 May 19 12:06 local_processing_space
     1. Download the jar from teradata downloads: [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver) 
     2. Upload the package to a bucket (_&lt;temp-bucket>_)
     3. SSH into the Agent VM and switch user to root
-    4.  Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM
+    4. Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM (Make sure it is copied with name `terajdbc4.jar`)
         ```
         gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
         ```
