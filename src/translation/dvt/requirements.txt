@@ -1,9 +1,9 @@
 Flask
 gunicorn
+Werkzeug
 google-pso-data-validator==4.2.0
 google-cloud-secret-manager
 hdfs
 thrift-sasl
 teradata
 teradatasql
-cx_Oracle
