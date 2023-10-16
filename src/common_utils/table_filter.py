@@ -28,7 +28,7 @@ def filter(files, config):
     validation_type = config["validation_config"]["validation_type"]
     if translation_type == "sql":
         return list()
-    exp = r"\b(?i)(CREATE|REPLACE) (OR REPLACE)*\s?(TABLE|VIEW) (IF NOT EXISTS)*\s?`?([\w-]+)`?\.([\w-]+)\.(\w+)[a-zA-Z]*\b"
+    exp = r"\b(?i:(CREATE|REPLACE) (OR REPLACE)*\s?(TABLE|VIEW) (IF NOT EXISTS)*\s?`?([\w-]+)`?\.([\w-]+)\.(\w+)[a-zA-Z]*)\b"
     remove_expr_bteq = """BEGIN"""
     skip_expr_bteq = ["""EXCEPTION WHEN ERROR""", """END"""]
 
@@ -47,6 +47,8 @@ def filter(files, config):
     file_table_mapping_list = []
     for file_details in files:
         filename = file_details["sql_file_name"]
+        print("Checkpoint")
+        print(filename)
         file_status = file_details["status"]
         f = os.path.join(directory, filename)
         content = open(f, "r").read()
@@ -55,14 +57,16 @@ def filter(files, config):
         for stmt in statements:
             stmt = stmt.strip()
             if mode == "BTEQ":
+                print("BTEQ mode, skip the statment and goto next statement")
+                print(stmt)
                 if bool(
                     re.match(r"(?=(" + "|".join(skip_expr_bteq) + r"))", stmt, re.I)
                 ):
-                    # print("BTEQ mode, skip the statment and goto next statement")
+                    print("BTEQ mode, skip the statment and goto next statement")
                     continue
 
                 if bool(re.match(remove_expr_bteq, stmt, re.I)):
-                    # print('Statement start with begin block hence remove BEGIN word')
+                    print("Statement start with begin block hence remove BEGIN word")
                     stmt = re.split(remove_expr_bteq, stmt, flags=re.I)[1]
             matched_query_tokens_list = re.findall(exp, stmt)
             if file_status == "success":
@@ -161,12 +165,23 @@ def filter_valid_table_mappings(config_table_mapping: list, tables: str, schema:
 
     for table_mapping in config_table_mapping:
         split_str = table_mapping.split("=")
+        print(f"split_str {split_str}")
         config[split_str[0]] = split_str[1]
+        print(f"config {config}")
 
     tables_list = tables.split(";")
+    print(f"tables_list {tables_list}")
     for table in tables_list:
+        print(f"table {table}")
         src_table_name = schema + "." + table
+        print(f"src_table_name {src_table_name}")
+        print(f"filtered_dvt_mappings {filtered_dvt_mappings}")
+        print(f"src_table_name {src_table_name}")
+        print(f"config {config}")
+
         if config.get(src_table_name, None):
+            print(f"src_table_name {config.get(src_table_name, None)}")
+            print(f"config[src_table_name] {config[src_table_name]}")
             filtered_dvt_mappings.append(src_table_name + "=" + config[src_table_name])
 
     return filtered_dvt_mappings
