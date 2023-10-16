@@ -7,3 +7,4 @@ hdfs
 thrift-sasl
 teradata
 teradatasql
+cx_Oracle
