@@ -14,7 +14,7 @@
 * Current tool version supports only bulk load which is ideally done only once, note that the transfer shall take place by the process following upload of the config files.
 * If there are <span style="text-decoration:underline;">new table additions to a batch/config file</span>, ideally create **a new config file** with a new table list even if rest details remain the same. If not followed, there might be multiple data transfer configs responsible for migrating the same tables.
 * Note that reuploading the same configuration file or using a different config file for the same dataset and tables, will create <span style="text-decoration:underline;">data duplication</span> in the tables for the target dataset.
-* Please be cautious of the number of parallel processes being triggered for Data Migration.  The AGENT VM infrastructure (vCPUs, Memory), Composer Infrastructure and sshd_config (Max Sessions and Max Startups Values should be 10 times the number of parallel Data Migration DAG executions)
+* Please be cautious of the number of parallel processes being triggered for Data Migration. You may need to scale the AGENT VM infrastructure (vCPUs, Memory), Composer Infrastructure based on expected parallel data migration jobs.
 
 ### Prepare configuration file for bigquery DTS
 
@@ -26,11 +26,6 @@ As the configuration is uploaded, a new file create/update trigger is sent to pu
 
 
 * Target dataset creation to be done by the user/concerned team before uploading the configuration file.
-* Service account to be created for use by bigquery migration agent on jump server, with correct permissions before uploading the configuration file as below:
-    * bigquery.transfers.get
-    * storage.objects.create
-    * storage.objects.get
-    * Storage.objects.list
 
 
 ### Data Migration Flow
@@ -75,10 +70,7 @@ _DATA_SOURCE=teradata
 
 > ls -ltr
 total 115608
-drwxrwxr-x 5 54380 30000     4096 Jan 27 06:22 TeradataToolsAndUtilitiesBase
 -rw-r--r-- 1 root  root  60156986 May 11 06:07 mirroring-agent.jar
--rwxrwxr-x 1 root  root      1204 May 17 07:04 kill_agent.sh
--rwxrwxr-x 1 root  root      1623 May 17 07:04 start_agent.sh
 -rw-r--r-- 1 root  root      3086 May 17 07:04 vm_start_script.sh
 drwxr-xr-x 4 root  root      4096 May 17 07:05 agent_controller
 -rwxr--r-- 1 root  root    192307 May 17 07:05 startup.log
@@ -115,7 +107,7 @@ drwxrwxrwx 4 root  root      4096 May 19 12:06 local_processing_space
     1. Download the jar from teradata downloads: [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver) 
     2. Upload the package to a bucket (_&lt;temp-bucket>_)
     3. SSH into the Agent VM and switch user to root
-    4.  Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM
+    4. Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM (Make sure it is copied with name `terajdbc4.jar`)
         ```
         gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
         ```
