@@ -123,24 +123,61 @@ def test_filter_sql_config():
     expected_result = []
     assert results == expected_result
 
+
 input_expected_output_mapping = [
-    (["testdb.EMPLOYEE=dvt.EMPLOYEE","testdb.DEPARTMENT=dvt.DEPARTMENT","testdb.EMPLOYEE5=dvt.EMPLOYEE5"], "EMPLOYEE;DEPARTMENT;EMPLOYEE5", "testdb", ['testdb.EMPLOYEE=dvt.EMPLOYEE', 'testdb.DEPARTMENT=dvt.DEPARTMENT', 'testdb.EMPLOYEE5=dvt.EMPLOYEE5']),
-    ([], "EMPLOYEE;DEPARTMENT;EMPLOYEE5", "testdb",[]),
-    ([], "", "testdb",[]),
-    ([], None, "testdb",[]),
-    ([], None, "",[]),
-    ([], None, None,[]),
-    (["testdb.EMPLOYEE=dvt1.EMPLOYEE","testdb.DEPARTMENT=dvt.DEPARTMENT","testdb.EMPLOYEE5=dvt.EMPLOYEE5"], "EMPLOYEE1;DEPARTMENT;EMPLOYEE5", "testdb", [ 'testdb.DEPARTMENT=dvt.DEPARTMENT', 'testdb.EMPLOYEE5=dvt.EMPLOYEE5']),
-
+    (
+        [
+            "testdb.EMPLOYEE=dvt.EMPLOYEE",
+            "testdb.DEPARTMENT=dvt.DEPARTMENT",
+            "testdb.EMPLOYEE5=dvt.EMPLOYEE5",
+        ],
+        "EMPLOYEE;DEPARTMENT;EMPLOYEE5",
+        "testdb",
+        [
+            "testdb.EMPLOYEE=dvt.EMPLOYEE",
+            "testdb.DEPARTMENT=dvt.DEPARTMENT",
+            "testdb.EMPLOYEE5=dvt.EMPLOYEE5",
+        ],
+    ),
+    ([], "EMPLOYEE;DEPARTMENT;EMPLOYEE5", "testdb", []),
+    ([], "", "testdb", []),
+    ([], None, "testdb", []),
+    ([], None, "", []),
+    ([], None, None, []),
+    (
+        [
+            "testdb.EMPLOYEE=dvt1.EMPLOYEE",
+            "testdb.DEPARTMENT=dvt.DEPARTMENT",
+            "testdb.EMPLOYEE5=dvt.EMPLOYEE5",
+        ],
+        "EMPLOYEE1;DEPARTMENT;EMPLOYEE5",
+        "testdb",
+        ["testdb.DEPARTMENT=dvt.DEPARTMENT", "testdb.EMPLOYEE5=dvt.EMPLOYEE5"],
+    ),
 ]
-@pytest.mark.parametrize(
-    "config_table_mapping, tables, schema, expected_results", input_expected_output_mapping
-)
-def test_filter_valid_table_mappings(config_table_mapping, tables, schema, expected_results):
-    config_table_mapping = ["testdb.EMPLOYEE=dvt.EMPLOYEE","testdb.DEPARTMENT=dvt.DEPARTMENT","testdb.EMPLOYEE5=dvt.EMPLOYEE5"]
-    tables="EMPLOYEE;DEPARTMENT;EMPLOYEE5"
-    schema="testdb"
-    result = table_filter.filter_valid_table_mappings(config_table_mapping,tables,schema )
-    expected_results = ['testdb.EMPLOYEE=dvt.EMPLOYEE', 'testdb.DEPARTMENT=dvt.DEPARTMENT', 'testdb.EMPLOYEE5=dvt.EMPLOYEE5']
 
-    assert result==expected_results
+
+@pytest.mark.parametrize(
+    "config_table_mapping, tables, schema, expected_results",
+    input_expected_output_mapping,
+)
+def test_filter_valid_table_mappings(
+    config_table_mapping, tables, schema, expected_results
+):
+    config_table_mapping = [
+        "testdb.EMPLOYEE=dvt.EMPLOYEE",
+        "testdb.DEPARTMENT=dvt.DEPARTMENT",
+        "testdb.EMPLOYEE5=dvt.EMPLOYEE5",
+    ]
+    tables = "EMPLOYEE;DEPARTMENT;EMPLOYEE5"
+    schema = "testdb"
+    result = table_filter.filter_valid_table_mappings(
+        config_table_mapping, tables, schema
+    )
+    expected_results = [
+        "testdb.EMPLOYEE=dvt.EMPLOYEE",
+        "testdb.DEPARTMENT=dvt.DEPARTMENT",
+        "testdb.EMPLOYEE5=dvt.EMPLOYEE5",
+    ]
+
+    assert result == expected_results

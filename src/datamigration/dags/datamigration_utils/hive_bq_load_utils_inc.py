@@ -150,20 +150,20 @@ def copy_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
 
 
 def save_file_copy_status(
-    unique_id,
-    job_run_time,
-    load_start_time,
-    load_end_time,
-    hive_db,
-    bq_dataset,
-    table_name,
-    source_bucket_name,
-    source_gcs_path,
-    dest_bucket_name,
-    destination_gcs_path,
-    file_copy_status,
-    bq_dataset_audit,
-    hive_inc_load_tbl,
+        unique_id,
+        job_run_time,
+        load_start_time,
+        load_end_time,
+        hive_db,
+        bq_dataset,
+        table_name,
+        source_bucket_name,
+        source_gcs_path,
+        dest_bucket_name,
+        destination_gcs_path,
+        file_copy_status,
+        bq_dataset_audit,
+        hive_inc_load_tbl,
 ):
     source_path = f"gs://{source_bucket_name}/{source_gcs_path}"
     destination_path = f"gs://{dest_bucket_name}/{destination_gcs_path}"
@@ -186,7 +186,7 @@ def save_file_copy_status(
     status = client.insert_rows_json(
         bq_dataset_audit + "." + hive_inc_load_tbl,
         metadata_list,
-    )
+        )
     print(status)
 
 
@@ -221,9 +221,9 @@ def copy_inc_files(tbl_data, config_data, job_run_time):
         # bq_dataset = dict["hive_bq_dataset_mapping"][hive_db.split(".")[0]]
         if len(hive_gcs_staging_path) > 0:
             destination_gcs_path = (
-                str(date.today())
-                + "/"
-                + source_gcs_path.replace(hive_gcs_staging_path + "/", "")
+                    str(date.today())
+                    + "/"
+                    + source_gcs_path.replace(hive_gcs_staging_path + "/", "")
             )
         else:
             destination_gcs_path = str(date.today()) + "/" + source_gcs_path
@@ -336,9 +336,9 @@ def get_partition_clustering_info(config):
     df_list = []
     for dbname in database_list:
         hive_tables = (
-            "'"
-            + "','".join(df.loc[df["bq_dataset"] == dbname]["table"].values.tolist())
-            + "'"
+                "'"
+                + "','".join(df.loc[df["bq_dataset"] == dbname]["table"].values.tolist())
+                + "'"
         )
         query = constants.query_inc_tbl_partition_clustering_info.format(
             bq_dataset_name=dbname, table_names=hive_tables
@@ -378,9 +378,9 @@ def get_text_format_schema(config):
     df_list = []
     for dbname in database_list:
         hive_tables = (
-            "'"
-            + "','".join(df.loc[df["bq_dataset"] == dbname]["table"].values.tolist())
-            + "'"
+                "'"
+                + "','".join(df.loc[df["bq_dataset"] == dbname]["table"].values.tolist())
+                + "'"
         )
         query = constants.query_inc_tbl_text_format_schema_info.format(
             bq_dataset_name=dbname, table_names=hive_tables
@@ -407,7 +407,7 @@ def partition_cluster_col_subcmd_1(partition_column, clustering_column, file_for
     Creates a BQ subcommand for partitioned and clustered tables
     """
     if (
-        partition_column is not None and clustering_column is not None
+            partition_column is not None and clustering_column is not None
     ):  # Table is partitioned & clusterd
         pccmd = (
             " --hive_partitioning_mode=AUTO --time_partitioning_field={partition_column} --clustering_fields='{clustering_column}' "
@@ -428,7 +428,7 @@ def partition_cluster_col_subcmd_1(partition_column, clustering_column, file_for
 
 
 def file_format_subcmd_2(
-    file_format, partition_flag, field_delimiter, concat_db_tbl, df_text_format_schema
+        file_format, partition_flag, field_delimiter, concat_db_tbl, df_text_format_schema
 ):
     """
     Create subcommand to be include in the final BQ load command based on different formats
@@ -489,15 +489,15 @@ def get_job_status(tbl, result):
 
 
 def save_load_status_bq(
-    tablename,
-    load_status,
-    reason_for_failure,
-    bq_job_id,
-    bq_dataset,
-    hive_db_name,
-    dict,
-    op_load_dtm,
-    op_run_id,
+        tablename,
+        load_status,
+        reason_for_failure,
+        bq_job_id,
+        bq_dataset,
+        hive_db_name,
+        dict,
+        op_load_dtm,
+        op_run_id,
 ):
     """
     Save BQ Load status in Audit table
@@ -583,7 +583,7 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
     table_gs_path_list = list(
         df_incremental_table_list[
             df_incremental_table_list["concat_db_tbl"] == concat_db_tbl
-        ]["destination_path"].values
+            ]["destination_path"].values
     )
     bq_dataset = concat_db_tbl.split(".")[0]
     tbl = concat_db_tbl.split(".")[1]
