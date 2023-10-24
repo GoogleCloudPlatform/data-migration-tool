@@ -115,7 +115,7 @@ def get_inc_table_list_for_copy(config, inc_gcs_files_list):
     return [[tbl] for tbl in tbl_list]
 
 
-def check_bq_table(client, gcs_path, dbname, tblname, dict):
+def check_bq_table( gcs_path, dbname, tblname, dict):
     """
     Check if table is present in BQ
     """

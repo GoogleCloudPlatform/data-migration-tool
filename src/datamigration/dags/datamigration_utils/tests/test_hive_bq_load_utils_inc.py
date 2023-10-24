@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 import xarray as xr
 from datamigration_utils import hive_bq_load_utils_inc
+from google.cloud.exceptions import NotFound
 
 MOCK_CONFIGS_DIR_NAME = "mock"
 f = open(
@@ -156,3 +157,80 @@ def test_get_inc_table_list_for_copy(
     )
 
     assert result == expected_output
+
+input_expected_output_mapping = [
+    ("gcs_path", "dbname", "tblname", {'bq_dataset_audit':'bq_dataset_audit_value', 'hive_ddl_metadata':"hive_ddl_metadata_value"}, "success", "dbname,bq_dataset.tblname,gcs_path"),
+    ("gcs_path", "dbname", "tblname", {'bq_dataset_audit':'bq_dataset_audit_value', 'hive_ddl_metadata':"hive_ddl_metadata_value"}, NotFound("Table Not Found"), ""),
+    ("gcs_path", "dbname", "tblname", {'bq_dataset_audit':'bq_dataset_audit_value', 'hive_ddl_metadata':"hive_ddl_metadata_value"}, ValueError('Exception'), None),
+    (None, "dbname", "tblname", {'bq_dataset_audit':'bq_dataset_audit_value', 'hive_ddl_metadata':"hive_ddl_metadata_value"}, "success", None),
+    ("", "dbname", "tblname", {'bq_dataset_audit':'bq_dataset_audit_value', 'hive_ddl_metadata':"hive_ddl_metadata_value"}, "success", 'dbname,bq_dataset.tblname,'),
+]
+@pytest.mark.parametrize(
+    " gcs_path, dbname, tblname, dict ,side_effect_value, expected_results",
+    input_expected_output_mapping,
+)
+def test_check_bq_table( mocker, gcs_path, dbname, tblname, dict ,side_effect_value, expected_results):
+
+    d = {
+        "t": {"dims": ("query_results"), "data": ["bq_dataset"]},
+        }
+    mock_results = xr.Dataset.from_dict(d)
+    print(mock_results)
+    mocker.patch(
+        "google.cloud.bigquery.Client.query", return_value=mock_results
+    )
+    mocker.patch(
+        "google.cloud.bigquery.Client.get_table", side_effect= side_effect_value
+    )
+    result = hive_bq_load_utils_inc.check_bq_table( gcs_path, dbname, tblname, dict)
+    assert result == expected_results
+
+d = {
+        "t": {"dims": ("query_results"), "data": ["bq_dataset"]},
+    }
+mock_results = xr.Dataset.from_dict(d)
+
+input_expected_output_mapping = [
+    ("dbname,bq_dataset.tblname,gcs_path", config_with_hive_gcs_staging_path, "2023-05-17 22:30:00.000+00:00", mock_results,"success", None),
+    ("dbname,bq_dataset.tblname,gcs_path", config_without_hive_gcs_staging_path, "2023-05-17 22:30:00.000+00:00",mock_results ,"success", None),
+    ("dbname,bq_dataset.tblname,gcs_path", config_without_hive_gcs_staging_path, "2023-05-17 22:30:00.000+00:00",mock_results ,ValueError('Exception'), None),
+    ("dbname,bq_dataset.tblname,gcs_path", config_with_hive_gcs_staging_path, None, mock_results,"success", None),
+    ("dbname,bq_dataset.tblname,gcs_path", config_with_hive_gcs_staging_path, "", mock_results,"success", None),
+
+]
+@pytest.mark.parametrize(
+    " tbl_data, config_data, job_run_time ,side_effect_query_results,side_effect_copy_blob, expected_results",
+    input_expected_output_mapping,
+)
+def test_copy_inc_files(mocker, tbl_data, config_data, job_run_time ,side_effect_query_results,side_effect_copy_blob, expected_results):
+    print("side_effect_query_results")
+    print(side_effect_query_results.to_dataframe().values[0][0])
+    mocker.patch(
+        "google.cloud.bigquery.Client.query", return_value = side_effect_query_results
+    )
+    mocker.patch(
+        "datamigration_utils.hive_bq_load_utils_inc.copy_blob",
+        side_effect = side_effect_copy_blob)
+    mocker.patch(
+        "datamigration_utils.hive_bq_load_utils_inc.save_file_copy_status",
+        side_effect = "success")
+    result = hive_bq_load_utils_inc.copy_inc_files(tbl_data, str(config_data), job_run_time )
+    hive_bq_load_utils_inc.save_file_copy_status.assert_called_once()
+    assert expected_results == result
+
+def test_copy_inc_files_EC1_table_data():
+    with pytest.raises(IndexError):
+        assert hive_bq_load_utils_inc.copy_inc_files("", str(config_with_hive_gcs_staging_path), "2023-05-17 22:30:00.000+00:00") is None
+
+def test_copy_inc_files_EC2_table_data():
+    with pytest.raises(TypeError):
+        assert hive_bq_load_utils_inc.copy_inc_files(None, str(config_with_hive_gcs_staging_path), "2023-05-17 22:30:00.000+00:00") is None
+
+def test_copy_inc_files_EC3_config_data():
+    with pytest.raises(ValueError):
+        assert hive_bq_load_utils_inc.copy_inc_files("dbname,bq_dataset.tblname,gcs_path", None, "2023-05-17 22:30:00.000+00:00") is None
+
+
+# def test_get_partition_clustering_info(mocker):
+
+# def get_partition_clustering_info(config):
