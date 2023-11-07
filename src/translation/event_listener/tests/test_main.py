@@ -20,7 +20,7 @@ def client():
 def test_handler_no_body(client):
     r = client.post("/")
 
-    assert r.status_code == HTTPStatus.BAD_REQUEST
+    assert r.status_code == HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
 
 def test_handler_method_not_allowed(client):
