@@ -100,7 +100,7 @@ def integration(session):
     print(pr_no)
     print(os.environ.get("BUILD_ID"))
 
-    if pr_no != "NA":
+    if pr_no != "na":
         session.install(
             "--upgrade",
             "-r",
