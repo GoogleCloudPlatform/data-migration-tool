@@ -63,8 +63,8 @@ steps:
   - 'BUILD_ID=$BUILD_ID'
   - PR_NUMBER=${_PR_NUMBER}
   waitFor: [ '-' ]
-substitutions:
-  _PR_NUMBER: "na"
+# substitutions:
+#   _PR_NUMBER: "na"
 
 timeout: 3600s # 1 hr
 options:
