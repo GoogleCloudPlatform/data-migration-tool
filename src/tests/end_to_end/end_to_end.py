@@ -1,37 +1,58 @@
 import json
-import re
-import sys
+import os
 import time
 import uuid
 from pathlib import Path
-from typing import Any, List
 
-from google.api_core.exceptions import AlreadyExists
-from google.api_core.extended_operation import ExtendedOperation
-from google.cloud import compute_v1, secretmanager_v1, storage
+from google.cloud import bigquery, storage
 from googleapiclient.discovery import build
 from jinja2 import Environment, FileSystemLoader
 from test_utils import parse_config
 
 
-def load_test_config(config_file=None, config=None):
-    env = Environment(loader=FileSystemLoader("config"))
+# Load integration test ddl/sql/data config file in DMT gcs config bucket
+def load_test_config(config_file=None, config=None, uniq_id: str = "", type=None):
+    env = Environment(loader=FileSystemLoader("src/tests/end_to_end/config"))
     config_template = env.get_template(config_file)
     print(config_file)
 
+    datasource_name = config_file.split("/")[len(config_file.split("/")) - 2]
+
     rendered_config = config_template.render(
         project_id=PROJECT_ID,
-        unique_id=uuid.uuid4(),
+        unique_id=uniq_id + "_" + type,
         bucket_name=TRANSLATION_BUCKET_NAME,
         config_bucket_name=CONFIG_BUCKET_NAME,
-        source_ip=config["SOURCE_IP"] if "SOURCE_IP" in config else "",
-        source_schema=config["SOURCE_SCHEMA"] if "SOURCE_SCHEMA" in config else "",
-        target_schema=config["TARGET_SCHEMA"] if "TARGET_SCHEMA" in config else "",
-        source_username=config["SOURCE_USERNAME"]
+        source_ip=(
+            os.getenv(config["SOURCE_IP"].split("ENV-")[1])
+            if config["SOURCE_IP"].startswith("ENV-")
+            else config["SOURCE_IP"]
+        )
+        if "SOURCE_IP" in config
+        else "",
+        source_schema=(
+            os.getenv(config["SOURCE_SCHEMA"].split("ENV-")[1])
+            if config["SOURCE_SCHEMA"].startswith("ENV-")
+            else config["SOURCE_SCHEMA"]
+        )
+        if "SOURCE_SCHEMA" in config
+        else "",
+        target_schema=get_target_datasource_name(datasource_name, uniq_id),
+        source_username=(
+            os.getenv(config["SOURCE_USERNAME"].split("ENV-")[1])
+            if config["SOURCE_USERNAME"].startswith("ENV-")
+            else config["SOURCE_USERNAME"]
+        )
         if "SOURCE_USERNAME" in config
         else "",
         secret_name=config["SECRET_NAME"] if "SECRET_NAME" in config else "",
-        source_dbname=config["SOURCE_DBNAME"] if "SOURCE_DBNAME" in config else "",
+        source_dbname=(
+            os.getenv(config["SOURCE_DBNAME"].split("ENV-")[1])
+            if config["SOURCE_DBNAME"].startswith("ENV-")
+            else config["SOURCE_DBNAME"]
+        )
+        if "SOURCE_DBNAME" in config
+        else "",
         validation_mode=config["VALIDATION_MODE"]
         if "VALIDATION_MODE" in config
         else "",
@@ -67,135 +88,47 @@ def load_test_config(config_file=None, config=None):
     print(rendered_config)
 
 
-def load_test_data():
+# Load test data in DMT cloud storage bucket
+def load_test_data(unique_generated_id: str):
     print("Loading test data")
     bucket = storage_client.bucket(TRANSLATION_BUCKET_NAME)
-    for sql_file in Path(".").glob("**/*.sql"):
-        bucket.blob(str(sql_file)).upload_from_filename(sql_file)
+
+    for sql_file in Path(".").glob("src/tests/end_to_end/input/**/*.sql"):
+        bucket.blob(
+            str(sql_file).split("end_to_end/")[
+                len(str(sql_file).split("end_to_end/")) - 1
+            ]
+        ).upload_from_filename(sql_file)
 
     data_file_bucket = storage_client.bucket(DATA_FILE_BUCKET_NAME)
-    for csv in Path(".").glob("**/*.csv"):
-        data_file_bucket.blob(str(csv)).upload_from_filename(csv)
+    for csv in Path(".").glob("src/tests/end_to_end/files/**/*.csv"):
+        data_file_bucket.blob(
+            str(csv).split("end_to_end/")[len(str(csv).split("end_to_end/")) - 1]
+        ).upload_from_filename(csv)
 
     config_bucket = storage_client.bucket(CONFIG_BUCKET_NAME)
-    for xlsx in Path(".").glob("**/*.xlsx"):
-        config_bucket.blob(str(xlsx)).upload_from_filename(xlsx)
+
+    for csv in Path(".").glob("src/tests/end_to_end/validation/**/*.csv"):
+        text = replace_string_in_csv(csv, unique_generated_id)
+        config_bucket.blob(
+            str(csv).split("end_to_end/")[len(str(csv).split("end_to_end/")) - 1]
+        ).upload_from_string(text)
 
 
-def wait_for_extended_operation(
-    operation: ExtendedOperation, verbose_name: str = "operation", timeout: int = 300
-) -> Any:
-    result = operation.result(timeout=timeout)
+# Configure/replace target datasource string in validation csv file
+def replace_string_in_csv(csv_file_name, str_to_replace):
+    text = open(csv_file_name, "r")
 
-    if operation.error_code:
-        print(
-            f"Error during {verbose_name}: [Code: {operation.error_code}]: {operation.error_message}",
-            file=sys.stderr,
-            flush=True,
-        )
-        print(f"Operation ID: {operation.name}", file=sys.stderr, flush=True)
-        raise operation.exception() or RuntimeError(operation.error_message)
+    # join() method combines all contents of csvfile.csv and formed as a string
+    text = "".join([i for i in text])
 
-    if operation.warnings:
-        print(f"Warnings during {verbose_name}:\n", file=sys.stderr, flush=True)
-        for warning in operation.warnings:
-            print(f" - {warning.code}: {warning.message}", file=sys.stderr, flush=True)
+    # search and replace the contents
+    text = text.replace("<target_schema_unique_id>", str_to_replace)
 
-    return result
+    return text
 
 
-def create_instance(
-    project_id: str,
-    zone: str,
-    instance_name: str,
-    disks: List[compute_v1.AttachedDisk],
-    machine_type: str = "n1-standard-4",
-    network_link: str = "global/networks/default",
-    subnetwork_link: str = None,
-    internal_ip: str = None,
-    external_access: bool = False,
-    external_ipv4: str = None,
-) -> compute_v1.Instance:
-    instance_client = compute_v1.InstancesClient()
-
-    network_interface = compute_v1.NetworkInterface()
-    network_interface.name = network_link
-    if subnetwork_link:
-        network_interface.subnetwork = subnetwork_link
-
-    if internal_ip:
-        network_interface.network_i_p = internal_ip
-
-    if external_access:
-        access = compute_v1.AccessConfig()
-        access.type_ = compute_v1.AccessConfig.Type.ONE_TO_ONE_NAT.name
-        access.name = "External NAT"
-        access.network_tier = access.NetworkTier.PREMIUM.name
-        if external_ipv4:
-            access.nat_i_p = external_ipv4
-        network_interface.access_configs = [access]
-
-    # Collect information into the Instance object.
-    instance = compute_v1.Instance()
-    instance.network_interfaces = [network_interface]
-    instance.name = instance_name
-    instance.disks = disks
-    if re.match(r"^zones/[a-z\d\-]+/machineTypes/[a-z\d\-]+$", machine_type):
-        instance.machine_type = machine_type
-    else:
-        instance.machine_type = f"zones/{zone}/machineTypes/{machine_type}"
-
-    # Prepare the request to insert an instance.
-    request = compute_v1.InsertInstanceRequest()
-    request.zone = zone
-    request.project = project_id
-    request.instance_resource = instance
-
-    # Wait for the create operation to complete.
-    print(f"Creating the {instance_name} instance in {zone}...")
-
-    instance_client.insert(request=request)
-    print(f"Instance {instance_name} created.")
-    return instance_client.get(project=project_id, zone=zone, instance=instance_name)
-
-
-def create_teradata_vm():
-    instance_name = "teradata"
-    instance_zone = "us-central1-c"
-
-    image_client = compute_v1.ImagesClient()
-    teradata_image = image_client.get(project="data-analytics-pocs", image="teradata")
-    boot_disk = compute_v1.AttachedDisk()
-    initialize_params = compute_v1.AttachedDiskInitializeParams()
-    initialize_params.source_image = teradata_image.self_link
-    initialize_params.disk_size_gb = teradata_image.disk_size_gb
-    initialize_params.disk_type = f"zones/{instance_zone}/diskTypes/pd-standard"
-    boot_disk.initialize_params = initialize_params
-    boot_disk.auto_delete = True
-    boot_disk.boot = True
-    disks = [boot_disk]
-    create_instance(storage_client.project, instance_zone, instance_name, disks)
-
-
-def setup_env():
-    add_secret_with_version(PROJECT_ID, "secret-edw_credentials", "dbc")
-    create_teradata_vm()
-
-
-def add_secret_with_version(project_id, secret_id, payload):
-    client = secretmanager_v1.SecretManagerServiceClient()
-    try:
-        client.create_secret(
-            parent=f"projects/{project_id}",
-            secret_id=secret_id,
-            secret={"replication": {"automatic": {}}},
-        )
-    except AlreadyExists:
-        pass
-    parent = client.secret_path(project_id, secret_id)
-    client.add_secret_version(parent=parent, payload={"data": bytes(payload, "utf-8")})
-
-
+# Delete running DTS jobs if any for clean run
 def delete_transfer_configs():
     bq_data_transfer_client = build("bigquerydatatransfer", "v1")
     transferConfigs = (
@@ -219,6 +152,30 @@ def delete_transfer_configs():
             return response
 
 
+# Prepare and get target BigQuery datasource name
+def get_target_datasource_name(datasource, unique_id):
+    return datasource + "_" + unique_id
+
+
+# Replace unique id hyphen with underscore as per BQ naming convention
+def get_replaced_unique_id(unique_id):
+    return unique_id.replace("-", "_")
+
+
+# Delete created BQ dataset if exist
+def delete_bq_dataset(unique_id):
+    client = bigquery.Client()
+
+    datasources = ["oracle", "teradata"]
+
+    for datasource in datasources:
+        client.delete_dataset(
+            get_target_datasource_name(datasource, unique_id),
+            delete_contents=True,
+            not_found_ok=True,
+        )  # Make an API request.
+
+
 # Run the following to setup project
 """
 gcloud config set project YOUR_PROJECT_ID &&
@@ -226,26 +183,35 @@ bash iam-setup.sh &&
 gcloud builds submit . --config cloudbuild_deploy.yaml --substitutions _DATA_SOURCE="teradata"
 """
 
-cfg = parse_config("input.properties")
 
-PROJECT_ID = cfg.get("inputs", "PROJECT_ID")
+cfg = parse_config("src/tests/end_to_end/input.properties")
+
+PROJECT_ID = os.getenv("PROJECT_ID")
+
 CONFIG_BUCKET_NAME = cfg.get("inputs", "CONFIG_BUCKET_NAME")
-TRANSLATION_BUCKET_NAME = cfg.get("inputs", "TRANSLATION_BUCKET_NAME")
-DATA_FILE_BUCKET_NAME = cfg.get("inputs", "DATA_FILE_BUCKET_NAME")
+CONFIG_BUCKET_NAME = CONFIG_BUCKET_NAME.replace("<PROJECT_ID>", PROJECT_ID)
 
+TRANSLATION_BUCKET_NAME = cfg.get("inputs", "TRANSLATION_BUCKET_NAME")
+TRANSLATION_BUCKET_NAME = TRANSLATION_BUCKET_NAME.replace("<PROJECT_ID>", PROJECT_ID)
+
+DATA_FILE_BUCKET_NAME = cfg.get("inputs", "DATA_FILE_BUCKET_NAME")
+DATA_FILE_BUCKET_NAME = DATA_FILE_BUCKET_NAME.replace("<PROJECT_ID>", PROJECT_ID)
+
+# print(f'{cfg.options("inputs")}, {CONFIG_BUCKET_NAME} and {TRANSLATION_BUCKET_NAME} and {DATA_FILE_BUCKET_NAME}')
 storage_client = storage.Client(project=PROJECT_ID)
 
-# setup_env()
-load_test_data()
+unique_generated_id = get_replaced_unique_id(os.getenv("BUILD_ID", str(uuid.uuid4())))
+
+print(f"unique identifier {unique_generated_id}")
+
+load_test_data(unique_generated_id)
 
 print("Upload DDL config files")
 ddl_config_list = cfg.get("inputs", "DDL_CONFIG_LIST")
-print(ddl_config_list)
 ddl_config_list_obj = json.loads(ddl_config_list)
-print(ddl_config_list_obj)
 for ddl_config_file in ddl_config_list_obj:
     for ddl_config_item in ddl_config_list_obj[ddl_config_file]:
-        load_test_config(ddl_config_file, ddl_config_item)
+        load_test_config(ddl_config_file, ddl_config_item, unique_generated_id, "ddl")
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 print("Delete data transfer configs")
@@ -259,11 +225,11 @@ data_config_list_obj = json.loads(data_config_list)
 for data_config_file in data_config_list_obj:
     for data_config_item in data_config_list_obj[data_config_file]:
         load_test_config(
-            data_config_file, data_config_item
+            data_config_file, data_config_item, unique_generated_id, "data"
         )  # First set up tables via DDLs
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
-# time.sleep(1200) # Delay for 20 minute (1200 seconds) for data-migration completion
+time.sleep(660)  # Delay for 11 minute (660 seconds) for data-migration completion
 print("Upload SQL config files")
 sql_config_list = cfg.get("inputs", "SQL_CONFIG_LIST")
 
@@ -272,8 +238,11 @@ sql_config_list_obj = json.loads(sql_config_list)
 for sql_config_file in sql_config_list_obj:
     for sql_config_item in sql_config_list_obj[sql_config_file]:
         load_test_config(
-            sql_config_file, sql_config_item
+            sql_config_file, sql_config_item, unique_generated_id, "sql"
         )  # First set up tables via DDLs
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
+time.sleep(300)  # Delay for 5 minute (300 seconds).
+print("Delete BQ dataset")
+delete_bq_dataset(unique_generated_id)
 print("Finished...")

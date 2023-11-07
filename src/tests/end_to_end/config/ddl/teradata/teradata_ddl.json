@@ -86,7 +86,7 @@
             "target_type": "BigQuery",
             "project-id": "{{ project_id }}"
         },
-        "validation_params_file_path" : "gs://{{ config_bucket_name }}/validation/teradata/validation_params_teradata_ddl_integration_testing.xlsx",
+        "validation_params_file_path" : "gs://{{ config_bucket_name }}/validation/teradata/{{ validation_mapping_file }}",
         "validation_mode":"{{ validation_mode }}",
         "validation_type": "schema",
         "pod_operator_mem" :"4000M",
