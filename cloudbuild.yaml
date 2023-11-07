@@ -61,7 +61,7 @@ steps:
   - 'ORACLE_SCHEMA=EDW_ODB'
   - 'ORACLE_DATABASE=ORCLPDB1'
   - 'BUILD_ID=$BUILD_ID'
-  - 'PR_NUMBER=$_PR_NUMBER'
+  - 'PR_NUMBER=${_PR_NUMBER}'
   waitFor: [ '-' ]
 substitutions:
   _PR_NUMBER: "NA"
