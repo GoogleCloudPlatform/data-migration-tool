@@ -76,7 +76,7 @@
         "source_config": {
             "source_type": "Oracle",
             "host": "{{ source_ip }}",
-            "port": 1025,
+            "port": 1521,
             "user": "{{ source_username }}",
             "database": "{{ source_dbname }}",
             "password": "secret:{{ secret_name }}"
