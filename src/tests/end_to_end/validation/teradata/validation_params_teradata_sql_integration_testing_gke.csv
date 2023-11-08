@@ -1,4 +1,4 @@
 ﻿Translation /Migration Type,Validation Type,Source and Target,,,,Common Flag to all Validations,Common Flag to Row and Column Validation,,Schema Validation Flags,,Column Validation Flags,,,,,,,,,Row Validation Flags,,,,
 ,,source-table,target-table,source-query-file,target-query-file,filter-status,primary-keys,filters,exclusion-columns,allow-list,count,sum,min,max,avg,grouped-columns,wildcard-include-string-len,cast-to-bigint,threshold,hash,concat,comparison-fields,use-random-row,random-row-batch-size
-sql,custom query column,,,select_where.sql,select_where.sql,,,,,,,,,,,,,,,,,,,
+sql,custom query row,row,,select_where.sql,select_where.sql,,p_partkey,,,,,,,,,,,,,,,,,
 sql,custom query column,,,simple_select.sql,simple_select.sql,,,,,,,,,,,,,,,,,,,
