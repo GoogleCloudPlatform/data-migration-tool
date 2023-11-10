@@ -12,8 +12,14 @@ app = Flask(__name__)
 @app.route("/", methods=["POST"])
 def index():
     valid_subfolders_list = ["ddl", "dml", "sql", "data"]
-    event_json = request.get_json()
-    print(f"event_json: {event_json}")
+
+    if not request.is_json:
+        print("pushed message without body")
+        return errors.NO_BODY
+    else:
+        event_json = request.get_json()
+        print(f"event_json: {event_json}")
+
     if not event_json:
         print("pushed message without body")
         return errors.NO_BODY
