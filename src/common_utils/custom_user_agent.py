@@ -14,5 +14,5 @@
 
 from common_utils import __version__
 
-APPLICATION_NAME = "google-pso-tool/dmt"
+APPLICATION_NAME = "google-pso-tool/data-migration-tool"
 USER_AGENT = f"{APPLICATION_NAME}/{__version__.__version__}"
