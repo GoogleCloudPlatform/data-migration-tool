@@ -18,7 +18,7 @@ def index():
     else:
         event_json = request.get_json()
         print(f"event_json: {event_json}")
-        
+
     if not event_json:
         print("pushed message without body")
         return errors.NO_BODY
