@@ -4,8 +4,7 @@ import time
 import uuid
 from pathlib import Path
 
-from google.cloud import bigquery, storage
-from google.cloud import bigquery_datatransfer
+from google.cloud import bigquery, bigquery_datatransfer, storage
 from jinja2 import Environment, FileSystemLoader
 from test_utils import parse_config
 
