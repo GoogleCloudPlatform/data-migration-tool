@@ -11,7 +11,7 @@ from test_utils import parse_config
 
 
 # Load integration test ddl/sql/data config file in DMT gcs config bucket
-def load_test_config(config_file=None, config=None, uniq_id: str = "", type=None):
+def load_test_config(config_file, config, uniq_id, type):
     env = Environment(loader=FileSystemLoader("src/tests/end_to_end/config"))
     config_template = env.get_template(config_file)
     print(config_file)
