@@ -6,6 +6,7 @@ from pathlib import Path
 
 from google.cloud import bigquery, storage
 from googleapiclient.discovery import build
+from google.cloud import bigquery_datatransfer
 from jinja2 import Environment, FileSystemLoader
 from test_utils import parse_config
 
@@ -130,26 +131,39 @@ def replace_string_in_csv(csv_file_name, str_to_replace):
 
 # Delete running DTS jobs if any for clean run
 def delete_transfer_configs():
-    bq_data_transfer_client = build("bigquerydatatransfer", "v1")
-    transferConfigs = (
-        bq_data_transfer_client.projects()
-        .transferConfigs()
-        .list(parent=f"projects/{PROJECT_ID}", pageSize=1000)
-        .execute()
-        .get("transferConfigs")
-    )
-    if transferConfigs:
-        for transferConfig in transferConfigs:
-            response = (
-                bq_data_transfer_client.projects()
-                .locations()
-                .transferConfigs()
-                .delete(
-                    name=transferConfig.get("name"),
-                )
-                .execute()
-            )
-            return response
+
+    transfer_client = bigquery_datatransfer.DataTransferServiceClient()
+
+    # [START bigquerydatatransfer_list_configs]
+    parent = transfer_client.common_project_path(PROJECT_ID)
+# parent = transfer_client.common_project_path("pso-data-migration-tool-test")
+    configs = transfer_client.list_transfer_configs(parent=parent)
+    print("Got the following configs:")
+    for config in configs:
+        print(f"\tID: {config.name}")
+        # [START bigquerydatatransfer_delete_transfer]
+        transfer_client.delete_transfer_config(name=config.name)
+        
+    # bq_data_transfer_client = build("bigquerydatatransfer", "v1")
+    # transferConfigs = (
+    #     bq_data_transfer_client.projects()
+    #     .transferConfigs()
+    #     .list(parent=f"projects/{PROJECT_ID}", pageSize=1000)
+    #     .execute()
+    #     .get("transferConfigs")
+    # )
+    # if transferConfigs:
+    #     for transferConfig in transferConfigs:
+    #         response = (
+    #             bq_data_transfer_client.projects()
+    #             .locations()
+    #             .transferConfigs()
+    #             .delete(
+    #                 name=transferConfig.get("name"),
+    #             )
+    #             .execute()
+    #         )
+    #         return response
 
 
 # Prepare and get target BigQuery datasource name
