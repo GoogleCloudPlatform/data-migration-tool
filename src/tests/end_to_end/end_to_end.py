@@ -129,12 +129,10 @@ def replace_string_in_csv(csv_file_name, str_to_replace):
 
 # Delete running DTS jobs if any for clean run
 def delete_transfer_configs():
-
     transfer_client = bigquery_datatransfer.DataTransferServiceClient()
 
     # [START bigquerydatatransfer_list_configs]
     parent = transfer_client.common_project_path(PROJECT_ID)
-# parent = transfer_client.common_project_path("pso-data-migration-tool-test")
     configs = transfer_client.list_transfer_configs(parent=parent)
     print("Got the following configs:")
     for config in configs:
