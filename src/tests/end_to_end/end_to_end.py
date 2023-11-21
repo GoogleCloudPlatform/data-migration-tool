@@ -5,7 +5,6 @@ import uuid
 from pathlib import Path
 
 from google.cloud import bigquery, storage
-from googleapiclient.discovery import build
 from google.cloud import bigquery_datatransfer
 from jinja2 import Environment, FileSystemLoader
 from test_utils import parse_config
@@ -143,27 +142,6 @@ def delete_transfer_configs():
         print(f"\tID: {config.name}")
         # [START bigquerydatatransfer_delete_transfer]
         transfer_client.delete_transfer_config(name=config.name)
-        
-    # bq_data_transfer_client = build("bigquerydatatransfer", "v1")
-    # transferConfigs = (
-    #     bq_data_transfer_client.projects()
-    #     .transferConfigs()
-    #     .list(parent=f"projects/{PROJECT_ID}", pageSize=1000)
-    #     .execute()
-    #     .get("transferConfigs")
-    # )
-    # if transferConfigs:
-    #     for transferConfig in transferConfigs:
-    #         response = (
-    #             bq_data_transfer_client.projects()
-    #             .locations()
-    #             .transferConfigs()
-    #             .delete(
-    #                 name=transferConfig.get("name"),
-    #             )
-    #             .execute()
-    #         )
-    #         return response
 
 
 # Prepare and get target BigQuery datasource name
