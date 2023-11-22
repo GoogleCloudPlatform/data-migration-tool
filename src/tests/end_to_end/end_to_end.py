@@ -13,7 +13,7 @@ from test_utils import parse_config
 def load_test_config(config_file, config, uniq_id, type):
     env = Environment(loader=FileSystemLoader("src/tests/end_to_end/config"))
     config_template = env.get_template(config_file)
-    logger.info(config_file)
+    logger.log_text(config_file)
 
     datasource_name = config_file.split("/")[len(config_file.split("/")) - 2]
 
@@ -67,7 +67,7 @@ def load_test_config(config_file, config, uniq_id, type):
         data_bucket_name=DATA_FILE_BUCKET_NAME,
     )
 
-    logger.info(config)
+    logger.log_text(config)
 
     config_file_name = (
         (
@@ -80,16 +80,16 @@ def load_test_config(config_file, config, uniq_id, type):
         if (config["VALIDATION_MODE"] is not None)
         else config_file
     )
-    logger.info(config_file_name)
+    logger.log_text(config_file_name)
     storage_client.bucket(CONFIG_BUCKET_NAME).blob(config_file_name).upload_from_string(
         rendered_config
     )
-    logger.info(rendered_config)
+    logger.log_text(rendered_config)
 
 
 # Load test data in DMT cloud storage bucket
 def load_test_data(unique_generated_id: str):
-    logger.info("Loading test data")
+    logger.log_text("Loading test data")
     bucket = storage_client.bucket(TRANSLATION_BUCKET_NAME)
 
     for sql_file in Path(".").glob("src/tests/end_to_end/input/**/*.sql"):
@@ -134,9 +134,9 @@ def delete_transfer_configs():
     # [START bigquerydatatransfer_list_configs]
     parent = transfer_client.common_project_path(PROJECT_ID)
     configs = transfer_client.list_transfer_configs(parent=parent)
-    logger.info("Got the following configs:")
+    logger.log_text("Got the following configs:")
     for config in configs:
-        logger.info(f"\tID: {config.name}")
+        logger.log_text(f"\tID: {config.name}")
         # [START bigquerydatatransfer_delete_transfer]
         transfer_client.delete_transfer_config(name=config.name)
 
@@ -197,11 +197,11 @@ storage_client = storage.Client(project=PROJECT_ID)
 
 unique_generated_id = get_replaced_unique_id(os.getenv("BUILD_ID", str(uuid.uuid4())))
 
-logger.info(f"unique identifier {unique_generated_id}")
+logger.log_text(f"unique identifier {unique_generated_id}")
 
 load_test_data(unique_generated_id)
 
-logger.info("Upload DDL config files")
+logger.log_text("Upload DDL config files")
 ddl_config_list = cfg.get("inputs", "DDL_CONFIG_LIST")
 ddl_config_list_obj = json.loads(ddl_config_list)
 for ddl_config_file in ddl_config_list_obj:
@@ -209,10 +209,10 @@ for ddl_config_file in ddl_config_list_obj:
         load_test_config(ddl_config_file, ddl_config_item, unique_generated_id, "ddl")
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
-logger.info("Delete data transfer configs")
+logger.log_text("Delete data transfer configs")
 delete_transfer_configs()
 
-logger.info("Upload data migration config files")
+logger.log_text("Upload data migration config files")
 data_config_list = cfg.get("inputs", "DATA_CONFIG_LIST")
 
 data_config_list_obj = json.loads(data_config_list)
@@ -225,7 +225,7 @@ for data_config_file in data_config_list_obj:
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 time.sleep(660)  # Delay for 11 minute (660 seconds) for data-migration completion
-logger.info("Upload SQL config files")
+logger.log_text("Upload SQL config files")
 sql_config_list = cfg.get("inputs", "SQL_CONFIG_LIST")
 
 sql_config_list_obj = json.loads(sql_config_list)
@@ -238,6 +238,6 @@ for sql_config_file in sql_config_list_obj:
         time.sleep(120)  # Delay for 2 minute (120 seconds).
 
 time.sleep(300)  # Delay for 5 minute (300 seconds).
-logger.info("Delete BQ dataset")
+logger.log_text("Delete BQ dataset")
 delete_bq_dataset(unique_generated_id)
-logger.info("Finished...")
+logger.log_text("Finished...")
