@@ -176,9 +176,7 @@ gcloud builds submit . --config cloudbuild_deploy.yaml --substitutions _DATA_SOU
 logging_client = logging.Client()
 
 # The name of the log to write to
-log_name = "integration-test"
-# Selects the log to write to
-logger = logging_client.logger(log_name)
+log_name = "integration-test-"
 
 cfg = parse_config("src/tests/end_to_end/input.properties")
 
@@ -196,6 +194,9 @@ DATA_FILE_BUCKET_NAME = DATA_FILE_BUCKET_NAME.replace("<PROJECT_ID>", PROJECT_ID
 storage_client = storage.Client(project=PROJECT_ID)
 
 unique_generated_id = get_replaced_unique_id(os.getenv("BUILD_ID", str(uuid.uuid4())))
+
+# Selects the log to write to
+logger = logging_client.logger(log_name+unique_generated_id)
 
 logger.log_text(f"unique identifier {unique_generated_id}")
 
