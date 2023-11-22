@@ -1,8 +1,8 @@
 import json
+import logging
 import os
 import time
 import uuid
-import logging
 from pathlib import Path
 
 from google.cloud import bigquery, bigquery_datatransfer, storage
