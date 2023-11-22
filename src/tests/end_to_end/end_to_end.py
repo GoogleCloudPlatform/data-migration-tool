@@ -196,7 +196,7 @@ storage_client = storage.Client(project=PROJECT_ID)
 unique_generated_id = get_replaced_unique_id(os.getenv("BUILD_ID", str(uuid.uuid4())))
 
 # Selects the log to write to
-logger = logging_client.logger(log_name+unique_generated_id)
+logger = logging_client.logger(log_name + unique_generated_id)
 
 logger.log_text(f"unique identifier {unique_generated_id}")
 
