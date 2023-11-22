@@ -67,7 +67,7 @@ def load_test_config(config_file, config, uniq_id, type):
         data_bucket_name=DATA_FILE_BUCKET_NAME,
     )
 
-    logger.log_text(config)
+    logger.log_text(str(config))
 
     config_file_name = (
         (
