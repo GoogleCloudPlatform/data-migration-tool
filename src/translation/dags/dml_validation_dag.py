@@ -2,16 +2,21 @@ import datetime
 import logging
 import os
 import re
+import json
 
 from airflow import models
 from airflow.operators.python import PythonOperator
+from airflow.operators.python import BranchPythonOperator, PythonOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.utils.trigger_rule import TriggerRule
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery
 
+from common_utils import custom_user_agent, table_filter
 from common_utils import custom_user_agent
 from common_utils.operators.reporting_operator import ReportingOperator
+from common_utils.bigquery_client_utils import ddl as ddl_utils
 
 # Constant variables
 
@@ -28,6 +33,9 @@ CUSTOM_RUN_ID_KEY = "unique_id"
 # Airflow data directory
 DIRECTORY = "/home/airflow/gcs/data"
 
+TRANSLATION_CONFIG_DML = "dml"
+TRANSLATION_CONFIG_KEY = "type"
+TRANSLATION_CONFIG_DEFAULT_VALUE = TRANSLATION_CONFIG_DML
 # Variables used to store dml validation result in BQ table
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BQ_RESULT_DATASET_NAME = "dmt_logs"
@@ -42,6 +50,23 @@ bq_client = bigquery.Client(
 job_config = bigquery.QueryJobConfig(
     dry_run=True, use_query_cache=False, use_legacy_sql=False
 )
+VALIDATION_GKE_TYPE = "gke"
+VALIDATION_CRUN_TYPE = "cloudrun"
+VALIDATION_DEFAULT_TYPE = VALIDATION_GKE_TYPE
+VALIDATION_TYPE_TO_DAG_ID_MAPPING = {
+    VALIDATION_CRUN_TYPE: "validation_crun_dag",
+    VALIDATION_GKE_TYPE: "validation_dag",
+}
+VALIDATION_DAG_ID = "validation_dag"
+VALIDATION_CRUN_DAG_ID = "validation_crun_dag"
+
+
+def get_validation_dag_id(validation_mode):
+    if validation_mode in VALIDATION_TYPE_TO_DAG_ID_MAPPING:
+        return VALIDATION_TYPE_TO_DAG_ID_MAPPING[validation_mode]
+    else:
+        return VALIDATION_TYPE_TO_DAG_ID_MAPPING[VALIDATION_DEFAULT_TYPE]
+
 
 """
 Method: _dry_run
@@ -209,6 +234,8 @@ def _dry_run(ti, **kwargs):
             }
 
             ti.xcom_push(key="dry_run_results", value=results)
+            ti.xcom_push(key="config", value=kwargs["dag_run"].conf["config"])
+            ti.xcom_push(key="validation_mode", value = config["validation_config"].get("validation_mode"))
 
     else:
         logging.error("Configuration file is empty")
@@ -267,6 +294,15 @@ def _save_dry_run_result(ti, **kwargs):
 DAG: DML validation DAG to validate DML statement\
     from DML translated files output GCS Bucket
 """
+def _determine_next_dag(ti):
+    validation_mode = ti.xcom_pull(key="validation_mode", task_ids="dry_run")
+    validation_dag_id = get_validation_dag_id(validation_mode)
+    if validation_dag_id == VALIDATION_DAG_ID:
+        return "invoke_validation_dag"
+    else:
+        return "invoke_validation_crun_dag"
+
+
 with models.DAG(
     DAG_ID,
     schedule_interval=None,
@@ -284,12 +320,41 @@ with models.DAG(
         python_callable=_save_dry_run_result,
         dag=dag,
     )
-
+    determine_next_dag = BranchPythonOperator(
+        task_id="determine_next_dag",
+        python_callable=_determine_next_dag,
+        dag=dag,
+    )
+    invoke_validation_dag = TriggerDagRunOperator(
+        task_id="invoke_validation_dag",
+        trigger_dag_id=VALIDATION_DAG_ID,
+        conf={
+           "config": "{{ ti.xcom_pull(task_ids='dry_run', key='config') }}",                                          
+        },
+        dag=dag,
+    )
+    invoke_validation_crun_dag = TriggerDagRunOperator(
+        task_id="invoke_validation_crun_dag",
+        trigger_dag_id=VALIDATION_CRUN_DAG_ID,
+        conf={
+            "config": "{{ ti.xcom_pull(task_ids='dry_run', key='config') }}"
+        },
+        dag=dag,
+    )
+   
     dag_report = ReportingOperator(
         task_id="dag_report",
         trigger_rule=TriggerRule.ALL_DONE,  # Ensures this task runs even if upstream fails
         configuration="{{ dag_run.conf['config'] }}",
         dag=dag,
     )
-
-    dry_run >> save_dry_run_result >> dag_report
+    (
+    dry_run 
+    >> save_dry_run_result
+    >> determine_next_dag
+        >> [
+            invoke_validation_dag,
+            invoke_validation_crun_dag
+        ]
+    >>dag_report
+    )

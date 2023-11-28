@@ -32,7 +32,6 @@ def get_token():
         token = cmd.read().strip()
     return token
 
-
 def get_cloud_run_url(service_name, project_id):
     describe_service = DESCRIBE_SERVICE.format(
         service_name=service_name, project_id=project_id, region=region
@@ -46,7 +45,9 @@ def get_cloud_run_url(service_name, project_id):
 client = bigquery.Client(
     client_info=ClientInfo(user_agent=custom_user_agent.USER_AGENT)
 )
-DVT_AGGREGATED_RESULTS_TABLE_ID = f"{project_id}.dmt_logs.dmt_dvt_aggregated_results"
+DVT_AGGREGATED_RESULTS_TABLE_ID = (
+    f"{project_id}.dmt_logs.dmt_dvt_aggregated_results"
+)
 
 default_dag_args = {"start_date": datetime(2022, 1, 1)}
 
@@ -54,10 +55,11 @@ default_dag_args = {"start_date": datetime(2022, 1, 1)}
 @task
 def _get_table_or_file_list(input_json):
     file_or_table_list = []
-    input_json = ast.literal_eval(input_json)
-    config = input_json["config"]
+    input_json = ast.literal_eval(str(input_json))
+    config = ast.literal_eval(str(input_json["config"]))
     translation_type = config["type"]
     validation_type = config["validation_config"]["validation_type"]
+    validation_only = config['validation_only']
     validation_params_file_path = config["validation_config"][
         "validation_params_file_path"
     ]
@@ -70,8 +72,16 @@ def _get_table_or_file_list(input_json):
     common_request_json = {}
     common_request_json["config"] = config
     common_request_json["validation_params_from_gcs"] = validation_params_from_gcs
-    if translation_type in ["ddl", "data"]:
-        table_list = input_json["table_list"]
+    if translation_type in ["ddl", "data","dml"]:
+        table_list = []
+        if validation_only == 'yes':
+            for key in validation_params_from_gcs:
+                source_table = validation_params_from_gcs[key]["source-table"]
+                target_table = validation_params_from_gcs[key]["target-table"]
+                table_list.append(source_table+"="+target_table)
+        else:
+            table_list = input_json["table_list"]
+
         for table in table_list:
             request_json = common_request_json.copy()
             request_json["table"] = table
@@ -95,7 +105,7 @@ def _invoke_cloud_run(request_json):
     config = request_json["config"]
     validation_params_from_gcs = request_json["validation_params_from_gcs"]
     validation_type = config["type"]
-    if validation_type in ["ddl", "data"]:
+    if validation_type in ["ddl", "data", "dml"]:
         table = request_json["table"]
         request_content = {
             "config": config,
@@ -110,7 +120,7 @@ def _invoke_cloud_run(request_json):
             "sql_file": sql_file,
             "validation_params_from_gcs": validation_params_from_gcs,
         }
-        print(f"Running validation for sql file: {sql_file}")
+        print(f"Running validation for sql file: {sql_file}")         
     else:
         print(f"Unknown validation type: {validation_type}")
         raise AirflowFailException("DVT CloudRun execution failed!")
@@ -130,7 +140,7 @@ def _invoke_cloud_run(request_json):
 
 @task(trigger_rule="all_done")
 def _save_dvt_aggregated_results(**kwargs):
-    config = kwargs["dag_run"].conf["config"]
+    config = ast.literal_eval(str(kwargs["dag_run"].conf["config"]))
     unique_id = config["unique_id"]
     failed_validations_query = f"""
         SELECT COUNT(*) as failed_count FROM `{project_id}.dmt_logs.dmt_dvt_results` CROSS JOIN UNNEST(labels) AS a where a.value="{unique_id}" and validation_status="fail";
@@ -144,7 +154,7 @@ def _save_dvt_aggregated_results(**kwargs):
     successful_validations_count = [row["successful_count"] for row in query_job][0]
     total_validations_count = failed_validations_count + successful_validations_count
     op_type = config["type"]
-    if op_type in ["ddl", "data"]:
+    if op_type in ["ddl", "data", "dml"]:
         validation_type = config["validation_config"]["validation_type"]
     elif op_type == "sql":
         validation_type = (

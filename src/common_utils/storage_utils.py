@@ -98,7 +98,7 @@ class StorageUtils:
 
         validation_params_key = (
             "source-table"
-            if translation_type in ["ddl", "data"]
+            if translation_type in ["ddl", "data", "dml"]
             else "source-query-file"
         )
         validation_type = (
