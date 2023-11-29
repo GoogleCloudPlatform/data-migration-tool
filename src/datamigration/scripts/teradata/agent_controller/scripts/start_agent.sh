@@ -36,14 +36,15 @@ fi
 date
 echo "Transfer ID: $transfer_id"
 
-mem_free=$(free | grep Mem | awk '{print $4/$2 * 100.0}' | cut -d . -f 1)
+# (available / total) * 100
+mem_free=$(free | grep Mem | awk '{print $7/$2 * 100.0}' | cut -d . -f 1)
 while [ $mem_free -lt 30 ]
 do
    date
    echo "Memory Free: $mem_free%"
    echo "Sleeping 60 seconds"
    sleep 60
-   mem_free=$(free | grep Mem | awk '{print $4/$2 * 100.0}' | cut -d . -f 1)
+   mem_free=$(free | grep Mem | awk '{print $7/$2 * 100.0}' | cut -d . -f 1)
 done
 
 echo "Memory Free: $mem_free%"
