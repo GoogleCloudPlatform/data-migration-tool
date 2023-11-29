@@ -1,0 +1,10 @@
+﻿Translation /Migration Type,Validation Type,Source and Target,,,,Common Flag to all Validations,Common Flag to Row and Column Validation,,Schema Validation Flags,,Column Validation Flags,,,,,,,,,Row Validation Flags,,,,
+,,source-table,target-table,source-query-file,target-query-file,filter-status,primary-keys,filters,exclusion-columns,allow-list,count,sum,min,max,avg,grouped-columns,wildcard-include-string-len,cast-to-bigint,threshold,hash,concat,comparison-fields,use-random-row,random-row-batch-size
+data,column,tpch.lineitem,teradata_<target_schema_unique_id>.lineitem,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.partsupp,teradata_<target_schema_unique_id>.partsupp,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.orders,teradata_<target_schema_unique_id>.orders,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.nation,teradata_<target_schema_unique_id>.nation,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.customer,teradata_<target_schema_unique_id>.customer,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.part,teradata_<target_schema_unique_id>.part,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.region,teradata_<target_schema_unique_id>.region,,,,,,,,,,,,,,,,,,,,,
+data,column,tpch.supplier,teradata_<target_schema_unique_id>.supplier,,,,,,,,,,,,,,,,,,,,,
