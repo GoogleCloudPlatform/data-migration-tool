@@ -465,17 +465,13 @@ def get_job_status(tbl, result):
         # print("BigQuery job id: {}".format(result.stderr.split(" ")[2]))
         load_status = "PASS"
         reason_for_failure = "NA"
-        print(result.stderr)
-        print(len(result.stderr.split(" ")))
         if len(result.stderr.split(" ")) > 2:
             bq_job_id = result.stderr.split(" ")[2]
             print("BigQuery job id: {}".format(bq_job_id))
         elif len(result.stdout.split(":")) > 2:
-            print("check point 2")
             bq_job_id = result.stdout.split(":")[2].replace("'", "")
             print("BigQuery job id: {}".format(bq_job_id))
         else:
-            print("check point 3")
             bq_job_id = "NA"
     else:
         print("Error Ocuured while loading table: {table} ".format(table=tbl))
@@ -569,7 +565,6 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
         dict["temp_bucket"],
         constants.df_inc_tables_list.format(dt=dt),
     )
-    print(df_hive_tbls)
     partition_flag = (
         df_hive_tbls[df_hive_tbls["concat_db_tbl"] == concat_db_tbl]["partition_flag"]
         .values[0]
@@ -598,19 +593,9 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
     print(f"file_format : {file_format}")
     print(f"bq_dataset : {bq_dataset}")
     print(f"tbl : {tbl}")
-    print(f"Checkpoint table_gs_path_list: {table_gs_path_list}")
-    print(f"Checkpoint field_delimiter: {field_delimiter}")
-    print(f"Checkpoint hive_db_name: {hive_db_name}")
-    print(f"Checkpoint file_format: {file_format}")
-    print(f"Checkpoint partition_flag: {partition_flag}")
-    print(f"Checkpoint df_incremental_table_list: {df_incremental_table_list}")
-    print(f"Checkpoint df_text_format_schema: {df_text_format_schema}")
-    print(f"Checkpoint df_partition_clustering: {df_partition_clustering}")
-    print(f"Checkpoint df_hive_tbls: {df_hive_tbls}")
     for table_gs_path in table_gs_path_list:
         print(f"Appending {tbl} from: {table_gs_path}".format(tbl, table_gs_path))
         hive_table_gs_path = table_gs_path.split(f"/{tbl}/")[0] + f"/{tbl}"
-        print(f"Checkpoint hive_table_gs_path: {hive_table_gs_path}")
         if partition_flag == "Y":
             partition_column = df_partition_clustering[
                 (df_partition_clustering["concat_db_tbl"] == concat_db_tbl)
@@ -640,9 +625,6 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
             concat_db_tbl,
             df_text_format_schema,
         )
-        print(
-            f"Checkpoint formatcmd, checkformat, roptable,text_tbl_schema_string: {formatcmd, checkformat, droptable,text_tbl_schema_string}"
-        )
         if checkformat == 1:
             # result = truncate_or_drop_tbl(tbl, droptable, dict)
             bqloadcmd = (
@@ -657,9 +639,6 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
                 bqloadcmd, capture_output=True, shell=True, encoding="utf-8"
             )
             load_status, reason_for_failure, bq_job_id = get_job_status(tbl, result)
-            print(
-                f"Checkpoint load_status, reason_for_failure, bq_job_id: {load_status, reason_for_failure, bq_job_id}"
-            )
             save_load_status_bq(
                 tbl,
                 load_status,
