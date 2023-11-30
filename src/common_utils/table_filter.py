@@ -33,8 +33,8 @@ def filter(files, config):
     skip_expr_bteq = ["""EXCEPTION WHEN ERROR""", """END"""]
 
     if (
-            "teradataDialect"
-            in config["migrationTask"]["translationConfigDetails"]["sourceDialect"]
+        "teradataDialect"
+        in config["migrationTask"]["translationConfigDetails"]["sourceDialect"]
     ):
         mode = config["migrationTask"]["translationConfigDetails"]["sourceDialect"][
             "teradataDialect"
@@ -56,7 +56,7 @@ def filter(files, config):
             stmt = stmt.strip()
             if mode == "BTEQ":
                 if bool(
-                        re.match(r"(?=(" + "|".join(skip_expr_bteq) + r"))", stmt, re.I)
+                    re.match(r"(?=(" + "|".join(skip_expr_bteq) + r"))", stmt, re.I)
                 ):
                     # print("BTEQ mode, skip the statment and goto next statement")
                     continue

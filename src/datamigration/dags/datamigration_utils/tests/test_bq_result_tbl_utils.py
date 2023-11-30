@@ -76,6 +76,7 @@ def test_get_dts_run_summary_template_success():
         "error_message": "NA",
     }
 
+
 def test_get_dts_run_summary_template_fail():
     result = bq_result_tbl_utils.get_dts_run_summary_template(
         "unique_id_dummy",
