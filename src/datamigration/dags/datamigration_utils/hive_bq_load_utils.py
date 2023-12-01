@@ -333,23 +333,17 @@ def load_bq_tables(tbl, config, op_load_dtm):
     partition_flag = (
         df_hive_tbls[df_hive_tbls["table"] == tbl]["partition_flag"].values[0].upper()
     )
-    print(f"Checkpoint partition_flag: {partition_flag}")
     file_format = df_hive_tbls[df_hive_tbls["table"] == tbl]["format"].values[0].upper()
-    print(f"Checkpoint file_format: {file_format}")
     field_delimiter = df_hive_tbls[df_hive_tbls["table"] == tbl][
         "field_delimiter"
     ].values[0]
-    print(f"Checkpoint field_delimiter: {field_delimiter}")
-
     table_gs_path = constants.hive_tbl_gcs_path.format(
         bkt_id=dict["hive_gcs_staging_bucket_id"],
         path=dict["hive_gcs_staging_path"],
         tbl=tbl,
     )
-    print(f"Checkpoint table_gs_path: {table_gs_path}")
     # TODO filter out tables larger than 15 TB
     table_size_status = get_table_size(tbl, table_gs_path)
-    print(f"Checkpoint table_size_status: {table_size_status}")
     if table_size_status:
         if partition_flag == "Y":
             partition_column = df_partition_clustering[

@@ -45,7 +45,6 @@ def read_config_file(translation_config):
     config_dict["bq_load_audit"] = "hive_bqload_audit"
     config_dict["dvt_results"] = "dmt_dvt_results"
     config_dict["schema_results_tbl"] = "dmt_schema_results"
-    print(f"Checkpoint config_dict {config_dict}")
     return config_dict
 
 
