@@ -32,6 +32,10 @@ f3 = open(
     )
 )
 
+config_without_hive_gcs_staging_path = json.load(f)
+config_with_hive_gcs_staging_path = json.load(f2)
+empty_config = json.load(f3)
+
 input_expected_output_mapping = [
     ("edw_logs", "hive_pubsub_audit", "2023-05-17 22:30:00.000+00:00", 2, 6),
     ("edw_logs", "hive_pubsub_audit", "2023-05-17 22:30:00.000+00:00", 0, 0),
@@ -62,9 +66,6 @@ def test_get_inc_gcs_files(
     assert len(results) == expected_len
 
 
-config_without_hive_gcs_staging_path = json.load(f)
-config_with_hive_gcs_staging_path = json.load(f2)
-empty_config = json.load(f3)
 input_expected_output_mapping = [
     (
         str(config_without_hive_gcs_staging_path),
