@@ -87,7 +87,12 @@ def _get_table_or_file_list(input_json):
             request_json["table"] = table
             file_or_table_list.append(request_json)
     elif translation_type == "sql":
-        files = input_json["files"]
+        files = []
+        if validation_only == "yes":
+            for key in validation_params_from_gcs:
+                files.append(key)
+        else:    
+            files = input_json["files"]
         for file in files:
             request_json = common_request_json.copy()
             request_json["sql_file"] = file

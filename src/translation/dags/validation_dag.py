@@ -367,7 +367,12 @@ def parallelize_dvt_tasks(input_json):
             )
             bash_cmds_list.append(bash_cmd)
     elif translation_type == "sql":
-        files = input_json["files"]
+        files = []
+        if validation_only == "yes":
+            for key in validation_params_from_gcs:
+                files.append(key)
+        else:    
+            files = input_json["files"]
         for file in files:
             bash_cmd = get_dvt_cmd_sql_validation(
                 config, file, validation_params_from_gcs
