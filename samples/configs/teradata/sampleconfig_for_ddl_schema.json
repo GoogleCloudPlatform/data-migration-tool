@@ -1,9 +1,10 @@
 {
     "unique_id": "unique_id_to_filter_bq_result_table",
     "batchDistribution": 1,
-    "type": "<ddl/sql>",
+    "type": "ddl",
     "source": "teradata",
     "extract_ddl": "<yes/no>",
+    "validation_only":"no",
     "translationErrorFilterRules": [
         {
             "field": "Category",
@@ -55,15 +56,15 @@
             "targetDialect": {
                 "bigqueryDialect": {}
             },
-            "gcsSourcePath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/input/<ddl/sql>",
-            "gcsTargetPath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/output/<ddl/sql>",
+            "gcsSourcePath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/input/ddl",
+            "gcsTargetPath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/output/ddl",
             "nameMappingList": {
                 "name_map": [
                     {
                         "source": {
                             "type": "SCHEMA",
                             "database": "<project_id>",
-                            "schema": "<source_db_schema>"
+                            "schema": "<source_db_schema_name>"
                         },
                         "target": {
                             "database": "<project_id>",
@@ -86,10 +87,10 @@
             "target_type": "BigQuery",
             "project-id": "<project_id>"
         },
-        "validation_params_file_path" : "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
-        "validation_mode":"<gke/cloudrun>",
-        "validation_type": "column",
-        "pod_operator_mem" :"4000M",
-        "pod_operator_cpu" :"800m"
+        "validation_params_file_path": "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.xlsx",
+        "validation_mode": "<gke/cloudrun>",
+        "validation_type": "schema",
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
     }
 }

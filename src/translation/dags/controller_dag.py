@@ -124,7 +124,6 @@ def _prepare_data_for_next_dag(ti, **kwargs):
                 if (
                     "validation_only" in config
                     and config["validation_only"] == "yes"
-                    # and op_type in ["dml"]
                 ):
                     next_dag_config =  config
                 else:
@@ -184,7 +183,6 @@ def _determine_next_dag(ti, **kwargs):
                 if (
                     "validation_only" in config
                     and config["validation_only"] == "yes"
-                    # and op_type in ["dml"]
                 ):
                     next_dag_id = determine_validation_dag(config)
                 elif (
