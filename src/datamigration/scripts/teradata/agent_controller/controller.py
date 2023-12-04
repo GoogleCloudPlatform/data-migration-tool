@@ -93,6 +93,7 @@ class Controller:
         agent_config_file = os.path.join(
             self.transfer_run_dir, f"{self.transfer_id}.json"
         )
+        agent_config["teradata-config"]["database-credentials-file-path"] = cred_file
         _LOGGER.info(f"Creating agent config file: {agent_config_file}")
         with open(agent_config_file, "w") as f:
             json.dump(agent_config, f)
