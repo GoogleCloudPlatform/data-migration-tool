@@ -118,31 +118,6 @@ git checkout main
 ```
 
 
-## Enable Google Cloud APIs
-
-From the Cloud Shell, you can enable Google Cloud Services using the gcloud command line interface in your Google Cloud project.
-
-
-```
-export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-
-```
-gcloud config set project $SOURCE_PROJECT
-```
-
-
-
-```
-gcloud services enable serviceusage.googleapis.com \
-			     cloudresourcemanager.googleapis.com \
-			     cloudbuild.googleapis.com
-```
-
-
-
 ## Assign Executing User Permissions
 
 User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
@@ -197,6 +172,28 @@ gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
 ```
 
 
+## Enable Google Cloud APIs
+
+From the Cloud Shell, you can enable Google Cloud Services using the gcloud command line interface in your Google Cloud project.
+
+
+```
+export SOURCE_PROJECT=<YOUR_PROJECT_ID>
+```
+
+
+
+```
+gcloud config set project $SOURCE_PROJECT
+```
+
+
+
+```
+gcloud services enable serviceusage.googleapis.com \
+			     cloudresourcemanager.googleapis.com \
+			     cloudbuild.googleapis.com
+```
 
 
 ## IAM permissions for Cloud Build Service Account
@@ -509,66 +506,64 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
       export SERVICE_PROJECT_NUMBER=<service_project_number>
       ```
       
-      b. Provide **Compute Network User** Permission to Google APIs service account
+      b. Provide **Compute Network User** Permission to Google APIs service agent
 
 
       ```
-      export GOOGLE_API_SERVICE_ACCOUNT=$SERVICE_PROJECT_NUMBER@cloudservices.gserviceaccount.com
+      export GOOGLE_API_SERVICE_AGENT=$SERVICE_PROJECT_NUMBER@cloudservices.gserviceaccount.com
       ```
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GOOGLE_API_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GOOGLE_API_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
 
-      c. Provide **Compute Network User** and **Kubernetes Engine Host Service Agent User** Permission to GKE service account
+      c. Provide **Compute Network User** and **Kubernetes Engine Host Service Agent User** Permission to GKE service agent
 
 
       ```
-      export GKE_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com
+      export GKE_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com
       ```
 
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GKE_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
 
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GKE_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/container.hostServiceAgentUser"
       ```
       
 
-      d. Provide Permission to Composer Agent Service Account
+      d. Provide Permission to Composer Service Agent 
 
-         1. In the service project, if this is the first Cloud Composer environment, then provision the Composer Agent Service Account: `gcloud beta services identity create --service=composer.googleapis.com`
-
-         2. Either provide, **Composer Shared VPC Agent** Permission to Composer Agent Service Account in case for **Private environment**
+         1. Either provide **Composer Shared VPC Agent** Permission to Composer Service Agent Account in case for **Private environment**
 
          ```
-         export COMPOSER_AGENT_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
+         export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
             gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-            --member="serviceAccount:$COMPOSER_AGENT_SERVICE_ACCOUNT" \
+            --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/composer.sharedVpcAgent"
          ```
 
          Or, Provide **Compute Network User** Permission to Composer Agent Service Account in case for **Public environment**
 
          ```
-         export COMPOSER_AGENT_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
+         export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
             gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-            --member="serviceAccount:$COMPOSER_AGENT_SERVICE_ACCOUNT" \
+            --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/compute.networkUser"
          ```
 
