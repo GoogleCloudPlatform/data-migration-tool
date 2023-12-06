@@ -28,21 +28,16 @@ gcloud services enable \
 roles=(
   "roles/bigquery.admin"
   "roles/composer.admin"
-  "roles/composer.worker"
   "roles/compute.instanceAdmin.v1"
-  "roles/iam.securityAdmin"
-  "roles/iam.serviceAccountAdmin"
+  "roles/compute.networkAdmin"
+  "roles/resourcemanager.projectIamAdmin"
+  "roles/iam.serviceAccountCreator"
+  "roles/secretmanager.admin"
   "roles/serviceusage.serviceUsageAdmin"
-  "roles/iam.serviceAccountUser"
   "roles/logging.viewer"
   "roles/pubsub.admin"
   "roles/run.admin"
   "roles/storage.admin"
-  "roles/storage.objectAdmin"
-  "roles/viewer"
-  "roles/serviceusage.serviceUsageConsumer"
-  "roles/iam.serviceAccountTokenCreator"
-  "roles/compute.networkAdmin"
 )
 
 for role in "${roles[@]}" ; do
