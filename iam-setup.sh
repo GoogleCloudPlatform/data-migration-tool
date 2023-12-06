@@ -32,6 +32,7 @@ roles=(
   "roles/compute.networkAdmin"
   "roles/resourcemanager.projectIamAdmin"
   "roles/iam.serviceAccountCreator"
+  "roles/iam.serviceAccountUser"
   "roles/secretmanager.admin"
   "roles/serviceusage.serviceUsageAdmin"
   "roles/logging.viewer"

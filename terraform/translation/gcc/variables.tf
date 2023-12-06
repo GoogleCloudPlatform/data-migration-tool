@@ -43,22 +43,13 @@ variable "composer_roles" {
   type        = list(string)
   description = "Composer Service Account Roles"
   default = [
-    "roles/pubsub.admin",
+    "roles/bigquery.editor",
+    "roles/bigquery.connectionUser",
     "roles/composer.worker",
     "roles/iam.serviceAccountUser",
-    "roles/iam.serviceAccountAdmin",
-    "roles/editor",
-    "roles/composer.admin",
-    "roles/composer.worker",
-    "roles/editor",
-    "roles/bigquery.admin",
-    "roles/bigquery.jobUser",
-    "roles/bigquery.resourceViewer",
-    "roles/bigquery.user",
-    "roles/bigquery.metadataViewer",
-    "roles/bigquery.dataEditor",
+    "roles/pubsub.publisher",
+    "roles/pubsub.subscriber",
     "roles/secretmanager.secretAccessor",
-    "roles/bigquery.connectionAdmin"
   ]
 }
 variable "labels" {
