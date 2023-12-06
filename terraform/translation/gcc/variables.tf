@@ -43,8 +43,9 @@ variable "composer_roles" {
   type        = list(string)
   description = "Composer Service Account Roles"
   default = [
-    "roles/bigquery.editor",
     "roles/bigquery.connectionUser",
+    "roles/bigquery.editor",
+    "roles/bigquery.jobUser",
     "roles/composer.worker",
     "roles/iam.serviceAccountUser",
     "roles/pubsub.publisher",
