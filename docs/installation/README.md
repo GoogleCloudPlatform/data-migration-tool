@@ -208,7 +208,7 @@ Google Cloud Console -> Cloud Build -> Settings
 
 **IAM roles required for the created Service Account**
 
-
+TODO(dmedora): Update this list of permissions, and the gcloud commands below, to match iam-setup.sh.
 ```
 BigQuery Admin
 Cloud Run Admin
