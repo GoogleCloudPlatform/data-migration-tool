@@ -48,6 +48,7 @@ variable "composer_roles" {
     "roles/composer.worker",
     "roles/dataproc.editor",
     "roles/iam.serviceAccountUser",
+    "roles/run.developer",
     "roles/secretmanager.secretAccessor",
   ]
 }
