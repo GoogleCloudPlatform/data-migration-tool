@@ -46,6 +46,7 @@ variable "composer_roles" {
     "roles/bigquery.connectionUser",
     "roles/bigquery.editor",
     "roles/bigquery.jobUser",
+    "roles/bigquery.readSessionUser",
     "roles/composer.worker",
     "roles/iam.serviceAccountUser",
     "roles/pubsub.publisher",
