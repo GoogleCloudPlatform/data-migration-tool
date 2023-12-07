@@ -76,6 +76,7 @@ variable "composer_roles" {
   default = [
     "roles/bigquery.dataEditor",
     "roles/bigquery.jobUser",
+    "roles/bigquery.readSessionUser",
     "roles/composer.user",
   ]
 }
