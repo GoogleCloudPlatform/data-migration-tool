@@ -1,0 +1,8 @@
+Translation / Migration Type,Validation Type,Source and Target,,,,Common Flag to all Validations,Common Flag to Row and Column Validation,,Schema Validation Flags,,Column Validation Flags,,,,,,,,,Row Validation Flags,,,,
+,,source-table,target-table,source-query-file,target-query-file,filter-status,primary-keys,filters,exclusion-columns,allow-list,count,sum,min,max,avg,grouped-columns,wildcard-include-string-len,cast-to-bigint,threshold,hash,concat,comparison-fields,use-random-row,random-row-batch-size
+ddl,schema,edw_odb.regions,oracle_<target_schema_unique_id>.REGIONS,,,,,,,,,,,,,,,,,,,,,
+ddl,schema,edw_odb.countries,oracle_<target_schema_unique_id>.COUNTRIES,,,,,,,,,,,,,,,,,,,,,
+ddl,schema,edw_odb.locations,oracle_<target_schema_unique_id>.LOCATIONS,,,,,,,,,,,,,,,,,,,,,
+ddl,schema,edw_odb.departments,oracle_<target_schema_unique_id>.DEPARTMENTS,,,,,,,,,,,,,,,,,,,,,
+ddl,schema,edw_odb.jobs,oracle_<target_schema_unique_id>.JOBS,,,,,,,,,,,,,,,,,,,,,
+ddl,schema,edw_odb.job_history,oracle_<target_schema_unique_id>.JOB_HISTORY,,,,,,,,,,,,,,,,,,,,,

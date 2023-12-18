@@ -63,7 +63,6 @@ DTS_TABLE_NAME_SEPARATOR = ";"
 
 # Agents constants
 AGENT_START_DELAY = 10
-TRANSFER_RUN_DIR_BASE = "/opt/transfer_configs_and_logs"
 
 DAG_ID = "teradata_data_load_dag"
 
@@ -280,13 +279,7 @@ def _create_agent_config(batch_idx, ti, **kwargs) -> None:
     agent_run_config = gcs_util.read_object_from_gcsbucket(
         config_bucket_id, config_object_id
     )
-    db_credential_file_path = (
-        f"{TRANSFER_RUN_DIR_BASE}/" f"{transfer_id}/" f"credentials"
-    )
     agent_run_config["agent_config"]["transfer-configuration"]["id"] = transfer_id
-    agent_run_config["agent_config"]["teradata-config"][
-        "database-credentials-file-path"
-    ] = db_credential_file_path
     agent_run_config["agent_config"]["agent-id"] = agent_uuid
     agent_config = agent_run_config["agent_config"]
     ti.xcom_push(key="agent_config", value=agent_config)

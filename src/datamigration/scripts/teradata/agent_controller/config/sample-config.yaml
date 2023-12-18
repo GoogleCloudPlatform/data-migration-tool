@@ -1,0 +1,3 @@
+project_id: project-demo
+subscription_id: dmt-teradata-dtsagent-controller-topic-project-demo
+transfer_run_base_dir: /opt/transfer_configs_and_logs

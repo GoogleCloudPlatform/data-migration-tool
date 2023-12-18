@@ -1,26 +1,34 @@
 import base64
 import json
+import logging
 import os
 import subprocess
 
 from config import config
-from logger import logger
 
-PROJECT_ID = config["project_id"]
-TRANSFER_RUN_BASE_DIR = "/opt/transfer_configs_and_logs"
-AGENT_START_SCRIPT = "/opt/migration_project_teradata_bq/start_agent.sh"
-AGENT_KILL_SCRIPT = "/opt/migration_project_teradata_bq/kill_agent.sh"
+_PROJECT_ID = config["project_id"]
+_TRANSFER_RUN_BASE_DIR = config["transfer_run_base_dir"]
+_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+_AGENT_START_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "start_agent.sh")
+_AGENT_KILL_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "kill_agent.sh")
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class Controller:
     def __init__(self, data):
+        """Instantiates controller instance for each PUB/SUB payload
+
+        Args:
+            data (dict): PUB/SUB payload parsed as a dictionary
+        """
         self.data = data
         try:
             self.transfer_id = data["transfer_id"]
             self.action = data["action"]
         except KeyError as e:
             raise KeyError(f"Missing key in JSON payload: {e}")
-        self.transfer_run_dir = os.path.join(TRANSFER_RUN_BASE_DIR, self.transfer_id)
+        self.transfer_run_dir = os.path.join(_TRANSFER_RUN_BASE_DIR, self.transfer_id)
 
     def run_action(self):
         """
@@ -29,7 +37,7 @@ class Controller:
         Returns:
             None
         """
-        logger.info(f"Action: {self.action}")
+        _LOGGER.info(f"Action: {self.action}")
         if self.action == "setup":
             self._setup_agent()
         elif self.action == "run":
@@ -52,7 +60,7 @@ class Controller:
         agent_config = json.loads(agent_config)
 
         # creates transfer run directory
-        logger.info(f"Creating directory: {self.transfer_run_dir}")
+        _LOGGER.info(f"Creating directory: {self.transfer_run_dir}")
         os.makedirs(self.transfer_run_dir, exist_ok=True)
 
         # creates credential file for transfer run
@@ -66,9 +74,7 @@ class Controller:
             password = agent_config["teradata-config"]["connection"]["password"]
             if password.startswith("secret:"):
                 secret_key = password.split("secret:")[1]
-                secret_resource_id = (
-                    f"projects/{PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
-                )
+                secret_resource_id = f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
             else:
                 secret_resource_id = None
 
@@ -79,7 +85,7 @@ class Controller:
         else:
             cred_file_content = f"username={db_username}\npassword={password}"
         cred_file = os.path.join(self.transfer_run_dir, "credentials")
-        logger.info(f"Creating credential file: {cred_file}")
+        _LOGGER.info(f"Creating credential file: {cred_file}")
         with open(cred_file, "w") as f:
             f.write(cred_file_content)
 
@@ -87,7 +93,8 @@ class Controller:
         agent_config_file = os.path.join(
             self.transfer_run_dir, f"{self.transfer_id}.json"
         )
-        logger.info(f"Creating agent config file: {agent_config_file}")
+        agent_config["teradata-config"]["database-credentials-file-path"] = cred_file
+        _LOGGER.info(f"Creating agent config file: {agent_config_file}")
         with open(agent_config_file, "w") as f:
             json.dump(agent_config, f)
 
@@ -98,9 +105,9 @@ class Controller:
         Returns:
             None
         """
-        logger.info("Starting migration agent")
-        cmd = f"sudo bash {AGENT_START_SCRIPT} {self.transfer_id}"
-        logger.info(f"Executing command: {cmd}")
+        _LOGGER.info("Starting migration agent")
+        cmd = f"sudo bash {_AGENT_START_SCRIPT} {self.transfer_id}"
+        _LOGGER.info(f"Executing command: {cmd}")
         subprocess.Popen(cmd, shell=True)
 
     def _kill_agent(self):
@@ -110,7 +117,7 @@ class Controller:
         Returns:
             None
         """
-        logger.info("Killing migration agent")
-        cmd = f"sudo bash {AGENT_KILL_SCRIPT} {self.transfer_id}"
-        logger.info(f"Executing command: {cmd}")
+        _LOGGER.info("Killing migration agent")
+        cmd = f"sudo bash {_AGENT_KILL_SCRIPT} {self.transfer_id}"
+        _LOGGER.info(f"Executing command: {cmd}")
         subprocess.Popen(cmd, shell=True)

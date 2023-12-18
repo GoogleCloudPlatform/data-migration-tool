@@ -68,13 +68,13 @@ def format_all(session):
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
-@nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
 def unit(session):
     _setup_session_requirements(session)
     test_paths = [
         os.path.join("src", "tests"),
         os.path.join("src", "translation", "event_listener"),
         os.path.join("src", "common_utils"),
+        os.path.join("src", "datamigration", "scripts", "teradata", "agent_controller")
     ]
     session.install(
         "--upgrade",
@@ -92,3 +92,42 @@ def unit(session):
             "--quiet",
             test_path,
         )
+
+@nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
+def integration(session):
+    _setup_session_requirements(session)
+
+    pr_no = os.environ.get("PR_NUMBER")
+
+    print(pr_no)
+    print(os.environ.get("BUILD_ID"))
+
+    if pr_no != "":
+        session.install(
+            "--upgrade",
+            "-r",
+            os.path.join(
+                "src",
+                "tests",
+                "requirements-test.txt",
+            ),
+        )
+
+        test_path = "src/tests/end_to_end/end_to_end.py"
+        expected_env_vars = [
+            "PROJECT_ID",
+            "TERADATA_IP",
+            "TERADATA_UNAME",
+            "TERADATA_SCHEMA",
+            "ORACLE_IP",
+            "ORACLE_UNAME",
+            "ORACLE_SCHEMA",
+            "ORACLE_DATABASE",
+        ]
+        for env_var in expected_env_vars:
+            if not os.environ.get(env_var, ""):
+                raise Exception("Expected Env Var: %s" % env_var)
+
+        session.run("python3", test_path)
+    else:
+        print("Trigger build is not for PR")
