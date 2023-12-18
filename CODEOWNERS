@@ -10,6 +10,6 @@
 # Pull requests which modify any of the following 
 # file types must be approved by one of the listed owner(s):
 *.py    @GoogleCloudPlatform/pso-code-review-committee
-*.tf    @danieldeleo @raniksingh @abcubed3 @zhaber
-*.yaml  @danieldeleo @raniksingh @abcubed3 @zhaber
-*.md    @danieldeleo @raniksingh @abcubed3 @zhaber @celiajmd @pcigoor
+*.tf    @danieldeleo @raniksingh @abcubed3 @zhaber @dmedora
+*.yaml  @danieldeleo @raniksingh @abcubed3 @zhaber @dmedora
+*.md    @danieldeleo @raniksingh @abcubed3 @zhaber @celiajmd @pcigoor @dmedora

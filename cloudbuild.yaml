@@ -47,6 +47,25 @@ steps:
   - 'NOX_SESSION=unit'
   waitFor: [ '-' ]
 
-timeout: 1800s # 30 minutes
+- id: integrationtest
+  name: 'gcr.io/cloud-devrel-public-resources/python-multi'
+  args: [ 'bash', './ci/build.sh' ]
+  env:
+  - 'NOX_SESSION=integration'
+  - 'PROJECT_ID=pso-data-migration-tool-test'
+  - 'TERADATA_IP=10.128.0.3'
+  - 'TERADATA_UNAME=dbc'
+  - 'TERADATA_SCHEMA=tpch'
+  - 'ORACLE_IP=10.128.0.2'
+  - 'ORACLE_UNAME=edw_odb'
+  - 'ORACLE_SCHEMA=EDW_ODB'
+  - 'ORACLE_DATABASE=ORCLPDB1'
+  - 'BUILD_ID=$BUILD_ID'
+  - PR_NUMBER=${_PR_NUMBER}
+  waitFor: [ '-' ]
+# substitutions:
+#   _PR_NUMBER: "na"
+
+timeout: 3600s # 1 hr
 options:
   machineType: N1_HIGHCPU_8

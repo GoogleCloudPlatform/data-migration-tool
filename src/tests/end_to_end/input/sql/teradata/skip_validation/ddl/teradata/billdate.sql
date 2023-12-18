@@ -1,0 +1,11 @@
+CREATE SET TABLE tpch.billdate ,FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL,
+     CHECKSUM = DEFAULT,
+     DEFAULT MERGEBLOCKRATIO,
+     MAP = TD_MAP1
+     (
+      phone_no CHAR(10) CHARACTER SET LATIN NOT CASESPECIFIC,
+      start_time TIMESTAMP(0),
+      end_time TIMESTAMP(0))
+PRIMARY INDEX ( phone_no );
