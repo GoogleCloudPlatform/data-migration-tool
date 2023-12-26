@@ -14,12 +14,8 @@ from google.cloud import bigquery
 from googleapiclient import _auth as auth
 from googleapiclient.errors import HttpError
 
-from common_utils import (
-    custom_user_agent,
-    discovery_util,
-    parallelization_utils,
-    storage_utils,
-)
+from common_utils import (custom_user_agent, discovery_util,
+                          parallelization_utils, storage_utils)
 from common_utils.bigquery_client_utils import utils as bq_utils
 from common_utils.operators.reporting_operator import ReportingOperator
 

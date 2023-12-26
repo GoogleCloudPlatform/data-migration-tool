@@ -22,12 +22,10 @@ from airflow import models
 from airflow.decorators import task
 from airflow.exceptions import AirflowFailException
 from airflow.operators.python import PythonOperator
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
-from airflow.providers.google.cloud.operators.cloud_composer import (
-    CloudComposerGetEnvironmentOperator,
-)
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import \
+    KubernetesPodOperator
+from airflow.providers.google.cloud.operators.cloud_composer import \
+    CloudComposerGetEnvironmentOperator
 from airflow.utils.trigger_rule import TriggerRule
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery

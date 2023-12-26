@@ -17,9 +17,8 @@ import os
 
 from airflow import models
 from airflow.operators.bash import BashOperator
-from airflow.providers.google.cloud.operators.cloud_composer import (
-    CloudComposerGetEnvironmentOperator,
-)
+from airflow.providers.google.cloud.operators.cloud_composer import \
+    CloudComposerGetEnvironmentOperator
 
 with models.DAG(
     "workload_identity_creator_dag",
