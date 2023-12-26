@@ -32,6 +32,7 @@ def get_token():
         token = cmd.read().strip()
     return token
 
+
 def get_cloud_run_url(service_name, project_id):
     describe_service = DESCRIBE_SERVICE.format(
         service_name=service_name, project_id=project_id, region=region
@@ -45,9 +46,7 @@ def get_cloud_run_url(service_name, project_id):
 client = bigquery.Client(
     client_info=ClientInfo(user_agent=custom_user_agent.USER_AGENT)
 )
-DVT_AGGREGATED_RESULTS_TABLE_ID = (
-    f"{project_id}.dmt_logs.dmt_dvt_aggregated_results"
-)
+DVT_AGGREGATED_RESULTS_TABLE_ID = f"{project_id}.dmt_logs.dmt_dvt_aggregated_results"
 
 default_dag_args = {"start_date": datetime(2022, 1, 1)}
 
@@ -59,7 +58,7 @@ def _get_table_or_file_list(input_json):
     config = ast.literal_eval(str(input_json["config"]))
     translation_type = config["type"]
     validation_type = config["validation_config"]["validation_type"]
-    validation_only = config['validation_only']
+    validation_only = config["validation_only"]
     validation_params_file_path = config["validation_config"][
         "validation_params_file_path"
     ]
@@ -72,13 +71,13 @@ def _get_table_or_file_list(input_json):
     common_request_json = {}
     common_request_json["config"] = config
     common_request_json["validation_params_from_gcs"] = validation_params_from_gcs
-    if translation_type in ["ddl", "data","dml"]:
+    if translation_type in ["ddl", "data", "dml"]:
         table_list = []
-        if validation_only == 'yes':
+        if validation_only == "yes":
             for key in validation_params_from_gcs:
                 source_table = validation_params_from_gcs[key]["source-table"]
                 target_table = validation_params_from_gcs[key]["target-table"]
-                table_list.append(source_table+"="+target_table)
+                table_list.append(source_table + "=" + target_table)
         else:
             table_list = input_json["table_list"]
 
@@ -91,7 +90,7 @@ def _get_table_or_file_list(input_json):
         if validation_only == "yes":
             for key in validation_params_from_gcs:
                 files.append(key)
-        else:    
+        else:
             files = input_json["files"]
         for file in files:
             request_json = common_request_json.copy()
@@ -125,7 +124,7 @@ def _invoke_cloud_run(request_json):
             "sql_file": sql_file,
             "validation_params_from_gcs": validation_params_from_gcs,
         }
-        print(f"Running validation for sql file: {sql_file}")         
+        print(f"Running validation for sql file: {sql_file}")
     else:
         print(f"Unknown validation type: {validation_type}")
         raise AirflowFailException("DVT CloudRun execution failed!")

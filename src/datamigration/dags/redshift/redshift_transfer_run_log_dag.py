@@ -84,7 +84,11 @@ def _load_parameters(ti, **kwargs) -> None:
     tracking_info = dts_logs_utils.get_tracking_info(
         transfer_config_id, BQ_TRANSFER_TRACKING_TABLE_NAME
     )
-    (unique_id, config_bucket_id, config_object_path,) = (
+    (
+        unique_id,
+        config_bucket_id,
+        config_object_path,
+    ) = (
         tracking_info["unique_id"],
         tracking_info["config_bucket_id"],
         tracking_info["config_object_path"],

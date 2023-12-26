@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
 import datetime
 import enum
 import logging
 import os
-import json 
-import ast
 
 from airflow import models
 from airflow.decorators import task
@@ -125,10 +124,12 @@ validation_type_flags_mapping = {
 
 default_dag_args = {"start_date": datetime.datetime(2022, 1, 1)}
 
-def _get_config(ti,**kwargs):
+
+def _get_config(ti, **kwargs):
     config = ast.literal_eval(str(kwargs["dag_run"].conf["config"]))
     ti.xcom_push(key="config", value=config)
-    
+
+
 def get_additional_validation_flags(
     validation_entity_type,
     validation_entity_name,
@@ -341,7 +342,7 @@ def parallelize_dvt_tasks(input_json):
     config = ast.literal_eval(str(input_json["config"]))
     translation_type = config["type"]
     validation_type = config["validation_config"]["validation_type"]
-    validation_only = config['validation_only']
+    validation_only = config["validation_only"]
     validation_params_file_path = config["validation_config"][
         "validation_params_file_path"
     ]
@@ -357,10 +358,10 @@ def parallelize_dvt_tasks(input_json):
             for key in validation_params_from_gcs:
                 source_table = validation_params_from_gcs[key]["source-table"]
                 target_table = validation_params_from_gcs[key]["target-table"]
-                table_list.append(source_table+"="+target_table)
-        else:    
+                table_list.append(source_table + "=" + target_table)
+        else:
             table_list = input_json["table_list"]
-       
+
         for table in table_list:
             bash_cmd = get_dvt_cmd_ddl_validation(
                 config, table, validation_params_from_gcs
@@ -371,7 +372,7 @@ def parallelize_dvt_tasks(input_json):
         if validation_only == "yes":
             for key in validation_params_from_gcs:
                 files.append(key)
-        else:    
+        else:
             files = input_json["files"]
         for file in files:
             bash_cmd = get_dvt_cmd_sql_validation(
@@ -439,4 +440,10 @@ with models.DAG(
         dag=dag,
     )
 
-    config_change>> get_env >> dvt_validation >> save_dvt_aggregated_results >> dag_report
+    (
+        config_change
+        >> get_env
+        >> dvt_validation
+        >> save_dvt_aggregated_results
+        >> dag_report
+    )

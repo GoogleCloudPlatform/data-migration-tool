@@ -2,7 +2,6 @@ import base64
 import datetime
 import json
 import os
-import ast
 
 from airflow import models
 from airflow.models import Variable
@@ -50,6 +49,7 @@ def get_validation_dag_id(validation_mode):
         return VALIDATION_TYPE_TO_DAG_ID_MAPPING[validation_mode]
     else:
         return VALIDATION_TYPE_TO_DAG_ID_MAPPING[VALIDATION_DEFAULT_TYPE]
+
 
 def _prepare_config_for_reporting(ti, **kwargs) -> None:
     event_json = kwargs["dag_run"].conf
@@ -121,11 +121,8 @@ def _prepare_data_for_next_dag(ti, **kwargs):
         if op_type in ["ddl", "sql", "dml"]:
             data_source = config["source"]
             if data_source in ["teradata", "hive", "oracle", "redshift"]:
-                if (
-                    "validation_only" in config
-                    and config["validation_only"] == "yes"
-                ):
-                    next_dag_config =  config
+                if "validation_only" in config and config["validation_only"] == "yes":
+                    next_dag_config = config
                 else:
                     next_dag_config = {"config": config}
             else:
@@ -162,6 +159,8 @@ def _prepare_data_for_next_dag(ti, **kwargs):
         next_dag_config = None
 
     ti.xcom_push(key="next_dag_config", value=next_dag_config)
+
+
 def determine_validation_dag(config):
     validation_mode = config["validation_config"].get("validation_mode")
     validation_dag_id = get_validation_dag_id(validation_mode)
@@ -180,10 +179,7 @@ def _determine_next_dag(ti, **kwargs):
         if op_type in ["ddl", "sql", "dml"]:
             data_source = config["source"]
             if data_source in ["teradata", "oracle", "redshift"]:
-                if (
-                    "validation_only" in config
-                    and config["validation_only"] == "yes"
-                ):
+                if "validation_only" in config and config["validation_only"] == "yes":
                     next_dag_id = determine_validation_dag(config)
                 elif (
                     "extract_ddl" in config
@@ -268,7 +264,7 @@ with models.DAG(
         },
         dag=dag,
     )
-   
+
     dag_report = ReportingOperator(
         task_id="dag_report",
         trigger_rule=TriggerRule.ALL_DONE,  # Ensures this task runs even if upstream fails
