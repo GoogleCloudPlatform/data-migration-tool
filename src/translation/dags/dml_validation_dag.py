@@ -6,8 +6,7 @@ import re
 from airflow import models
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from airflow.providers.google.cloud.operators.bigquery import \
-    BigQueryInsertJobOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.utils.trigger_rule import TriggerRule
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery
