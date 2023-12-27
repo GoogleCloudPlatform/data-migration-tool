@@ -123,11 +123,19 @@ git checkout main
 User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
 
 
-
+* roles/bigquery.dataViewer
+* roles/bigquery.user
+* roles/cloudbuild.builds.editor
+* roles/run.viewer
+* roles/composer.user
+* roles/compute.admin
+* roles/logging.viewer
+* roles/vpcaccess.admin
 * roles/serviceusage.serviceUsageConsumer
 * roles/storage.admin
-* roles/cloudbuild.builds.editor
-* roles/logging.viewer
+* roles/iam.serviceAccountViewer
+* roles/DMTUserAddtionalPermissions
+
 
 ```
  export SOURCE_PROJECT=<YOUR_PROJECT_ID>
@@ -139,37 +147,13 @@ User who will be executing the deployment of DMT through Cloud Build will requir
  export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
 ```
 
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/serviceusage.serviceUsageConsumer" --condition="None"
-```
-
-
+**To assign these roles, you can execute the Bash script dmt-user-setup.sh present in the root directory**
 
 ```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/storage.admin" --condition="None"
+bash dmt-user-setup.sh
 ```
 
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/cloudbuild.builds.editor" --condition="None"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/logging.viewer" --condition="None"
-```
+**Note - DMTUserAddtionalPermissions role is custom DMT user role**
 
 
 ## Enable Google Cloud APIs
@@ -208,26 +192,22 @@ Google Cloud Console -> Cloud Build -> Settings
 
 **IAM roles required for the created Service Account**
 
-TODO(dmedora): Update this list of permissions, and the gcloud commands below, to match iam-setup.sh.
 ```
 BigQuery Admin
+Cloud Build Service Account
 Cloud Run Admin
 Composer Administrator
-Composer Worker
 Compute Instance Admin (v1)
+Compute Network Admin
+Create Service Accounts
 Logs Viewer
+Project IAM Admin
 Pub/Sub Admin
-Security Admin
-Service Account Admin
+Secret Manager Admin
 Service Account User
 Service Usage Admin
 Storage Admin
-Compute OS Admin Login
-Storage Object Admin
-Viewer
-Service Account Token Creator
-Compute Network Admin
-Service Usage Consumer
+Artifact Registry Administrator
 ```
 
 
@@ -268,7 +248,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/composer.admin"
+--role="roles/run.admin"
 ```
 
 
@@ -276,7 +256,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/composer.worker"
+--role="roles/composer.admin"
 ```
 
 
@@ -292,7 +272,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.securityAdmin"
+--role="roles/compute.networkAdmin"
 ```
 
 
@@ -300,23 +280,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/serviceusage.serviceUsageAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountUser"
+--role="roles/iam.serviceAccountCreator"
 ```
 
 
@@ -332,6 +296,14 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/resourcemanager.projectIamAdmin"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
 --role="roles/pubsub.admin"
 ```
 
@@ -340,7 +312,23 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/run.admin"
+--role="roles/secretmanager.admin"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/iam.serviceAccountUser"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/serviceusage.serviceUsageAdmin"
 ```
 
 
@@ -356,39 +344,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/storage.objectAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/viewer"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountTokenCreator"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/compute.networkAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/serviceusage.serviceUsageConsumer"
+--role="roles/artifactregistry.admin"
 ```
 
 

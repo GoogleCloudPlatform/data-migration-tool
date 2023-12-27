@@ -44,12 +44,14 @@ variable "composer_roles" {
   description = "Composer Service Account Roles"
   default = [
     "roles/bigquery.admin",
-    "roles/bigquerymigration.editor",
+    "roles/run.developer",
     "roles/composer.worker",
     "roles/dataproc.editor",
-    "roles/iam.serviceAccountUser",
-    "roles/run.developer",
+    "roles/bigquerymigration.editor",
+    "roles/pubsub.admin",
     "roles/secretmanager.secretAccessor",
+    "roles/iam.serviceAccountUser",
+    "roles/composer.ServiceAgentV2Ext",
   ]
 }
 variable "labels" {
