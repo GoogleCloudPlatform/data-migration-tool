@@ -71,10 +71,11 @@ def format_all(session):
 def unit(session):
     _setup_session_requirements(session)
     test_paths = [
+        os.path.join("src", "datamigration"),
         os.path.join("src", "tests"),
         os.path.join("src", "translation", "event_listener"),
         os.path.join("src", "common_utils"),
-        os.path.join("src", "datamigration", "scripts", "teradata", "agent_controller")
+        os.path.join("src", "datamigration", "scripts", "teradata", "agent_controller"),
     ]
     session.install(
         "--upgrade",
@@ -92,6 +93,7 @@ def unit(session):
             "--quiet",
             test_path,
         )
+
 
 @nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
 def integration(session):

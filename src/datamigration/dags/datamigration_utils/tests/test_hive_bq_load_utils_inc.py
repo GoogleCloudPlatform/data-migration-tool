@@ -382,7 +382,7 @@ def test_get_inc_table_list(
     result = hive_bq_load_utils_inc.get_inc_table_list(
         str(config_with_hive_gcs_staging_path)
     )
-    assert result == None
+    assert result is None
 
 
 def test_get_inc_table_list_EC1_config_data():
@@ -411,7 +411,7 @@ def test_get_table_info_from_metadata(
     result = hive_bq_load_utils_inc.get_table_info_from_metadata(
         str(config_with_hive_gcs_staging_path)
     )
-    assert result == None
+    assert result is None
 
 
 def test_get_table_info_from_metadata_EC1_config_data():

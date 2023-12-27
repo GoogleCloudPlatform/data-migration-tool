@@ -1,9 +1,7 @@
 import json
 import os
-from subprocess import CompletedProcess
 
 import numpy as np
-import pandas as pd
 import pytest
 import xarray as xr
 from datamigration_utils import hive_dvt_check_utils
@@ -93,7 +91,7 @@ def test_get_dvt_table_list(mocker):
     result = hive_dvt_check_utils.get_dvt_table_list(
         hive_dvt_check_utils.read_config_file(config_with_hive_gcs_staging_path)
     )
-    assert type(result) == list
+    assert type(result) is list
 
 
 input_expected_output_mapping = [

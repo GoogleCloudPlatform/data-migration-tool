@@ -9,7 +9,6 @@ def test_make_run_batches_valid():
     id_prefix = timezone.utcnow()
     result = parallelization_utils.make_run_batches(["a", "b", "c"], 1, id_prefix)
     result_list = list(result)
-    print(result_list)
     assert "['a']" in str(result_list[0])
     assert "['b']" in str(result_list[1])
     assert "['c']" in str(result_list[2])
@@ -20,14 +19,12 @@ def test_make_run_batches_empty_payload_list():
     result = parallelization_utils.make_run_batches([], 1, id_prefix)
     result_list = list(result)
     expected_result = []
-    print(result_list)
     assert expected_result == result_list
 
 
 def test_make_run_batches_empty_id_prefix():
     result = parallelization_utils.make_run_batches(["a", "b", "c"], 1, "")
     result_list = list(result)
-    print(result_list)
     assert "'-0'" in str(result_list[0])
     assert "'-1'" in str(result_list[1])
     assert "'-2'" in str(result_list[2])
@@ -46,5 +43,4 @@ def test_make_run_batches_negative_batch_size():
     result = parallelization_utils.make_run_batches(["a", "b", "c"], -1, id_prefix)
     result_list = list(result)
     expected_result = []
-    print(result_list)
     assert expected_result == result_list

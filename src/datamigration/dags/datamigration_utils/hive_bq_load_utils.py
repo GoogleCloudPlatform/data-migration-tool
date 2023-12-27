@@ -160,9 +160,7 @@ def get_table_size(tbl, table_gs_path):
         cmd, capture_output=True, shell=True, encoding="utf-8"
     )
     res = truncate_result.stdout.split(" ")
-    print(len(res))
     if len(res) > 1:
-        print(int(res[0]))
         tbl_size_tb = int(res[0]) / (1024**4)
         print("Size of Table {} is {} TB".format(tbl, str(tbl_size_tb)))
         if tbl_size_tb > 16:
