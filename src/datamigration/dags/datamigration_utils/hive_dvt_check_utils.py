@@ -6,7 +6,7 @@ from airflow.api.common.trigger_dag import trigger_dag
 from airflow.utils import timezone
 from google.cloud import bigquery
 
-from src.common_utils import parallelization_utils
+from common_utils import parallelization_utils
 
 
 def read_config_file(translation_config):
