@@ -66,7 +66,6 @@ roles=(
   "roles/serviceusage.serviceUsageConsumer"
   "roles/storage.admin"
   "roles/iam.serviceAccountViewer"
-  "roles/dmt.user.addtional.permission"
   "projects/${PROJECT_ID}/roles/DMTUserAddtionalPermissions"
 )
 
