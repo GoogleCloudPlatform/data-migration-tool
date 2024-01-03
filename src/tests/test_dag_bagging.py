@@ -4,7 +4,7 @@ import tempfile
 from shutil import copytree
 
 import pytest
-from airflow.models.dagbag import DagBag
+from airflow.models import DagBag
 
 DAG_DIRS = ["datamigration", "translation"]
 
