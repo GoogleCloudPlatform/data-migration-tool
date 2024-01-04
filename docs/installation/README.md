@@ -928,11 +928,9 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
 
 
-8. If the **workload_identity_creator_dag** runs successfully and is in dark green status in Airflow - now you can safely remove the role **Service Account Admin** that was given to Composer Service Account (**dmt-sa-gcc**) since this is a security admin role.
+8. If you intend to migrate tables over to BQ dataset other than dmt-teradata-dataset, please ensure this dataset is manually created and is provided in the config files later  (create tables from DDLs)
 
-9. If you intend to migrate tables over to BQ dataset other than dmt-teradata-dataset, please ensure this dataset is manually created and is provided in the config files later  (create tables from DDLs)
-
-10.  **(Mandatory for teradata ddl extraction)** Teradata ddl extraction requires teradata jdbc jar. Upload the jdbc jar file to your GCS config bucket under the `software/teradata` folder as shown below:
+9.  **(Mandatory for teradata ddl extraction)** Teradata ddl extraction requires teradata jdbc jar. Upload the jdbc jar file to your GCS config bucket under the `software/teradata` folder as shown below:
 
       1) Download the jar from teradata downloads: 	[https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
 
@@ -940,7 +938,7 @@ gcloud compute firewall-rules create pod-operator-firewall \
       Make sure the file is placed in the `software/teradata` path \
       (e.g. `gs://YOUR_DMT_CONFIG_BUCKET/software/teradata/terajdbc4.jar`) 
       
-11. **(Optional - Only for Oracle)** Remove GCS bucket created to store .RPM file for setup.
+10. **(Optional - Only for Oracle)** Remove GCS bucket created to store .RPM file for setup.
 
 
 **Build connection between CloudRun and Source database [Applicable for network connectivity uses VPN connectivity]**
