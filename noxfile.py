@@ -70,9 +70,7 @@ def format_all(session):
 @nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
 def unit(session):
     _setup_session_requirements(session)
-    test_paths = [
-        os.path.join("src")
-    ]
+    test_paths = [os.path.join("src")]
     session.install(
         "--upgrade",
         "-r",
