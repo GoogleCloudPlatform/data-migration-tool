@@ -1,0 +1,11 @@
+Translation / Migration Type,Validation Type,Source and Target,,,,Common Flag to all Validations,Common Flag to Row and Column Validation,,Schema Validation Flags,,Column Validation Flags,,,,,,,,,Row Validation Flags,,,,
+,,source-table,target-table,source-query-file,target-query-file,filter-status,primary-keys,filters,exclusion-columns,allow-list,count,sum,min,max,avg,grouped-columns,wildcard-include-string-len,cast-to-bigint,threshold,hash,concat,comparison-fields,use-random-row,random-row-batch-size
+ddl,schema,dmt.EMPLOYEE1,dmt_dataset.employee1,,,success,,,"""emp_no,emp_name""",,,,,,,,,,,,,,,
+ddl,column,dmt.EMPLOYEE2,dmt_dataset.employee2,,,fail,,"""emp_no>100""",,,emp_no,,,salary,,,Y,Y,,,,,,
+ddl,column,dmt.EMPLOYEE3,dmt_dataset.employee3,,,,,,,,,commission,,,,,,,10,,,,,
+ddl,row,dmt.EMPLOYEE4,dmt_dataset.employee4,,,,emp_no,,,,,,,,,,,,,"""*""",,,Y,100
+ddl,row,dmt.EMPLOYEE5,dmt_dataset.employee5,,,success,emp_no,,,,,,,,,,,,,,"""*""",,,
+sql,custom query column,,,source_query_1.sql,target_query_1.sql,success,,,,,emp_no,,salary,,,,,,,,,,,
+sql,custom query row,,,source_query_2.sql,target_query_2.sql,,emp_no,,,,,,,,,,,,,,"""*""",,,
+data,column,dmt.EMPLOYEE6,dmt_dataset.employee6,,,,,"""emp_no<400""",,,,salary,,,commission,,Y,,30,,,,,
+data,row,dmt.EMPLOYEE7,dmt_dataset.employee7,,,success,emp_no,,,,,,,,,,,,,"""*""",,,Y,1000

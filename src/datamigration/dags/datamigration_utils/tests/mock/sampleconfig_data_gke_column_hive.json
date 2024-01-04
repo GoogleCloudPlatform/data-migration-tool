@@ -1,0 +1,21 @@
+{
+  "unique_id":"run-19-Mar-incload",
+  "batchDistribution":2,
+  "type":"data",
+  "source":"hive_inc",
+  "dvt_check":"N",
+  "transfer_config":{
+    "dataSourceId":"HIVE",
+    "displayName":"dm_dmt_hivedb_inc",
+    "params":{
+      "gcs_inc_staging_bucket":"dmt-inc-data-project-id",
+      "gcs_temp_bucket":"dmt-temp-project-id",
+      "hive_gcs_staging_bucket_id":"dmt-teradata-data-project-id",
+      "hive_gcs_staging_path":"",
+      "project_id":"project-id",
+      "region":"us-central1",
+      "schedule_time_str":"22:30",
+      "schedule_time_cron":"30 22 * * *"
+    }
+  }
+}

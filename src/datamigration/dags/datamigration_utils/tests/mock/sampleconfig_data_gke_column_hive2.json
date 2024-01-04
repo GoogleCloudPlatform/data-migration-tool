@@ -1,0 +1,37 @@
+{
+  "unique_id":"run-16-Mar",
+  "batchDistribution":4,
+  "type":"data",
+  "source":"hive",
+  "dvt_check":"N",
+  "transfer_config":{
+    "rerun_flag":"N",
+    "dataSourceId":"HIVE",
+    "displayName":"dm_dmt_hivedb",
+    "params":{
+      "database_type":"Hive",
+      "hive_db_name":"hive_db1",
+      "gcs_inc_staging_bucket":"dmt-inc-data-<project-id>",
+      "gcs_temp_bucket":"dmt-temp-<project-id>",
+      "hive_gcs_staging_bucket_id":"dmt-teradata-data-<project-id>",
+      "hive_gcs_staging_path":"hive_data/hive_db1.db",
+      "bq_dataset_id":"bq_dataset1",
+      "project_id":"<project-id>",
+      "region":"us-central1"
+    }
+  },
+  "validation_config": {"source_config": {
+    "source_type": "Impala",
+    "host": "10.128.0.12",
+    "port": 10000
+  },
+    "target_config": {
+      "source_type": "BigQuery",
+      "project-id": "<project-id>"
+    },
+    "validation_type": "column",
+    "validation_mode" : "gke",
+    "validation_object": "data"
+  }
+
+}

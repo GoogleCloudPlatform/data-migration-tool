@@ -1,0 +1,67 @@
+{
+  "unique_id": "unique_id_to_filter_bq_result_table",
+  "batchDistribution": 1,
+  "type": "dml",
+  "source": "teradata",
+  "translationErrorFilterRules": [
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForFeature"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForSetTables"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForIndexBackedConstraints"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "FileRead"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "EmitterSuccess"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "TranspilerOutputQuality"
+    }
+  ],
+  "migrationTask": {
+    "type": "Translation_Teradata2BQ",
+    "translationConfigDetails": {
+      "sourceDialect": {
+        "teradataDialect": { "mode": "<BTEQ/SQL>" }
+      },
+      "sourceEnv": {
+        "defaultDatabase": "<project_id>"
+      },
+      "targetDialect": {
+        "bigqueryDialect": {}
+      },
+      "gcsSourcePath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/input/dml",
+      "gcsTargetPath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/output/dml",
+      "nameMappingList": {
+        "name_map": [{
+          "source": {
+            "type": "SCHEMA",
+            "database": "<project_id>",
+            "schema": "<source_db_schema_name>"
+          },
+          "target": {
+            "database": "<project_id>",
+            "schema": "<bq_target_dataset>"
+          }
+        }]
+      }
+    }
+  }
+}
