@@ -74,12 +74,10 @@ variable "composer_roles" {
   type        = list(string)
   description = "Cloud Run Service Account Roles"
   default = [
-    "roles/composer.worker",
+    "roles/bigquery.dataEditor",
+    "roles/bigquery.jobUser",
+    "roles/bigquery.readSessionUser",
     "roles/composer.user",
-    "roles/composer.ServiceAgentV2Ext",
-    "roles/iam.serviceAccountUser",
-    "roles/editor",
-    "roles/run.admin"
   ]
 }
 variable "dvt_image" {

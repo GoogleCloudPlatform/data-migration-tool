@@ -16,34 +16,23 @@
 
 PROJECT_ID=$(gcloud config get project)
 
-if [[ -z "${BUILD_ACCOUNT}" ]]; then
-  BUILD_ACCOUNT=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")@cloudbuild.gserviceaccount.com
-fi
-
-gcloud services enable \
-  serviceusage.googleapis.com \
-  cloudresourcemanager.googleapis.com \
-  cloudbuild.googleapis.com
-
-roles=(
-  "roles/bigquery.admin"
-  "roles/run.admin"
-  "roles/composer.admin"
-  "roles/compute.instanceAdmin.v1"
-  "roles/compute.networkAdmin"
-  "roles/iam.serviceAccountCreator"
+roles=(  
+  "roles/bigquery.dataViewer"
+  "roles/bigquery.user"
+  "roles/cloudbuild.builds.editor"
+  "roles/run.viewer"
+  "roles/composer.user"
+  "roles/compute.admin"
   "roles/logging.viewer"
-  "roles/resourcemanager.projectIamAdmin"
-  "roles/pubsub.admin"
-  "roles/secretmanager.admin"
-  "roles/iam.serviceAccountUser"
-  "roles/serviceusage.serviceUsageAdmin"
+  "roles/vpcaccess.admin"
+  "roles/serviceusage.serviceUsageConsumer"
   "roles/storage.admin"
-  "roles/artifactregistry.admin"
+  "roles/iam.serviceAccountViewer"
+  "projects/${PROJECT_ID}/roles/DMTUserAddtionalPermissions"
 )
 
 for role in "${roles[@]}" ; do
   gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --member="serviceAccount:${BUILD_ACCOUNT}" \
+    --member="user:${USER_ACCOUNT}" \
     --role="${role}"
 done

@@ -45,7 +45,7 @@ locals {
   worker_max_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.value["max_count"]
 }
 
-resource "google_project_iam_member" "composer_agent_service_account" {
+resource "google_project_iam_member" "composer_service_agent" {
   count   = var.grant_sa_agent_permission ? 1 : 0
   project = data.google_project.project.project_id
   role    = "roles/composer.ServiceAgentV2Ext"
@@ -54,8 +54,7 @@ resource "google_project_iam_member" "composer_agent_service_account" {
 
 /* Cloud Composer Service Account creation that will be attached to the Composer */
 
-resource "google_service_account" "service_account" {
-  depends_on   = [google_project_iam_member.composer_agent_service_account]
+resource "google_service_account" "composer_service_account" {
   project      = var.project_id
   account_id   = var.service_account_gcc
   display_name = "Service Account for Cloud Composer"
@@ -64,7 +63,7 @@ resource "google_service_account" "service_account" {
 /* Provide Composer Worker IAM role and Composer Admin IAM role */
 
 resource "google_project_iam_member" "composer-worker" {
-  depends_on = [google_service_account.service_account]
+  depends_on = [google_service_account.composer_service_account]
   project    = var.project_id
   for_each   = toset(var.composer_roles)
   role       = each.value
@@ -74,7 +73,7 @@ resource "google_project_iam_member" "composer-worker" {
 /* Provide Object Admin authorization for Service Account to the created GCS buckets */
 
 resource "google_storage_bucket_iam_member" "storage_object_admin" {
-  depends_on = [google_service_account.service_account]
+  depends_on = [google_service_account.composer_service_account]
   for_each   = toset(var.bucket_names)
   bucket     = "${each.value}-${var.customer_name}"
   role       = "roles/storage.objectAdmin"

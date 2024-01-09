@@ -67,7 +67,7 @@ resource "google_storage_bucket_iam_member" "storage_admin" {
   depends_on = [google_service_account.service_account]
   for_each   = toset(var.bucket_names)
   bucket     = "${each.value}-${var.customer_name}"
-  role       = "roles/storage.admin"
+  role       = "roles/storage.objectAdmin"
   member     = "serviceAccount:${var.service_account_gcs}@${var.project_id}.iam.gserviceaccount.com"
 }
 

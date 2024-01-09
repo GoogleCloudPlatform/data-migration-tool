@@ -28,27 +28,27 @@ resource "google_pubsub_topic" "config_file_topic" {
 
 /* IAM role assignment for unique service account which is used as the identity for various Google Cloud Storage operations */
 
-data "google_storage_project_service_account" "gcs_account" {
+data "google_storage_project_service_account" "gcs_agent" {
   project = var.project_id
 }
 
-resource "google_pubsub_topic_iam_binding" "binding" {
+resource "google_pubsub_topic_iam_member" "gcs_agent_binding" {
   depends_on = [google_pubsub_topic.config_file_topic]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
   role       = "roles/pubsub.publisher"
-  members    = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+  member     = "serviceAccount:${data.google_storage_project_service_account.gcs_agent.email_address}"
 }
 
 /* IAM role assignment for Pub Sub Service Account. Change this if you require more control here */
 
 resource "google_pubsub_topic_iam_member" "invoker" {
-  depends_on = [google_pubsub_topic_iam_binding.binding]
+  depends_on = [google_pubsub_topic_iam_member.gcs_agent_binding]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
-  role       = "roles/pubsub.admin"
+  role       = "roles/pubsub.editor"
   member     = "serviceAccount:${var.service_account_pubsub}@${var.project_id}.iam.gserviceaccount.com"
 }
 
