@@ -16,44 +16,6 @@
 
 PROJECT_ID=$(gcloud config get project)
 
-permissions=(
-  "bigquery.datasets.get"
-  "composer.environments.get"
-  "composer.environments.list"
-  "compute.firewalls.create"
-  "compute.firewalls.get"
-  "compute.firewalls.list"
-  "compute.instances.create"
-  "compute.instances.list"
-  "compute.networks.get"
-  "compute.networks.list"
-  "compute.networks.updatePolicy"
-  "container.clusters.get"
-  "container.clusters.list"
-  "iam.serviceAccounts.actAs"
-  "iam.serviceAccounts.get"
-  "iap.tunnelInstances.accessViaIAP"
-  "resourcemanager.projects.getIamPolicy"
-  "resourcemanager.projects.setIamPolicy"
-  "run.services.update"
-  "secretmanager.locations.list"
-  "secretmanager.secrets.create"
-  "secretmanager.secrets.get"
-  "secretmanager.secrets.list"
-  "secretmanager.versions.access"
-  "secretmanager.versions.add"
-  "secretmanager.versions.list"
-  "serviceusage.services.enable"
-  "vpcaccess.connectors.create"
-  "vpcaccess.connectors.get"
-  "vpcaccess.connectors.list"
-  "vpcaccess.connectors.use"
-)
-
-gcloud iam roles create DMTUserAddtionalPermissions --project="${PROJECT_ID}" \
-      --title=DMTUserAddtionalPermissions --description="Additional permissions required for DMT user" \
-      --permissions=`echo $(echo ${permissions[@]}) | tr ' ' ','`
-
 roles=(  
   "roles/bigquery.dataViewer"
   "roles/bigquery.user"

@@ -120,6 +120,7 @@ git checkout main
 
 ## Assign Executing User Permissions
 
+
 User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
 
 
@@ -137,14 +138,24 @@ User who will be executing the deployment of DMT through Cloud Build will requir
 * roles/DMTUserAddtionalPermissions
 
 
+**Note - DMTUserAddtionalPermissions role is custom DMT user role**
+
+
+```
+ export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
+```
+
+
 ```
  export SOURCE_PROJECT=<YOUR_PROJECT_ID>
 ```
 
 
+**DMT requires additional user permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh present in the root directory to create custom dmt user additional permission role**
+
 
 ```
- export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
+bash dmt-custom-userrole-setup.sh
 ```
 
 **To assign these roles, you can execute the Bash script dmt-user-setup.sh present in the root directory**
@@ -152,8 +163,6 @@ User who will be executing the deployment of DMT through Cloud Build will requir
 ```
 bash dmt-user-setup.sh
 ```
-
-**Note - DMTUserAddtionalPermissions role is custom DMT user role**
 
 
 ## Enable Google Cloud APIs
