@@ -103,7 +103,7 @@ input_expected_output_mapping = [
 
 
 @pytest.mark.parametrize(
-    " validation_mode, expected_result",
+    "validation_mode, expected_result",
     input_expected_output_mapping,
 )
 def test_get_validation_dag_id(validation_mode, expected_result):
