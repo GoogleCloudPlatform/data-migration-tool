@@ -50,6 +50,6 @@ permissions=(
   "vpcaccess.connectors.use"
 )
 
-gcloud iam roles create DMTUserAddtionalPermissions --project="${PROJECT_ID}" \
-      --title=DMTUserAddtionalPermissions --description="Additional permissions required for DMT user" \
+gcloud iam roles create DMTUserAdditionalPermissions --project="${PROJECT_ID}" \
+      --title=DMTUserAdditionalPermissions --description="Additional permissions required for DMT user" \
       --permissions=`echo $(echo ${permissions[@]}) | tr ' ' ','`

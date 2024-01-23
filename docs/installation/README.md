@@ -80,8 +80,8 @@ The DVT Cloud Run and Cloud Composer should only be created in the same region.
 
 
 
-* Current release supports DDLs and select queries only. DML statements will be supported with dry run option only.
-* Current release doesn't support data transfer for Oracle and Incremental data load for Teradata,Redshift.
+* Current release supports DDLs and SELECT queries only. DML statements will be supported with dry run option only.
+* Current release doesn't support data transfer for Oracle or Incremental data load for Teradata, Redshift.
 
 # DMT Deployment
 
@@ -127,18 +127,18 @@ User who will be executing the deployment of DMT through Cloud Build will requir
 * roles/bigquery.dataViewer
 * roles/bigquery.user
 * roles/cloudbuild.builds.editor
-* roles/run.viewer
 * roles/composer.user
 * roles/compute.admin
+* roles/iam.serviceAccountViewer
 * roles/logging.viewer
-* roles/vpcaccess.admin
+* roles/run.viewer
 * roles/serviceusage.serviceUsageConsumer
 * roles/storage.admin
-* roles/iam.serviceAccountViewer
+* roles/vpcaccess.admin
 * roles/DMTUserAddtionalPermissions
 
 
-**Note - DMTUserAddtionalPermissions role is custom DMT user role**
+**Note - DMTUserAddtionalPermissions role is a custom DMT user role**
 
 
 ```
@@ -151,7 +151,7 @@ User who will be executing the deployment of DMT through Cloud Build will requir
 ```
 
 
-**DMT requires additional user permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh present in the root directory to create custom dmt user additional permission role**
+**DMT requires additional user permissions aside from the predefined roles, you can execute the Bash script dmt-custom-iam-role-setup.sh present in the root directory to create the custom DMT user role**
 
 
 ```
@@ -202,6 +202,7 @@ Google Cloud Console -> Cloud Build -> Settings
 **IAM roles required for the created Service Account**
 
 ```
+Artifact Registry Administrator
 BigQuery Admin
 Cloud Build Service Account
 Cloud Run Admin
@@ -216,7 +217,6 @@ Secret Manager Admin
 Service Account User
 Service Usage Admin
 Storage Admin
-Artifact Registry Administrator
 ```
 
 

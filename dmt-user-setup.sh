@@ -20,14 +20,14 @@ roles=(
   "roles/bigquery.dataViewer"
   "roles/bigquery.user"
   "roles/cloudbuild.builds.editor"
-  "roles/run.viewer"
   "roles/composer.user"
   "roles/compute.admin"
+  "roles/iam.serviceAccountViewer"
   "roles/logging.viewer"
-  "roles/vpcaccess.admin"
+  "roles/run.viewer"
   "roles/serviceusage.serviceUsageConsumer"
   "roles/storage.admin"
-  "roles/iam.serviceAccountViewer"
+  "roles/vpcaccess.admin"
   "projects/${PROJECT_ID}/roles/DMTUserAddtionalPermissions"
 )
 

@@ -26,20 +26,20 @@ gcloud services enable \
   cloudbuild.googleapis.com
 
 roles=(
+  "roles/artifactregistry.admin"
   "roles/bigquery.admin"
-  "roles/run.admin"
   "roles/composer.admin"
   "roles/compute.instanceAdmin.v1"
   "roles/compute.networkAdmin"
   "roles/iam.serviceAccountCreator"
-  "roles/logging.viewer"
-  "roles/resourcemanager.projectIamAdmin"
-  "roles/pubsub.admin"
-  "roles/secretmanager.admin"
   "roles/iam.serviceAccountUser"
+  "roles/logging.viewer"
+  "roles/pubsub.admin"
+  "roles/resourcemanager.projectIamAdmin"
+  "roles/run.admin"
+  "roles/secretmanager.admin"
   "roles/serviceusage.serviceUsageAdmin"
   "roles/storage.admin"
-  "roles/artifactregistry.admin"
 )
 
 for role in "${roles[@]}" ; do
