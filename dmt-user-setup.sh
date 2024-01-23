@@ -28,7 +28,7 @@ roles=(
   "roles/serviceusage.serviceUsageConsumer"
   "roles/storage.admin"
   "roles/vpcaccess.admin"
-  "projects/${PROJECT_ID}/roles/DMTUserAddtionalPermissions"
+  "projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions"
 )
 
 for role in "${roles[@]}" ; do
