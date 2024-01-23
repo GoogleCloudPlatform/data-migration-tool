@@ -220,7 +220,7 @@ Storage Admin
 ```
 
 
-**To assign these roles, you can execute the Bash script iam-setup.sh present in the root directory**
+**To assign these roles, you can execute the Bash script cloudbuild-sa-iam-setup.sh present in the root directory**
 
 
 ```
@@ -235,7 +235,7 @@ export SOURCE_PROJECT=<YOUR_PROJECT_ID>
 
 
 ```
-bash iam-setup.sh
+bash cloudbuild-sa-iam-setup.sh
 ```
 
 
