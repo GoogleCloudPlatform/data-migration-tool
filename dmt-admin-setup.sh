@@ -19,15 +19,19 @@ PROJECT_ID=$(gcloud config get project)
 roles=(  
   "roles/bigquery.dataViewer"
   "roles/bigquery.user"
+  "roles/cloudbuild.builds.editor"
   "roles/run.viewer"
-  "roles/composer.user"
-  "roles/storage.admin"
+  "roles/compute.admin"
+  "roles/logging.viewer"
   "roles/vpcaccess.admin"
-  "projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions"
+  "roles/serviceusage.serviceUsageConsumer"
+  "roles/storage.admin"
+  "roles/iam.serviceAccountViewer"
+  "projects/${PROJECT_ID}/roles/DMTAdminAdditionalPermissions"
 )
 
 for role in "${roles[@]}" ; do
   gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --member="user:${USER_ACCOUNT}" \
+    --member="user:${ADMIN_ACCOUNT}" \
     --role="${role}"
 done

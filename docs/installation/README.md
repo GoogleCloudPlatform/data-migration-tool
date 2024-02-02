@@ -118,52 +118,74 @@ git checkout main
 ```
 
 
-## Assign Executing User Permissions
-
+## Assign Executing User and Admin Permissions
 
 User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
-
 
 * roles/bigquery.dataViewer
 * roles/bigquery.user
 * roles/cloudbuild.builds.editor
-* roles/composer.user
+* roles/run.viewer
 * roles/compute.admin
 * roles/iam.serviceAccountViewer
 * roles/logging.viewer
 * roles/run.viewer
 * roles/serviceusage.serviceUsageConsumer
 * roles/storage.admin
-* roles/vpcaccess.admin
-* roles/DMTUserAddtionalPermissions
+* roles/iam.serviceAccountViewer
+* projects/${PROJECT_ID}/roles/DMTAdminAdditionalPermissions
 
 
-**Note - DMTUserAddtionalPermissions role is a custom DMT user role**
+And, user who will be using the DMT tool will require the below set of permissions
+
+* roles/bigquery.dataViewer
+* roles/bigquery.user
+* roles/run.viewer
+* roles/composer.user
+* roles/storage.admin
+* roles/iam.serviceAccountViewer
+* projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions
+
+
+**Note - DMTUserAdditionalPermissions role is custom DMT user role and DMTAdminAdditionalPermissions is also custom role for DMT admin**
+
+
+```
+ export ADMIN_ACCOUNT=<EXECUTING_ADMIN_ACCOUNT>
+```
 
 
 ```
  export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
 ```
 
-
 ```
  export SOURCE_PROJECT=<YOUR_PROJECT_ID>
 ```
 
 
-**DMT requires additional user permissions aside from the predefined roles, you can execute the Bash script dmt-custom-iam-role-setup.sh present in the root directory to create the custom DMT user role**
+**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh and dmt-custom-userrole-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
 
 
 ```
 bash dmt-custom-userrole-setup.sh
 ```
 
-**To assign these roles, you can execute the Bash script dmt-user-setup.sh present in the root directory**
+
+```
+bash dmt-custom-adminrole-setup.sh
+```
+
+**To assign these roles, you can execute the Bash script dmt-user-setup.sh and dmt-admin-setup.sh present in the root directory**
 
 ```
 bash dmt-user-setup.sh
 ```
 
+
+```
+bash dmt-admin-setup.sh
+```
 
 ## Enable Google Cloud APIs
 
