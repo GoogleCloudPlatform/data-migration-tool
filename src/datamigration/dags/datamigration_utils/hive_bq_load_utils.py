@@ -60,7 +60,6 @@ def read_config_file(translation_config):
     config_dict["schema_results_tbl"] = "dmt_schema_results"
     return config_dict
 
-
 def get_hive_tables(config):
     """
     Get HIVE tables including format and partition info from hive_ddl_metadata table
