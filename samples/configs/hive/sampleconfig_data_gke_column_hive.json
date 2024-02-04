@@ -10,12 +10,12 @@
       "displayName":"dm_dmt_hivedb",
       "params":{
          "database_type":"Hive",
-         "hive_db_name":"hive_db1",
-         "gcs_temp_bucket":"dmt-temp-<project-id>",
-         "hive_gcs_staging_bucket_id":"dmt-teradata-data-<project-id>",
-         "hive_gcs_staging_path":"hive_data/hive_db1.db",
-         "bq_dataset_id":"bq_dataset1",
-         "project_id":"<project-id>",
+         "hive_db_name":"default",
+         "gcs_temp_bucket":"dmt-temp-dmt-potntl-cust-reqremnt-test",
+         "hive_gcs_staging_bucket_id":"dmt-teradata-data-dmt-potntl-cust-reqremnt-test",
+         "hive_gcs_staging_path":"files/default",
+         "bq_dataset_id":"bq_db1",
+         "project_id":"dmt-potntl-cust-reqremnt-test",
          "region":"us-central1"
        }
     },
@@ -26,7 +26,7 @@
     },
     "target_config": {
         "source_type": "BigQuery",
-        "project-id": "<project-id>"
+        "project-id": "dmt-potntl-cust-reqremnt-test"
     },
     "validation_type": "column",
     "validation_mode" : "gke",

@@ -90,6 +90,7 @@ def get_table_list(dict, spark):
         table_list = dict["input_tables_list"]
     else:
         table_list = table_list
+    print(table_list)
     return table_list
 
 
@@ -149,10 +150,12 @@ def get_hive_ddls(dict, run_id, spark):
     extract HIVE DDls and table metadata
     """
     run_time = datetime.now()
+    print(dict["hive_db"])
     dbCheck = spark.catalog._jcatalog.databaseExists(dict["hive_db"])
     hive_db = dict["hive_db"]
     bq_dataset = dict["bq_dataset"]
     if dbCheck:
+        print(dict)
         table_list = get_table_list(dict, spark)
         for tbl in table_list:
             print(f"Extracting DDL for Table {tbl}")

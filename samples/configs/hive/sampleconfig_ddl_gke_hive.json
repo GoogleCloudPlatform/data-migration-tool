@@ -4,7 +4,7 @@
     "batchDistribution": 10,
     "extract_ddl" : "yes",
     "unique_id": "run-16-Mar",
-    "dryRunOnly": true,
+    "dryRunOnly": false,
     "translationErrorFilterRules":[
       {
          "field":"Category",
@@ -34,24 +34,24 @@
                 "hiveql_dialect":{}
             },
             "sourceEnv": {
-                "defaultDatabase": "<project-id>"
+                "defaultDatabase": "dmt-potntl-cust-reqremnt-test"
             },
             "targetDialect": {
                 "bigqueryDialect": {}
             },
-            "gcsSourcePath": "gs://dmt-translation-<project-id>/input/ddl",
-            "gcsTargetPath": "gs://dmt-translation-<project-id>/output/ddl",
+            "gcsSourcePath": "gs://dmt-translation-dmt-potntl-cust-reqremnt-test/input/ddl",
+            "gcsTargetPath": "gs://dmt-translation-dmt-potntl-cust-reqremnt-test/output/ddl",
             "nameMappingList": {
                 "name_map": [
                     {
                         "source": {
                             "type": "SCHEMA",
-                            "database": "<project-id>",
-                            "schema": "hive_db1"
+                            "database": "hive_db1",
+                            "schema": "default"
                         },
                         "target": {
-                            "database": "<project-id>",
-                            "schema": "bq_dataset1"
+                            "database": "bq_db1",
+                            "schema": "bq_db1"
                         }
                     }
                 ]
@@ -59,16 +59,16 @@
         }
     },
     "source_ddl_extract_table_list":"*",
-    "gcs_temp_bucket":"dmt-temp-<project-id>",
+    "gcs_temp_bucket":"dmt-temp-dmt-potntl-cust-reqremnt-test",
     "validation_config": {
         "source_config": {
             "source_type": "Impala",
-            "host": "10.128.0.12",
+            "host": "10.128.0.17",
             "port": 10000
         },
         "target_config": {
             "source_type": "BigQuery",
-            "project-id": "<project-id>"
+            "project-id": "dmt-potntl-cust-reqremnt-test"
         },
         "validation_type": "schema",
         "validation_mode" : "gke",
@@ -76,13 +76,13 @@
     },
    "hive_config":{
       "transfer-configuration":{
-         "project_id":"<project-id>",
+         "project_id":"dmt-potntl-cust-reqremnt-test",
          "region":"us-central1"
       },
       "source-type":"hive",
       "server_config":{
          "connection":{
-            "host": "10.128.0.12",
+            "host": "10.128.0.17",
             "port": 9083         }
       }
    }

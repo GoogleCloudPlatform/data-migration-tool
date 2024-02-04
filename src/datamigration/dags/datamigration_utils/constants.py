@@ -47,9 +47,15 @@ query_dvt_y = (
 
 # TODO check for sql_file_name column in the table, should be table name?
 query_dvt_n = (
+    "select distinct split(sql_file_name,'.')[OFFSET(0)] as table from {bq_dataset_audit}.{schema_results_tbl} where execution_start_time = "
+    "(select max(execution_start_time) from {bq_dataset_audit}.{schema_results_tbl})"
+)
+
+query_dvt_n_backup = (
     "select distinct split(sql_file_name,'.')[OFFSET(0)] as table from {bq_dataset_audit}.{schema_results_tbl} where status='success' and execution_start_time = "
     "(select max(execution_start_time) from {bq_dataset_audit}.{schema_results_tbl})"
 )
+
 
 query_partition_clustering_info = (
     "select table_name,STRING_AGG(partition_column) as partition_column ,STRING_AGG(clustering_column) as clustering_column from "

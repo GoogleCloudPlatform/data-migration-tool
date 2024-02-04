@@ -83,18 +83,18 @@ def get_hive_tables(config):
     client = bigquery.Client()
     query_job_df1 = client.query(query).to_dataframe()
     print(query_job_df1)
-    if dict["dvt_check_flag"] == "Y":
-        query = constants.query_dvt_y.format(
-            bq_dataset_audit=dict["bq_dataset_audit"], dvt_results=dict["dvt_results"]
-        )
-    else:
-        query = constants.query_dvt_n.format(
-            bq_dataset_audit=dict["bq_dataset_audit"],
-            schema_results_tbl=dict["schema_results_tbl"],
-        )
-    print(query)
-    query_job_df2 = client.query(query).to_dataframe()
-    query_job_df = query_job_df1.merge(query_job_df2, on="table")
+    # if dict["dvt_check_flag"] == "Y":
+    #     query = constants.query_dvt_y.format(
+    #         bq_dataset_audit=dict["bq_dataset_audit"], dvt_results=dict["dvt_results"]
+    #     )
+    # else:
+    #     query = constants.query_dvt_n.format(
+    #         bq_dataset_audit=dict["bq_dataset_audit"],
+    #         schema_results_tbl=dict["schema_results_tbl"],
+    #     )
+    # print(query)
+    #query_job_df2 = client.query(query).to_dataframe()
+    query_job_df = query_job_df1#.merge(query_job_df2, on="table")
     write_pd_to_gcs(
         query_job_df,
         dict["temp_bucket"],
