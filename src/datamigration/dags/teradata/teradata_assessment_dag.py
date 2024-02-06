@@ -1,5 +1,5 @@
 """
-Example Airflow DAG for Google Cloud Storage to SFTP transfer operators.
+Airflow DAG for creating the table_list.csv file from BQ Assessment.
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ default_dag_args = {"start_date": datetime(2022, 1, 1)}
 def upload_tables_to_gcs(project_id, dataset, bucket):
     """ Queries the assessment dataset and uploads the table list as a CSV to GCS """
     client = bigquery.Client(project=project_id)
-    sql = f"SELECT TableNameOriginal FROM {project_id}.{dataset}.{TD_ASSESSMENT_TABLE}`"
+    sql = f"SELECT TableNameOriginal FROM `{project_id}.{dataset}.{TD_ASSESSMENT_TABLE}`"
     tables = client.query(sql).to_dataframe().to_csv()
     GCSHook().upload(
         bucket_name=bucket,
