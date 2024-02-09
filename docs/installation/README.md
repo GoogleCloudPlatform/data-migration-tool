@@ -120,7 +120,7 @@ git checkout main
 
 ## Assign Executing User and Admin Permissions
 
-User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
+Admin User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
 
 * roles/bigquery.dataViewer
 * roles/bigquery.user
@@ -154,7 +154,6 @@ And, user who will be using the DMT tool will require the below set of permissio
  export ADMIN_ACCOUNT=<EXECUTING_ADMIN_ACCOUNT>
 ```
 
-
 ```
  export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
 ```
@@ -164,7 +163,7 @@ And, user who will be using the DMT tool will require the below set of permissio
 ```
 
 
-**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh and dmt-custom-userrole-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
+**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh and dmt-custom-adminrole-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
 
 
 ```
