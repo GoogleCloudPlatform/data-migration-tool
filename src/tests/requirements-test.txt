@@ -1,10 +1,6 @@
-apache-airflow==2.5.3
-apache-airflow-providers-cncf-kubernetes==7.3.0
-apache-airflow-providers-google==10.9.0
-apache-airflow-providers-ssh==3.3.0
-google-api-python-client==2.99.0
-google-api-core==2.11.1
-protobuf==4.23.4
+apache-airflow[google,ssh,cncf.kubernetes]==2.5.3
 redshift_connector==2.0.910
 oracledb==1.2.2
 configparser
+pendulum==2.1.2
+xarray

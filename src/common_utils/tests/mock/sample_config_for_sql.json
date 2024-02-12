@@ -1,0 +1,25 @@
+{
+  "unique_id": "unique_id_to_filter_bq_result_table",
+  "batchDistribution": 1,
+  "type": "sql",
+  "source": "teradata",
+  "extract_ddl": "no",
+  "validation_config": {
+    "source_config": {
+      "source_type": "Teradata",
+      "host": "<source_db_host_ip>",
+      "port": 1025,
+      "user-name": "<source_db_username>",
+      "password": "secret:<secret_name>"
+    },
+    "target_config": {
+      "target_type": "BigQuery",
+      "project-id": "<project_id>"
+    },
+    "validation_params_file_path" : "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
+    "validation_mode":"cloudrun",
+    "validation_type": "column",
+    "pod_operator_mem" :"4000M",
+    "pod_operator_cpu" :"800m"
+  }
+}

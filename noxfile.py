@@ -36,7 +36,9 @@ LINT_PACKAGES = ["flake8", "black==22.3.0", "isort"]
 
 def _setup_session_requirements(session, extra_packages=[]):
     """Install requirements for nox tests."""
-    session.install("--upgrade", "pip", "pytest", "pytest-mock", "wheel")
+    session.install(
+        "--upgrade", "pip", "pytest", "pytest-mock", "wheel", "testfixtures"
+    )
     if extra_packages:
         session.install(*extra_packages)
 
@@ -68,11 +70,7 @@ def format_all(session):
 @nox.session(python=DEFAULT_PYTHON_VERSION, venv_backend="venv")
 def unit(session):
     _setup_session_requirements(session)
-    test_paths = [
-        os.path.join("src", "tests"),
-        os.path.join("src", "translation", "event_listener"),
-        os.path.join("src", "datamigration", "scripts", "teradata", "agent_controller"),
-    ]
+    test_paths = [os.path.join("src")]
     session.install(
         "--upgrade",
         "-r",

@@ -2,11 +2,9 @@ import json
 import os
 from http import HTTPStatus
 
-import composer
-import errors
-import main
 import pytest
-import routing
+
+from translation.event_listener import composer, errors, main, routing
 
 MOCK_CONFIGS_DIR_NAME = "mock"
 
@@ -83,9 +81,16 @@ def test_handler_file_notification_rule_found(client, mocker):
         "subscription": "sample",
     }
 
-    mocker.patch("routing.get_dag_id", return_value=mock_dag_id)
-    mocker.patch("routing.get_composer_env_url", return_value=mock_composer_env_url)
-    mocker.patch("composer.run_dag", return_value=HTTPStatus.OK)
+    mocker.patch(
+        "translation.event_listener.routing.get_dag_id", return_value=mock_dag_id
+    )
+    mocker.patch(
+        "translation.event_listener.routing.get_composer_env_url",
+        return_value=mock_composer_env_url,
+    )
+    mocker.patch(
+        "translation.event_listener.composer.run_dag", return_value=HTTPStatus.OK
+    )
 
     r = client.post("/", json=mock_envelope)
 
@@ -123,9 +128,16 @@ def test_handler_transfer_notification_rule_found(client, mocker):
         },
         "subscription": "sample",
     }
-    mocker.patch("routing.get_dag_id", return_value=mock_dag_id)
-    mocker.patch("routing.get_composer_env_url", return_value=mock_composer_env_url)
-    mocker.patch("composer.run_dag", return_value=HTTPStatus.OK)
+    mocker.patch(
+        "translation.event_listener.routing.get_dag_id", return_value=mock_dag_id
+    )
+    mocker.patch(
+        "translation.event_listener.routing.get_composer_env_url",
+        return_value=mock_composer_env_url,
+    )
+    mocker.patch(
+        "translation.event_listener.composer.run_dag", return_value=HTTPStatus.OK
+    )
 
     r = client.post("/", json=mock_envelope)
 
