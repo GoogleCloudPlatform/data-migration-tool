@@ -9,6 +9,8 @@ from google.cloud.storage.blob import Blob
 
 from common_utils import custom_user_agent
 
+import subprocess
+
 validation_csv_header_fields = [
     "translation-type",
     "validation-type",
@@ -120,6 +122,26 @@ class StorageUtils:
                     validation_params[key] = rows
         return validation_params
 
+    def get_table_size(self, table, gcs_table_path):
+        """
+        get Table size in TBs
+        """
+        cmd = "gsutil du -s {}".format(gcs_table_path)
+        truncate_result = subprocess.run(
+            cmd, capture_output=True, shell=True, encoding="utf-8"
+        )
+        res = truncate_result.stdout.split(" ")
+        if len(res) > 1:
+            tbl_size_tb = int(res[0]) / (1024**4)
+            print("Size of Table {} is {} TB".format(table, str(tbl_size_tb)))
+            if tbl_size_tb > 16:
+                return False
+            else:
+                return True
+        else:
+            print("Cloud not determine Table Size")
+            tbl_size_tb = 0
+            return False
 
 def append_blob_name_to_path(path, blob_name):
     if path[-1] != "/":
