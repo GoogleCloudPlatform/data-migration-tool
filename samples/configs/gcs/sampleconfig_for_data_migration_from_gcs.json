@@ -1,0 +1,32 @@
+{
+    "unique_id":"<unique_id_to_filter_bq_result_table>",
+    "batchDistribution":"<parallel_batch_distribution_size>",
+    "type":"data",
+    "source":"gcs",
+    "transfer_config": {
+        "params":{
+            "database_type":"source_db_type",
+            "db_name":"source_db_name",
+            "gcs_temp_bucket":"dmt-temp-<project-id>",
+            "gcs_staging_bucket_id":"dmt-flat_file-data-<project-id>",
+            "gcs_staging_path":"<sub_directories>/<source_db_name>",
+            "bq_dataset_id":"<bq_target_dataset>",
+            "project_id":"<project-id>",
+            "region":"us-central1"
+        }
+    },
+    "validation_config": {
+        "source_config": {
+            "source_type": "<source_db_type>",
+            "host": "<source_db_host_or_ip>",
+            "port": "<numeric_source_db_connection_port>"
+        },
+        "target_config": {
+            "source_type": "BigQuery",
+            "project-id": "<project-id>"
+        },
+        "validation_type":"<row/column>",
+        "validation_mode":"<gke/cloudrun>",
+        "validation_object": "data"
+    }
+}
