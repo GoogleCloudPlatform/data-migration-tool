@@ -4,7 +4,7 @@
  * This software is provided as-is, without warranty or representation for any use or purpose.
  * Your use of it is subject to your agreement with Google.
  */
-/************************* TERADATA TO GOOGLE BIGQUERY END TO END INFRASTRUCTURE*************************/
+/************************* FROM GCS TO GOOGLE BIGQUERY END TO END MIGRATION INFRASTRUCTURE*************************/
 
 variable "project_id" {
   type        = string
@@ -20,9 +20,14 @@ variable "bucket_names" {
   type        = list(string)
   description = "A set of GCS bucket names to be created"
   default = [
-    "dmt-translation",
-    "dmt-config"
+    "dmt-flat_files-data",
+    "dmt-temp",
   ]
+}
+variable "config_bucket" {
+  type        = string
+  description = "Config GCS Bucket "
+  default     = "dmt-config"
 }
 
 variable "location" {
@@ -34,15 +39,8 @@ variable "location" {
 variable "folders" {
   type = map(list(string))
   default = {
-    "dmt-translation" = ["input/ddl", "input/sql", "input/dml", "output/ddl", "output/sql", "output/dml", ],
-    "dmt-config"      = ["ddl", "sql", "dml", "data", "scripts/translation/hive", "scripts/translation/teradata", "scripts/translation/oracle", "scripts/translation/redshift", "scripts/datamigration/hive", "scripts/datamigration/teradata", "software/teradata", "software/hive", "software/oracle", "software/redshift", "software/flat_files", "validation/teradata", "validation/hive", "validation/oracle", "validation/redshift", "validation/flat_files"]
+    "dmt-flat_files-data" = ["files"]
   }
-}
-
-variable "config_bucket" {
-  type        = string
-  description = "Config GCS Bucket "
-  default     = "dmt-config"
 }
 
 variable "storage_class" {
@@ -57,12 +55,8 @@ variable "service_account_gcs" {
   default     = "dmt-sa-gcs"
 }
 
-variable "translation_hive_script" {
+variable "service_account_gcc" {
   type        = string
-  description = "Hive Translation Scripts"
-}
-
-variable "translation_teradata_script" {
-  type        = string
-  description = "Teradata Translation Scripts"
+  description = "Service Account for Cloud Composer Environment"
+  default     = "dmt-sa-gcc"
 }

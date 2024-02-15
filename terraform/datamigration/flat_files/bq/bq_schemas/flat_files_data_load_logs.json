@@ -1,0 +1,42 @@
+[
+      {
+        "mode": "NULLABLE",
+        "name": "load_dtm",
+        "type": "TIMESTAMP"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "run_id",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "db_name",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "bq_datatset",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "tablename",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "bq_job_id",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "load_status",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "reason_for_failure",
+        "type": "STRING"
+      }
+]

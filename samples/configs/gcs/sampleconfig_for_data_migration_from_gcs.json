@@ -8,7 +8,7 @@
             "database_type":"source_db_type",
             "db_name":"source_db_name",
             "gcs_temp_bucket":"dmt-temp-<project-id>",
-            "gcs_staging_bucket_id":"dmt-flat_file-data-<project-id>",
+            "gcs_staging_bucket_id":"dmt-flat_files-data-<project-id>",
             "gcs_staging_path":"<sub_directories>/<source_db_name>",
             "bq_dataset_id":"<bq_target_dataset>",
             "project_id":"<project-id>",

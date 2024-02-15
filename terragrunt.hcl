@@ -15,22 +15,23 @@ locals {
 }
 
 inputs = {
-  project_id                             = local.my_project_id
-  customer_name                          = local.my_customer_name
-  bq_tables_deletion_protection          = get_env("_DELETE_BQ_TABLES", "false") == "true" ? false : true
-  event_listener_source_path             = "${get_parent_terragrunt_dir()}/src/translation/event_listener"
-  dvt_source_path                        = "${get_parent_terragrunt_dir()}/src/translation/dvt"
-  translation_dag_source_path            = "${get_parent_terragrunt_dir()}/src/translation/dags"
-  datamigration_hive_dag_source_path     = "${get_parent_terragrunt_dir()}/src/datamigration/dags/hive"
-  datamigration_teradata_dag_source_path = "${get_parent_terragrunt_dir()}/src/datamigration/dags/teradata"
-  datamigration_teradata_script          = "${get_parent_terragrunt_dir()}/src/datamigration/scripts/teradata"
-  datamigration_redshift_dag_source_path = "${get_parent_terragrunt_dir()}/src/datamigration/dags/redshift"
-  translation_teradata_script            = "${get_parent_terragrunt_dir()}/src/translation/scripts/teradata"
-  translation_hive_script                = "${get_parent_terragrunt_dir()}/src/translation/scripts/hive"
-  common_utils                           = "${get_parent_terragrunt_dir()}/src/common_utils"
-  datamigration_utils                    = "${get_parent_terragrunt_dir()}/src/datamigration/dags/datamigration_utils"
-  oracle_instant_client_file_path        = local.oracle_instant_client_file_path
-  oracle_odbc_version_number             = local.oracle_odbc_version_number
+  project_id                                = local.my_project_id
+  customer_name                             = local.my_customer_name
+  bq_tables_deletion_protection             = get_env("_DELETE_BQ_TABLES", "false") == "true" ? false : true
+  event_listener_source_path                = "${get_parent_terragrunt_dir()}/src/translation/event_listener"
+  dvt_source_path                           = "${get_parent_terragrunt_dir()}/src/translation/dvt"
+  translation_dag_source_path               = "${get_parent_terragrunt_dir()}/src/translation/dags"
+  datamigration_hive_dag_source_path        = "${get_parent_terragrunt_dir()}/src/datamigration/dags/hive"
+  datamigration_teradata_dag_source_path    = "${get_parent_terragrunt_dir()}/src/datamigration/dags/teradata"
+  datamigration_teradata_script             = "${get_parent_terragrunt_dir()}/src/datamigration/scripts/teradata"
+  datamigration_redshift_dag_source_path    = "${get_parent_terragrunt_dir()}/src/datamigration/dags/redshift"
+  datamigration_flat_files_dag_source_path   = "${get_parent_terragrunt_dir()}/src/datamigration/dags/flat_files"
+  translation_teradata_script               = "${get_parent_terragrunt_dir()}/src/translation/scripts/teradata"
+  translation_hive_script                   = "${get_parent_terragrunt_dir()}/src/translation/scripts/hive"
+  common_utils                              = "${get_parent_terragrunt_dir()}/src/common_utils"
+  datamigration_utils                       = "${get_parent_terragrunt_dir()}/src/datamigration/dags/datamigration_utils"
+  oracle_instant_client_file_path           = local.oracle_instant_client_file_path
+  oracle_odbc_version_number                = local.oracle_odbc_version_number
 }
 
 remote_state {

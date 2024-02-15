@@ -16,6 +16,8 @@
 TRANSLATION_DIR=terraform/translation/
 DATAMIGRATION_HIVE_DIR=terraform/datamigration/hive
 DATAMIGRATION_TERADATA_DIR=terraform/datamigration/teradata
+DATAMIGRATION_REDSHIFT_DIR=terraform/datamigration/redshift
+DATAMIGRATION_FLAT_FILES_DIR=terraform/datamigration/flat_files
 
 #######################################
 # Runs the terragrunt command to destroy
@@ -58,6 +60,10 @@ function main() {
       terragrunt_destroy "${DATAMIGRATION_HIVE_DIR}"
     elif [[ "${_DATA_SOURCE}" = "teradata" ]]; then
       terragrunt_destroy "${DATAMIGRATION_TERADATA_DIR}"
+    elif [[ "${_DATA_SOURCE}" = "redshift" ]]; then
+      terragrunt_destroy "${DATAMIGRATION_REDSHIFT_DIR}"
+    elif [[ "${_DATA_SOURCE}" = "flat_files" ]]; then
+      terragrunt_destroy "${DATAMIGRATION_FLAT_FILES_DIR}"
     fi
     terragrunt_destroy "${TRANSLATION_DIR}"
   fi
