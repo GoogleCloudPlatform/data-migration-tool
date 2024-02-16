@@ -20,7 +20,7 @@ from common_utils import parallelization_utils
 from google.cloud import bigquery
 
 AUDIT_LOG_DATASET = 'dmt_logs'
-GCS_BQLOAD_AUDIT_TABLE = 'dmt_gcs_bqload_audit'
+GCS_BQLOAD_AUDIT_TABLE = 'dmt_flat_files_bqload_audit'
 GET_TABLE_LIST_FOR_DVT = "select distinct concat('{db_name}.',tablename,' = {bq_dataset_name}.',tablename) as tablename FROM {bq_dataset_audit}.{bq_load_audit} where load_status = 'PASS' and load_dtm = (SELECT max(load_dtm) from {bq_dataset_audit}.{bq_load_audit})"
 
 def audit_log_load_status(

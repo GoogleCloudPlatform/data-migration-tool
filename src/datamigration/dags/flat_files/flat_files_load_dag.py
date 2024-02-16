@@ -22,7 +22,7 @@ from airflow.utils.trigger_rule import TriggerRule
 from datamigration_utils.bq_load_utils import (
     get_job_status
 )
-from gcs_utils.gcs_data_load_utils import (
+from flat_files_utils.flat_files_load_utils import (
     audit_log_load_status,
     file_format_subcmd_2,
     invoke_dvt_dag
@@ -210,7 +210,7 @@ default_args = {
 }
 
 with DAG(
-    "gcs_data_load_dag",
+    "flat_files_load_dag",
     start_date=datetime(2021, 1, 1),
     max_active_runs=2,
     schedule_interval=None,
