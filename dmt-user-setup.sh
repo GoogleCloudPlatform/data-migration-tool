@@ -18,11 +18,12 @@ PROJECT_ID=$(gcloud config get project)
 
 roles=(  
   "roles/bigquery.dataViewer"
-  "roles/bigquery.user"
+  "roles/bigquery.admin"
   "roles/run.viewer"
   "roles/composer.user"
   "roles/storage.admin"
   "roles/vpcaccess.admin"
+  "roles/logging.viewer"
   "projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions"
 )
 

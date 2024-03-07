@@ -139,11 +139,12 @@ Admin User who will be executing the deployment of DMT through Cloud Build will 
 And, user who will be using the DMT tool will require the below set of permissions
 
 * roles/bigquery.dataViewer
-* roles/bigquery.user
+* roles/bigquery.admin
 * roles/run.viewer
 * roles/composer.user
 * roles/storage.admin
-* roles/iam.serviceAccountViewer
+* roles/vpcaccess.admin
+* roles/logging.viewer
 * projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions
 
 
