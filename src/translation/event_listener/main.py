@@ -1,9 +1,10 @@
 import os
 from http import HTTPStatus
 
+import composer
+import errors
+import routing
 from flask import Flask, request
-
-from translation.event_listener import composer, errors, routing
 
 app = Flask(__name__)
 
