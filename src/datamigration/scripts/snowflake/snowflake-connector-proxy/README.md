@@ -1,6 +1,6 @@
 # Snowflake connector proxy
 
-Proxy web application for snwoflake connector
+Proxy web application for snowflake connector
 
 **Note:** This is a temporary stopgap solution until snowflake connector is released with run-time setup feature
 
