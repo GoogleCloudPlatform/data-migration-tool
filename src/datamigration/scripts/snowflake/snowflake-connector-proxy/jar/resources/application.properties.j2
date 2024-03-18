@@ -30,8 +30,6 @@ spring.jpa.hibernate.ddl-auto=update
 #Snowflake connection related property.
 # JDBC url to connect to Snowflake.
 jdbc.url={{ jdbc_url }}
-#database.name=TEST_DATABASE
-#schema.name=public
 # Authenticator type which OAuth-based authentication.
 authenticator.type=oauth
 #Snowflake account URL
@@ -39,7 +37,6 @@ snowflake.account.url={{ account_url }}
 #***************
 #application related property
 # Path where the query to table mapping JSON will be stored. This will be loaded during application startup and override the value corresponding to the tablename at runtime.
-# /Users/sumitba/Documents/git/snowflake-to-bq-connector/src/main/resources
 snowflake.table.query.mapping.path={{ query_mapping_file }}
 # Path of json which holds the request body for the rest request which application uses. This will be loaded during application startup.
 snowflake.request.body.json.path={{ request_body_file }}
