@@ -1045,10 +1045,10 @@ gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --
     **DDL** = gs://dmt-translation-control/input/ddl
 
 
-    **SQL** =  gs://dmt-translation-control/input/sql
+    **SQL** =  gs://dmt-translation-control/input/sql (SQL files), gs://dmt-translation-control/input/sql/ddl (DDL/Metadata files)
 
 
-    **DML** =  gs://dmt-translation-control/input/dml
+    **DML** =  gs://dmt-translation-control/input/dml (DML files), gs://dmt-translation-control/input/sql/ddl (DDL/Metadata files)
 
 3. Upload config.json into the config folder of the bucket
 
