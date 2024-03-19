@@ -1,0 +1,95 @@
+{
+  "unique_id": "unique_id_to_filter_bq_result_table",
+  "batchDistribution": 1,
+  "type": "<ddl/sql>",
+  "source": "teradata",
+  "extract_ddl": "<yes/no>",
+  "translationErrorFilterRules": [
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForFeature"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForSetTables"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForIndexBackedConstraints"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "NoTargetSupportForPartitionSemantics"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "FileRead"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "EmitterSuccess"
+    },
+    {
+      "field": "Category",
+      "matchType": "equals",
+      "value": "TranspilerOutputQuality"
+    }
+  ],
+  "migrationTask": {
+    "type": "Translation_Teradata2BQ",
+    "translationConfigDetails": {
+      "sourceDialect": {
+        "teradataDialect": {
+          "mode": "BTEQ"
+        }
+      },
+      "sourceEnv": {
+        "defaultDatabase": "<project_id>"
+      },
+      "targetDialect": {
+        "bigqueryDialect": {}
+      },
+      "gcsSourcePath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/input/<ddl/sql>",
+      "gcsTargetPath": "gs://dmt-translation-<project-id-or-customer-name-given-in-deployment>/output/<ddl/sql>",
+      "nameMappingList": {
+        "name_map": [
+          {
+            "source": {
+              "type": "SCHEMA",
+              "database": "<project_id>",
+              "schema": "<source_db_schema>"
+            },
+            "target": {
+              "database": "<project_id>",
+              "schema": "<bq_target_dataset>"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "validation_config": {
+    "source_config": {
+      "source_type": "Teradata",
+      "host": "<source_db_host_ip>",
+      "port": 1025,
+      "user-name": "<source_db_username>",
+      "password": "secret:<secret_name>"
+    },
+    "target_config": {
+      "target_type": "BigQuery",
+      "project-id": "<project_id>"
+    },
+    "validation_params_file_path" : "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
+    "validation_mode":"<gke/cloudrun>",
+    "validation_type": "column",
+    "pod_operator_mem" :"4000M",
+    "pod_operator_cpu" :"800m"
+  }
+}

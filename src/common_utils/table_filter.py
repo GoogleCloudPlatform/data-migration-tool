@@ -28,7 +28,7 @@ def filter(files, config):
     validation_type = config["validation_config"]["validation_type"]
     if translation_type == "sql":
         return list()
-    exp = r"\b(?i)(CREATE|REPLACE) (OR REPLACE)*\s?(TABLE|VIEW) (IF NOT EXISTS)*\s?`?([\w-]+)`?\.([\w-]+)\.(\w+)[a-zA-Z]*\b"
+    exp = r"\b(?i:(CREATE|REPLACE) (OR REPLACE)*\s?(TABLE|VIEW) (IF NOT EXISTS)*\s?`?([\w-]+)`?\.([\w-]+)\.(\w+)[a-zA-Z]*)\b"
     remove_expr_bteq = """BEGIN"""
     skip_expr_bteq = ["""EXCEPTION WHEN ERROR""", """END"""]
 
