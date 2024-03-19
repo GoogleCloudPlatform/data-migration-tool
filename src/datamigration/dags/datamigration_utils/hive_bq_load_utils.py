@@ -252,13 +252,14 @@ def get_job_status(tbl, result):
     """
     if result.returncode == 0:
         print("Loaded table: {} ".format(tbl))
-        print("BigQuery job id: {}".format(result.stderr.split(" ")[2]))
         load_status = "PASS"
         reason_for_failure = "NA"
         if len(result.stderr.split(" ")) > 2:
             bq_job_id = result.stderr.split(" ")[2]
+            print("BigQuery job id: {}".format(result.stderr.split(" ")[2]))
         elif len(result.stdout.split(":")) > 2:
             bq_job_id = result.stdout.split(":")[2].replace("'", "")
+            print("BigQuery job id: {}".format(result.stdout.split(":")[2]))
         else:
             bq_job_id = "NA"
     else:

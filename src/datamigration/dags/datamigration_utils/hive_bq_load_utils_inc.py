@@ -115,7 +115,7 @@ def get_inc_table_list_for_copy(config, inc_gcs_files_list):
     return [[tbl] for tbl in tbl_list]
 
 
-def check_bq_table(client, gcs_path, dbname, tblname, dict):
+def check_bq_table(gcs_path, dbname, tblname, dict):
     """
     Check if table is present in BQ
     """
@@ -462,13 +462,14 @@ def get_job_status(tbl, result):
     """
     if result.returncode == 0:
         print("Loaded table: {} ".format(tbl))
-        print("BigQuery job id: {}".format(result.stderr.split(" ")[2]))
         load_status = "PASS"
         reason_for_failure = "NA"
         if len(result.stderr.split(" ")) > 2:
             bq_job_id = result.stderr.split(" ")[2]
+            print("BigQuery job id: {}".format(bq_job_id))
         elif len(result.stdout.split(":")) > 2:
             bq_job_id = result.stdout.split(":")[2].replace("'", "")
+            print("BigQuery job id: {}".format(bq_job_id))
         else:
             bq_job_id = "NA"
     else:
@@ -563,7 +564,6 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
         dict["temp_bucket"],
         constants.df_inc_tables_list.format(dt=dt),
     )
-
     partition_flag = (
         df_hive_tbls[df_hive_tbls["concat_db_tbl"] == concat_db_tbl]["partition_flag"]
         .values[0]
@@ -592,7 +592,6 @@ def load_bq_tables(concat_db_tbl, config, op_load_dtm, op_run_id):
     print(f"file_format : {file_format}")
     print(f"bq_dataset : {bq_dataset}")
     print(f"tbl : {tbl}")
-
     for table_gs_path in table_gs_path_list:
         print(f"Appending {tbl} from: {table_gs_path}".format(tbl, table_gs_path))
         hive_table_gs_path = table_gs_path.split(f"/{tbl}/")[0] + f"/{tbl}"
