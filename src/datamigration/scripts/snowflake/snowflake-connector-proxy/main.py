@@ -54,6 +54,7 @@ def start(app_properties_file_path, port):
     """
     start_cmd = f"java -jar -Dspring.config.location={app_properties_file_path} -Dserver.port={port} {_JAR_PATH}"
     p = subprocess.Popen([start_cmd], shell=True)
+    logging.info("Sleeping 100s ...")
     time.sleep(100)
     if p.poll():
         raise Exception("Snowflake connector jar startup failed")
