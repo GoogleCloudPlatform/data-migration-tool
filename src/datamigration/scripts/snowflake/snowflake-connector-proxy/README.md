@@ -35,8 +35,7 @@ Sample Payload:
     },
     "migration_config": {
         "sourceDatabaseName": "TEST_DATABASE",
-        "sourceSchemaName": "public",
-        "sourceTableName": "orders",
+        "sourceSchemaName": "PUBLIC",
         "targetDatabaseName": "<GCP_PROJECT_ID>",
         "targetSchemaName": "<BIGQUERY_DATASET>",
         "schema": false,
