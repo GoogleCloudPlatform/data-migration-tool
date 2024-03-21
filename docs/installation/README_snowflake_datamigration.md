@@ -244,7 +244,6 @@ _DATA_SOURCE=snowflake
    <td>
     migration_config:sourceDatabaseName
    </td>
-   <td>
       <td>Storage Integration name create as part of pre-requisities</td>
   </tr>
   <tr>
@@ -292,6 +291,7 @@ _DATA_SOURCE=snowflake
     migration_config:location
    </td>
    <td>
+   Location to be used for running translation job and bigquery load
    </td>
   </tr>
   <tr>
