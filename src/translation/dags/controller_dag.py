@@ -22,6 +22,7 @@ DATA_LOAD_TERADATA_DAG_ID = "teradata_data_load_dag"
 DATA_LOAD_HIVE_DAG_ID = "hive_data_load_dag"
 DATA_LOAD_HIVE_INC_DAG_ID = "hive_inc_data_load_dag"
 DATA_LOAD_REDSHIFT_DAG_ID = "redshift_data_load_dag"
+DATA_LOAD_SNOWFLAKE_DAG_ID = "snowflake_data_load_dag"
 TERADATA_TRANSFER_RUN_LOG_DAG_ID = "teradata_transfer_run_log_dag"
 REDSHIFT_TRANSFER_RUN_LOG_DAG_ID = "redshift_transfer_run_log_dag"
 EXTRACT_DDL_DAG_ID = "extract_ddl_dag"
@@ -175,6 +176,8 @@ def _determine_next_dag(ti, **kwargs):
                 next_dag_id = DATA_LOAD_HIVE_INC_DAG_ID
             elif data_source == "redshift":
                 next_dag_id = DATA_LOAD_REDSHIFT_DAG_ID
+            elif data_source == "snowflake":
+                next_dag_id = DATA_LOAD_SNOWFLAKE_DAG_ID
         else:
             print(f"Unsupported operation type: {op_type}")
             next_dag_id = None
