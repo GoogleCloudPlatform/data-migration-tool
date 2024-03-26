@@ -118,14 +118,9 @@ variable "bq_roles" {
   type        = list(string)
   description = "BigQuery Service Account Roles"
   default = [
-    "roles/iam.serviceAccountUser",
-    "roles/bigquery.jobUser",
-    "roles/bigquery.resourceViewer",
-    "roles/bigquery.user",
-    "roles/bigquery.metadataViewer",
+    "roles/bigquery.connectionUser",
     "roles/bigquery.dataEditor",
-    "roles/bigquery.connectionAdmin",
-    "roles/bigquery.admin"
+    "roles/bigquery.jobUser",
   ]
 }
 

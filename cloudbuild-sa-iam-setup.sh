@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Set up required permissions for the Cloud Build service account to be able to deploy DMT infrastructure using Terraform.
+
 PROJECT_ID=$(gcloud config get project)
 
 if [[ -z "${BUILD_ACCOUNT}" ]]; then
@@ -26,23 +28,21 @@ gcloud services enable \
   cloudbuild.googleapis.com
 
 roles=(
+  "roles/artifactregistry.admin"
   "roles/bigquery.admin"
   "roles/composer.admin"
-  "roles/composer.worker"
   "roles/compute.instanceAdmin.v1"
-  "roles/iam.securityAdmin"
-  "roles/iam.serviceAccountAdmin"
-  "roles/serviceusage.serviceUsageAdmin"
+  "roles/compute.networkAdmin"
+  "roles/iam.serviceAccountCreator"
   "roles/iam.serviceAccountUser"
+  "roles/iam.serviceAccountDeleter"
   "roles/logging.viewer"
   "roles/pubsub.admin"
+  "roles/resourcemanager.projectIamAdmin"
   "roles/run.admin"
+  "roles/secretmanager.admin"
+  "roles/serviceusage.serviceUsageAdmin"
   "roles/storage.admin"
-  "roles/storage.objectAdmin"
-  "roles/viewer"
-  "roles/serviceusage.serviceUsageConsumer"
-  "roles/iam.serviceAccountTokenCreator"
-  "roles/compute.networkAdmin"
 )
 
 for role in "${roles[@]}" ; do
