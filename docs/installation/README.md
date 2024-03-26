@@ -164,19 +164,19 @@ And, user who will be using the DMT tool will require the below set of permissio
 ```
 
 
-**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-custom-userrole-setup.sh and dmt-custom-adminrole-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
+**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-user-roles-setup.sh and dmt-admin-roles-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
 
 
 ```
-bash dmt-custom-userrole-setup.sh
+bash dmt-user-roles-setup.sh
 ```
 
 
 ```
-bash dmt-custom-adminrole-setup.sh
+bash dmt-admin-roles-setup.sh
 ```
 
-**To assign these roles, you can execute the Bash script dmt-user-setup.sh and dmt-admin-setup.sh present in the root directory**
+**To assign these roles, you can execute the Bash script dmt-user-setup.sh and dmt-admin-user-setup.sh present in the root directory**
 
 ```
 bash dmt-user-setup.sh
@@ -184,7 +184,7 @@ bash dmt-user-setup.sh
 
 
 ```
-bash dmt-admin-setup.sh
+bash dmt-admin-user-setup.sh
 ```
 
 ## Enable Google Cloud APIs
