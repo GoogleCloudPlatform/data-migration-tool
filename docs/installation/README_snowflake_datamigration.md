@@ -36,7 +36,10 @@ As the configuration is uploaded, a new file create/update trigger is sent to pu
 * Snowflake Storage Integeration which access to staging gcs buckets you wish to use for migration ([Steps](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration))
 * Snowflake file format (will be used for unloading data from snowflake to gcs) ([Steps](https://docs.snowflake.com/en/sql-reference/sql/create-file-format))
 * Snowflake Oauth Client ID, Client Secret and Refresh Token ([Steps](https://community.snowflake.com/s/article/HOW-TO-OAUTH-TOKEN-GENERATION-USING-SNOWFLAKE-CUSTOM-OAUTH))
+<<<<<<< HEAD
 * Make sure, Cloud run service account `dmt-sa-run@<project-id>.iam.gserviceaccount.com` have permissions to read objects from the staging gcs bucket you wish to use for migration
+=======
+>>>>>>> origin/dev-snowflake
 
 
 ### Data Migration Tool Deployment - Snowflake Data Migration
