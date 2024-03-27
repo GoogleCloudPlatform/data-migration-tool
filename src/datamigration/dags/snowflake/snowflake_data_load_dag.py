@@ -20,7 +20,7 @@ from common_utils.operators.reporting_operator import ReportingOperator
 # environment variables
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 CONTROLLER_TOPIC = os.environ.get("CONTROLLER_TOPIC")
-SF_CONNECTOR_HOST = os.environ.get("SF_CONNECTOR_HOST")
+SF_CONNECTOR_HOST = os.environ.get("SNOWFLAKE_CONNECTOR_HOST")
 
 # task names
 GET_CONFIG_TASK = "get_config"
