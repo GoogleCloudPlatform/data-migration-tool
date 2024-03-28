@@ -104,7 +104,7 @@ def _prepare_data_for_next_dag(ti, **kwargs):
         op_type = config["type"]
         if op_type in ["ddl", "sql", "dml"]:
             data_source = config["source"]
-            if data_source in ["teradata", "hive", "oracle", "redshift"]:
+            if data_source in ["teradata", "hive", "oracle", "redshift","snowflake"]:
                 next_dag_config = {"config": config}
             else:
                 print(f"Unsupported data source : {data_source}")
@@ -150,7 +150,7 @@ def _determine_next_dag(ti, **kwargs):
         data_source = config["source"]
         if op_type in ["ddl", "sql", "dml"]:
             data_source = config["source"]
-            if data_source in ["teradata", "oracle", "redshift"]:
+            if data_source in ["teradata", "oracle", "redshift","snowflake"]:
                 if (
                     "extract_ddl" in config
                     and config["extract_ddl"] == "yes"
