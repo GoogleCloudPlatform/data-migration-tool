@@ -31,9 +31,7 @@ from google.cloud import bigquery, storage
 from translation_utils import csv_utils
 from translation_utils import translation_stats_utils as stats_utils
 from translation_utils.bigquery_migration_v2 import (
-    create_single_task_migration_workflow,
-    get_migration_workflow_state,
-)
+    create_single_task_migration_workflow, get_migration_workflow_state)
 
 from common_utils import custom_user_agent, storage_utils
 from common_utils.operators.reporting_operator import ReportingOperator

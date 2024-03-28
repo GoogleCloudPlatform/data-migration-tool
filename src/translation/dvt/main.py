@@ -160,13 +160,18 @@ def get_dvt_cmd_ddl_validation(config, table, validation_params_from_gcs):
     )
 
     user = config["validation_config"]["source_config"]["user"]
-    password=config["validation_config"]["source_config"]["password"]
-    account=config["validation_config"]["source_config"]["account"]
-    database=config["validation_config"]["source_config"]["database"]
-    
+    password = config["validation_config"]["source_config"]["password"]
+    account = config["validation_config"]["source_config"]["account"]
+    database = config["validation_config"]["source_config"]["database"]
+
     if config["source"] == "snowflake":
         add_conn = create_connection_snowflake.format(
-            source_conn=source_conn, user=user, password=password, account=account, database=database,target_conn_string=target_conn_string
+            source_conn=source_conn,
+            user=user,
+            password=password,
+            account=account,
+            database=database,
+            target_conn_string=target_conn_string,
         )
     else:
         add_conn = create_connection.format(
@@ -228,13 +233,18 @@ def get_dvt_cmd_sql_validation(config, sql_file, validation_params_from_gcs):
     )
 
     user = config["validation_config"]["source_config"]["user"]
-    password=config["validation_config"]["source_config"]["password"]
-    account=config["validation_config"]["source_config"]["account"]
-    database=config["validation_config"]["source_config"]["database"]
-    
+    password = config["validation_config"]["source_config"]["password"]
+    account = config["validation_config"]["source_config"]["account"]
+    database = config["validation_config"]["source_config"]["database"]
+
     if config["source"] == "snowflake":
         add_conn = create_connection_snowflake.format(
-            source_conn=source_conn, user=user, password=password, account=account, database=database,target_conn_string=target_conn_string
+            source_conn=source_conn,
+            user=user,
+            password=password,
+            account=account,
+            database=database,
+            target_conn_string=target_conn_string,
         )
     else:
         add_conn = create_connection.format(

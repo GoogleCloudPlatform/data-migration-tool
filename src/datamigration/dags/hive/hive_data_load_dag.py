@@ -20,11 +20,8 @@ from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 from datamigration_utils.hive_bq_load_utils import (
-    get_hive_tables,
-    get_partition_clustering_info,
-    get_text_format_schema,
-    load_bq_tables,
-)
+    get_hive_tables, get_partition_clustering_info, get_text_format_schema,
+    load_bq_tables)
 from datamigration_utils.hive_dvt_check_utils import invoke_dvt_dag
 
 from common_utils.operators.reporting_operator import ReportingOperator
