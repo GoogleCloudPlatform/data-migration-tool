@@ -9,11 +9,6 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 from airflow.utils import timezone
 from airflow.utils.trigger_rule import TriggerRule
-from google.api_core.client_info import ClientInfo
-from google.cloud import bigquery
-from googleapiclient import _auth as auth
-from googleapiclient.errors import HttpError
-
 from common_utils import (
     custom_user_agent,
     discovery_util,
@@ -22,6 +17,10 @@ from common_utils import (
 )
 from common_utils.bigquery_client_utils import utils as bq_utils
 from common_utils.operators.reporting_operator import ReportingOperator
+from google.api_core.client_info import ClientInfo
+from google.cloud import bigquery
+from googleapiclient import _auth as auth
+from googleapiclient.errors import HttpError
 
 # environment variables
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")

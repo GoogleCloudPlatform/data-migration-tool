@@ -10,13 +10,12 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.trigger_rule import TriggerRule
-from datamigration_utils import bq_result_tbl_utils, dts_logs_utils
-from googleapiclient import _auth as auth
-from googleapiclient.errors import HttpError
-
 from common_utils import discovery_util, storage_utils, table_filter
 from common_utils.bigquery_client_utils import utils as bq_utils
 from common_utils.operators.reporting_operator import ReportingOperator
+from datamigration_utils import bq_result_tbl_utils, dts_logs_utils
+from googleapiclient import _auth as auth
+from googleapiclient.errors import HttpError
 
 custom_user_agent_http = auth.authorized_http(auth.default_credentials())
 bq_data_transfer_client = discovery_util.build_from_document_with_custom_http(
