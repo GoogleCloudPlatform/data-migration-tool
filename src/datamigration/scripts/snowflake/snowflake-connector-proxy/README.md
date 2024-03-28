@@ -36,6 +36,7 @@ Sample Payload:
     "migration_config": {
         "sourceDatabaseName": "TEST_DATABASE",
         "sourceSchemaName": "PUBLIC",
+        "sourceTableName": "orders",
         "targetDatabaseName": "<GCP_PROJECT_ID>",
         "targetSchemaName": "<BIGQUERY_DATASET>",
         "schema": false,
@@ -46,6 +47,36 @@ Sample Payload:
         "snowflakeStageLocation": "snowflake_bq_migration/data-unload",
         "snowflakeFileFormatValue": "SF_GCS_CSV_FORMAT_DMT",
         "bqLoadFileFormat": "CSV"
+    }
+}
+```
+
+### ./extract-ddl
+
+Sample Payload:
+```json
+{
+    "oauth_config": {
+        "clientId": "<SNOWFLAKE_CLIENT_ID>",
+        "clientSecret": "<SNOWFLAKE_CLIENT_SECRET>",
+        "refreshToken": "<SNOWFLAKE_REFRESH_TOKEN>"
+    },
+    "setup_config": {
+        "jdbcUrl": "jdbc:snowflake://<ACCOUNT_URL>",
+        "accountUrl": "<ACCOUNT_URL>",
+        "warehouse": "<WAREHOUSE>",
+        "storageIntegration": "<STORAGE_INTEGRATION>"
+    },
+    "trabslation_config": {
+        "sourceDatabaseName": "TEST_DATABASE",
+        "sourceSchemaName": "PUBLIC",
+        "sourceTableName": "orders",
+        "targetDatabaseName": "<GCP_PROJECT_ID>",
+        "targetSchemaName": "<BIGQUERY_DATASET>",
+        "schema": false,
+        "gcsBucketForDDLs": "<GCS_BUCKET>",
+        "gcsBucketForTranslation": "<GCS_BUCKET>",
+        "location": "us"
     }
 }
 ```
