@@ -8,7 +8,7 @@ from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 from airflow.utils.trigger_rule import TriggerRule
-from datamigration_utils.sf_connector_utils import SfConnectorProxyUtils
+from common_utils.sf_connector_utils import SfConnectorProxyUtils
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery
 from googleapiclient import _auth as auth
