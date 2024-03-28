@@ -7,12 +7,13 @@ from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from airflow.providers.google.cloud.operators.dataproc import \
-    DataprocCreateBatchOperator
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import \
-    GCSToBigQueryOperator
-from airflow.providers.google.cloud.transfers.gcs_to_gcs import \
-    GCSToGCSOperator
+from airflow.providers.google.cloud.operators.dataproc import (
+    DataprocCreateBatchOperator,
+)
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import (
+    GCSToBigQueryOperator,
+)
+from airflow.providers.google.cloud.transfers.gcs_to_gcs import GCSToGCSOperator
 from airflow.utils.task_group import TaskGroup
 
 batch_id = (

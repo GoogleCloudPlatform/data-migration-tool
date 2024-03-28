@@ -20,9 +20,15 @@ from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from datamigration_utils.hive_bq_load_utils_inc import (
-    copy_inc_files, get_inc_gcs_files, get_inc_table_list,
-    get_inc_table_list_for_copy, get_partition_clustering_info,
-    get_table_info_from_metadata, get_text_format_schema, load_bq_tables)
+    copy_inc_files,
+    get_inc_gcs_files,
+    get_inc_table_list,
+    get_inc_table_list_for_copy,
+    get_partition_clustering_info,
+    get_table_info_from_metadata,
+    get_text_format_schema,
+    load_bq_tables,
+)
 from google.cloud import storage
 
 bq_audit_dataset_id = "bigshift_logs"
