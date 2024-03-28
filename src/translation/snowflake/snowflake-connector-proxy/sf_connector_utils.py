@@ -5,6 +5,7 @@ from requests.exceptions import HTTPError
 
 _SAVE_OAUTH_VALUES_PATH = "connector/save-oauth-values"
 _MIGRATE_DATA_PATH = "connector/migrate-data"
+_EXTRACT_DDL_PATH = "connector/extract-ddl"
 
 
 class SfConnectorUtils:
@@ -57,6 +58,23 @@ class SfConnectorUtils:
         """
         response = requests.post(
             f"{self.base_endpoint}/{_MIGRATE_DATA_PATH}", json=params
+        )
+        if response.status_code != HTTPStatus.OK:
+            raise HTTPError(response.text)
+        return response.json()
+
+    def extract_ddl(self, params):
+        """
+        Initiates snowflake to bigquery ddl extraction and translation
+
+        Args:
+            params (dict): Request payload for migrate-data API
+
+        Returns:
+            Array of json where each json is denoting status of each table translation
+        """
+        response = requests.post(
+            f"{self.base_endpoint}/{_EXTRACT_DDL_PATH}", json=params
         )
         if response.status_code != HTTPStatus.OK:
             raise HTTPError(response.text)
