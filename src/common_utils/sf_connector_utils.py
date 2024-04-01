@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 import requests
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, JSONDecodeError
 
 from common_utils.oauth_utils import get_id_token
 
@@ -36,7 +36,10 @@ class SfConnectorProxyUtils:
         )
         if response.status_code != HTTPStatus.OK:
             raise HTTPError(response.text)
-        return response.json()
+        try:
+            return response.json()
+        except JSONDecodeError:
+            return response.text
 
     def extract_ddl(self, params):
         """
@@ -54,4 +57,7 @@ class SfConnectorProxyUtils:
         )
         if response.status_code != HTTPStatus.OK:
             raise HTTPError(response.text)
-        return response.json()
+        try:
+            return response.json()
+        except JSONDecodeError:
+            return response.text

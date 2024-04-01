@@ -127,10 +127,13 @@ def migrate_data():
                 refresh_token=oauth_config["refreshToken"],
             )
             res = sf_connector.migrate_data(migration_config)
+            logging.info(f"Connector Response: {res}")
         finally:
             logging.info("Stopping snowflake connector jar")
             jar_process.kill()
         return res, HTTPStatus.OK
+    except KeyError as key:
+        return {"msg": f"Missing key in request body: {key}"}, HTTPStatus.BAD_REQUEST
     except Exception as e:
         return {"msg": str(e)}, HTTPStatus.BAD_REQUEST
 
@@ -199,10 +202,13 @@ def extract_ddl():
                 refresh_token=oauth_config["refreshToken"],
             )
             res = sf_connector.extract_ddl(translation_config)
+            logging.info(f"Connector Response: {res}")
         finally:
             logging.info("Stopping snowflake connector jar")
             jar_process.kill()
         return res, HTTPStatus.OK
+    except KeyError as key:
+        return {"msg": f"Missing key in request body: {key}"}, HTTPStatus.BAD_REQUEST
     except Exception as e:
         return {"msg": str(e)}, HTTPStatus.BAD_REQUEST
 

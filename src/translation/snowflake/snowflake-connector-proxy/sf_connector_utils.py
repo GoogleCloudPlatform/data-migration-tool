@@ -61,7 +61,7 @@ class SfConnectorUtils:
         )
         if response.status_code != HTTPStatus.OK:
             raise HTTPError(response.text)
-        return response.json()
+        return response.text
 
     def extract_ddl(self, params):
         """
@@ -78,4 +78,4 @@ class SfConnectorUtils:
         )
         if response.status_code != HTTPStatus.OK:
             raise HTTPError(response.text)
-        return response.json()
+        return response.text
