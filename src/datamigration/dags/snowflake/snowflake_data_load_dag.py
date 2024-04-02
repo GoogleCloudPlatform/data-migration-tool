@@ -8,7 +8,6 @@ from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 from airflow.utils.trigger_rule import TriggerRule
-from datamigration_utils.sf_connector_utils import SfConnectorProxyUtils
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery
 from googleapiclient import _auth as auth
@@ -16,6 +15,7 @@ from requests.exceptions import HTTPError
 
 from common_utils import custom_user_agent, storage_utils
 from common_utils.operators.reporting_operator import ReportingOperator
+from common_utils.sf_connector_utils import SfConnectorProxyUtils
 
 # environment variables
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
