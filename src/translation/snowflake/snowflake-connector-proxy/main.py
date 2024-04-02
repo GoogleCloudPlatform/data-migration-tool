@@ -9,7 +9,6 @@ from http import HTTPStatus
 
 import jinja2
 from flask import Flask, request
-
 from sf_connector_utils import SfConnectorUtils
 
 _APP_ROOT = os.path.dirname(os.path.abspath(__file__))
