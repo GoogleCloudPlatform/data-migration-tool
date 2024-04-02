@@ -25,10 +25,10 @@ class SfConnectorProxyUtils:
         Initiates snowflake to bigquery migration
 
         Args:
-            params (dict): Request payload for migrate-data API
+            params (dict): Request payload for connector's ./migrate-data API
 
         Returns:
-            Array of json where each json is denoting status of each table migration
+            Array of json where each json is denoting status of each table migration or Response text
         """
         headers = {"Authorization": f"Bearer {get_id_token(self.host)}"}
         response = requests.post(
@@ -46,10 +46,10 @@ class SfConnectorProxyUtils:
         Initiates snowflake to bigquery ddl extraction and translation
 
         Args:
-            params (dict): Request payload for migrate-data API
+            params (dict): Request payload for connector's ./extract-ddl API
 
         Returns:
-            Array of json where each json is denoting status of each table translation
+            Response text
         """
         headers = {"Authorization": f"Bearer {get_id_token(self.host)}"}
         response = requests.post(

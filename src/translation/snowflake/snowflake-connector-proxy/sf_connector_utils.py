@@ -51,10 +51,10 @@ class SfConnectorUtils:
         Initiates snowflake to bigquery migration
 
         Args:
-            params (dict): Request payload for migrate-data API
+            params (dict): Request payload for connector's ./migrate-data API
 
         Returns:
-            Array of json where each json is denoting status of each table migration
+            Array of json where each json is denoting status of each table migration or Response text
         """
         response = requests.post(
             f"{self.base_endpoint}/{_MIGRATE_DATA_PATH}", json=params
@@ -68,10 +68,10 @@ class SfConnectorUtils:
         Initiates snowflake to bigquery ddl extraction and translation
 
         Args:
-            params (dict): Request payload for migrate-data API
+            params (dict): Request payload for connector's ./extract-ddl API
 
         Returns:
-            Array of json where each json is denoting status of each table translation
+            Response text
         """
         response = requests.post(
             f"{self.base_endpoint}/{_EXTRACT_DDL_PATH}", json=params
