@@ -6,6 +6,8 @@ from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 from airflow.utils.trigger_rule import TriggerRule
+from common_utils.operators.reporting_operator import ReportingOperator
+
 from translation_utils.ddl_extraction_utils.build_hive_ddl_extraction_group import (
     build_hive_ddl_extraction_group,
 )
@@ -15,11 +17,12 @@ from translation_utils.ddl_extraction_utils.build_oracle_ddl_extraction_group im
 from translation_utils.ddl_extraction_utils.build_redshift_ddl_extraction_group import (
     build_redshift_ddl_extraction_group,
 )
+from translation_utils.ddl_extraction_utils.build_snowflake_ddl_extraction_group import (
+    build_snowflake_ddl_extraction_group,
+)
 from translation_utils.ddl_extraction_utils.build_teradata_ddl_extraction_group import (
     build_teradata_ddl_extraction_group,
 )
-
-from common_utils.operators.reporting_operator import ReportingOperator
 
 default_args = {"start_date": datetime(2018, 1, 3)}
 
@@ -45,6 +48,9 @@ def _determine_next_taskgroup_from_source(ti, **kwargs):
     elif data_source == "oracle":
         logging.info("Oracle")
         return "oracle_extraction_taskgroup.extract_ddl"
+    elif data_source == "snowflake":
+        logging.info("Snowflake")
+        return "snowflake_extraction_taskgroup.extract_ddl"
     else:
         logging.info(f"Error: Unsupported data source: {data_source}")
         return "end_task"
@@ -68,6 +74,7 @@ with DAG(
     hive_extraction_taskgroup = build_hive_ddl_extraction_group(dag=dag)
     redshift_extraction_taskgroup = build_redshift_ddl_extraction_group(dag=dag)
     oracle_extraction_taskgroup = build_oracle_ddl_extraction_group(dag=dag)
+    snowflake_extraction_taskgroup = build_snowflake_ddl_extraction_group(dag=dag)
 
     dag_report = ReportingOperator(
         task_id="dag_report",
@@ -83,6 +90,7 @@ with DAG(
             hive_extraction_taskgroup,
             redshift_extraction_taskgroup,
             oracle_extraction_taskgroup,
+            snowflake_extraction_taskgroup,
             end_task,
         ]
         >> dag_report
