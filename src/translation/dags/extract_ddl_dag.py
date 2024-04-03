@@ -6,7 +6,6 @@ from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 from airflow.utils.trigger_rule import TriggerRule
-
 from translation_utils.ddl_extraction_utils.build_hive_ddl_extraction_group import (
     build_hive_ddl_extraction_group,
 )
@@ -22,6 +21,7 @@ from translation_utils.ddl_extraction_utils.build_snowflake_ddl_extraction_group
 from translation_utils.ddl_extraction_utils.build_teradata_ddl_extraction_group import (
     build_teradata_ddl_extraction_group,
 )
+
 from common_utils.operators.reporting_operator import ReportingOperator
 
 default_args = {"start_date": datetime(2018, 1, 3)}
