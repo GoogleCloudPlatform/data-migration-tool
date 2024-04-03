@@ -8,9 +8,14 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.task_group import TaskGroup
+<<<<<<< HEAD
 from requests.exceptions import HTTPError
 
 from common_utils.sf_connector_utils import SfConnectorProxyUtils
+=======
+from common_utils.sf_connector_utils import SfConnectorProxyUtils
+from requests.exceptions import HTTPError
+>>>>>>> f5369048b6de476f4dd3ea0a9da8ec9584e6c352
 
 SF_CONNECTOR_HOST = os.environ.get("SNOWFLAKE_CONNECTOR_HOST")
 
