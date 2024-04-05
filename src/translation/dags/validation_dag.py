@@ -61,9 +61,6 @@ create_connection = """data-validation connections add {source_conn_string} && \
         data-validation connections add {target_conn_string} && \
             data-validation connections list"""
 
-create_connection_snowflake = """data-validation connections add -c {source_conn} Snowflake --user {user} --password {password} --account {account} --database {database} && \
-        data-validation connections add {target_conn_string}"""
-
 # dvt schema validation command string
 # stores result in <project_id>.dmt_logs.dmt_dvt_results BQ table (assumes it must be created)
 schema_validation = "data-validation validate schema --source-conn {source_conn} --target-conn {target_conn} --tables-list {table} --bq-result-handler {project_id}.dmt_logs.dmt_dvt_results -l unique_id={unique_id},table_name={bq_table}"
@@ -229,24 +226,9 @@ def get_dvt_cmd_ddl_validation(config, table, validation_params_from_gcs):
         config["validation_config"]["target_config"].items()
     )
 
-    user = config["validation_config"]["source_config"]["user"]
-    password = config["validation_config"]["source_config"]["password"]
-    account = config["validation_config"]["source_config"]["account"]
-    database = config["validation_config"]["source_config"]["database"]
-
-    if config["source"] == "snowflake":
-        add_conn = create_connection_snowflake.format(
-            source_conn=source_conn,
-            user=user,
-            password=password,
-            account=account,
-            database=database,
-            target_conn_string=target_conn_string,
-        )
-    else:
-        add_conn = create_connection.format(
-            source_conn_string=source_conn_string, target_conn_string=target_conn_string
-        )
+    add_conn = create_connection.format(
+        source_conn_string=source_conn_string, target_conn_string=target_conn_string
+    )
 
     validation_type = config["validation_config"]["validation_type"]
 
@@ -300,24 +282,9 @@ def get_dvt_cmd_sql_validation(config, sql_file, validation_params_from_gcs):
         config["validation_config"]["target_config"].items()
     )
 
-    user = config["validation_config"]["source_config"]["user"]
-    password = config["validation_config"]["source_config"]["password"]
-    account = config["validation_config"]["source_config"]["account"]
-    database = config["validation_config"]["source_config"]["database"]
-
-    if config["source"] == "snowflake":
-        add_conn = create_connection_snowflake.format(
-            source_conn=source_conn,
-            user=user,
-            password=password,
-            account=account,
-            database=database,
-            target_conn_string=target_conn_string,
-        )
-    else:
-        add_conn = create_connection.format(
-            source_conn_string=source_conn_string, target_conn_string=target_conn_string
-        )
+    add_conn = create_connection.format(
+        source_conn_string=source_conn_string, target_conn_string=target_conn_string
+    )
 
     translated_config = config["migrationTask"]["translationConfigDetails"]
     source_gcs = translated_config["gcsSourcePath"]
