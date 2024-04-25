@@ -3,6 +3,7 @@
 * For Teradata data migration deployment user guide, please refer to [/docs/installation/README_teradata_datamigration.md](/docs/installation/README_teradata_datamigration.md)
 * For Hive data migration deployment user guide, please refer to [/docs/installation/README_hive_datamigration.md](/docs/installation/README_hive_datamigration.md)
 * For Redshift data migration deployment user guide, please refer to [/docs/installation/README_redshift_datamigration.md](/docs/installation/README_redshift_datamigration.md)
+* For Flatfiles data migration deployment user guide, please refer to [/docs/installation/README_flat_files_datamigration.md](/docs/installation/README_flat_files_datamigration.md)
 
 ## Why you want to use Data Migration Tool
 As customers migrate from on-prem enterprise data warehouses to the Cloud and specifically BigQuery, there is no single end-to-end migration path and/or solution, to make it easy and scalable. There are several tools available for SQL translation, data transfer and data validation, but these need to be configured, run and managed separately. All of this adds additional time, complexity and risk to the data warehouse migration effort. 
@@ -78,6 +79,20 @@ The goal of this tool is to provide an end to end automated solution for custome
   <td>No
   </td>
   <td>No
+  </td>
+  <td>Yes
+  </td>
+ </tr>
+ <tr>
+  <td>Flat files
+  </td>
+  <td>N/A
+  </td>
+  <td>N/A
+  </td>
+  <td>Yes
+  </td>
+  <td>N/A
   </td>
   <td>Yes
   </td>
