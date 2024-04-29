@@ -92,105 +92,115 @@ def _dry_run(ti, **kwargs):
             aggregated_results = []
 
             for filename in files:
-                f = os.path.join(DIRECTORY, filename)
-                logging.info(f)
+                if 'ddl/' in filename or 'dml/' in filename or 'sql/' in filename:
+                    f = os.path.join(DIRECTORY, filename)
+                    logging.info(f)
 
-                content = open(f, "r").read()
-                statements = content.split(";")
-                statements.pop()
-                # Remove last item from list
-                # (i.e. Last item will new line for ; last character)
+                    content = open(f, "r").read()
+                    statements = content.split(";")
+                    statements.pop()
+                    # Remove last item from list
+                    # (i.e. Last item will new line for ; last character)
 
-                for stmt in statements:
-                    stmt = stmt.strip()
+                    for stmt in statements:
+                        stmt = stmt.strip()
 
-                    # Default uncommentedStmtPresent is true means that line/statement doesn't have comments on starting
-                    uncommentedStmtPresent = True
-                    # Check if line/statement have comments on starting
-                    if bool(
-                        re.match(
-                            r"(?=(" + "|".join(skip_comment_expr) + r"))", stmt, re.I
-                        )
-                    ):
-                        # Set uncommentedStmtPresent to false as starting characters in line has comments
-                        uncommentedStmtPresent = False
-                        for lineStmt in stmt.splitlines():
-                            # Check if all the lines has comments, if not update uncommentedStmtPresent flag value to True and break the loop
-                            if (
-                                bool(
-                                    re.match(
-                                        r"(?=(" + "|".join(skip_comment_expr) + r"))",
-                                        lineStmt,
-                                        re.I,
-                                    )
-                                )
-                                is False
-                            ):
-                                uncommentedStmtPresent = True
-                                logging.info(
-                                    "In commented line separated by ; there is uncommented SQL statement which needs to process"
-                                )
-                                break
-
-                    if mode == "SQL" and not uncommentedStmtPresent:
-                        logging.info(
-                            "SQL mode, skip the statement \
-                                and goto next statement"
-                        )
-                        continue
-
-                    elif mode == "BTEQ":
-                        logging.info("BTEQ mode")
-
-                        if (
-                            bool(
-                                re.match(
-                                    r"(?=(" + "|".join(skip_expr_bteq) + r"))",
-                                    stmt,
-                                    re.I,
-                                )
+                        # Default uncommentedStmtPresent is true means that line/statement doesn't have comments on starting
+                        uncommentedStmtPresent = True
+                        # Check if line/statement have comments on starting
+                        if bool(
+                            re.match(
+                                r"(?=(" + "|".join(skip_comment_expr) + r"))", stmt, re.I
                             )
-                            and not uncommentedStmtPresent
                         ):
+                            # Set uncommentedStmtPresent to false as starting characters in line has comments
+                            uncommentedStmtPresent = False
+                            for lineStmt in stmt.splitlines():
+                                # Check if all the lines has comments, if not update uncommentedStmtPresent flag value to True and break the loop
+                                if lineStmt == "":
+                                        continue
+                                if (
+                                    bool(
+                                        re.match(
+                                            r"(?=(" + "|".join(skip_comment_expr) + r"))",
+                                            lineStmt,
+                                            re.I,
+                                        )
+                                    )
+                                    is False
+                                ):
+                                    uncommentedStmtPresent = True
+                                    logging.info(
+                                        "In commented line separated by ; there is uncommented SQL statement which needs to process"
+                                    )
+                                    break
+
+                        if mode == "SQL" and not uncommentedStmtPresent:
                             logging.info(
-                                "BTEQ mode, skip the statement \
+                                "SQL mode, skip the statement \
                                     and goto next statement"
                             )
                             continue
 
-                        if bool(re.match(remove_expr_bteq, stmt, re.I)):
-                            logging.info(
-                                "Statement start with begin block \
-                                    hence remove BEGIN word"
-                            )
-                            stmt = re.split(remove_expr_bteq, stmt, flags=re.I)[1]
+                        elif mode == "BTEQ":
+                            logging.info("BTEQ mode")
 
-                    queryStr = ""
-                    exec_time = datetime.datetime.now()
+                            if (
+                                bool(
+                                    re.match(
+                                        r"(?=(" + "|".join(skip_expr_bteq) + r"))",
+                                        stmt,
+                                        re.I,
+                                    )
+                                )
+                                and not uncommentedStmtPresent
+                            ):
+                                logging.info(
+                                    "BTEQ mode, skip the statement \
+                                        and goto next statement"
+                                )
+                                continue
 
-                    response_json = bq_client.query(
-                        stmt, job_config=job_config
-                    )._properties
-                    # A dry run query completes immediately.
-                    logging.debug(f"This query response json - {response_json}")
+                            if bool(re.match(remove_expr_bteq, stmt, re.I)):
+                                logging.info(
+                                    "Statement start with begin block \
+                                        hence remove BEGIN word"
+                                )
+                                stmt = re.split(remove_expr_bteq, stmt, flags=re.I)[1]
+                                
+                            if not uncommentedStmtPresent:
+                                    logging.info(
+                                        "BTEQ mode, skip the statement \
+                                            and goto next statement"
+                                    )
+                                    continue 
 
-                    if response_json["status"]["state"] == "DONE":
-                        successful_query_count += 1
-                        statement_type = response_json["statistics"]["query"][
-                            "statementType"
-                        ]
-                        bq_table_name = response_json["configuration"]["query"][
-                            "destinationTable"
-                        ]["tableId"]
-                        logging.info("Nothing went wrong in _dry_run")
-                        queryStr = f"INSERT INTO `{PROJECT_ID}.{BQ_RESULT_DATASET_NAME}.{BQ_RESULT_TABLE_NAME}`(unique_id,file_name,status,error_details,execution_start_time,gcs_input_path,gcs_output_path,bq_table_name,statement_type) VALUES ('{unique_id}','{filename}','success','','{exec_time}','{gcsSourcePath}','{gcsTargetPath}','{bq_table_name}','{statement_type}' )"
-                    else:
-                        failed_query_count += 1
-                        logging.info("Dry run fail")
-                        error_details = response_json["error"]["message"]
-                        queryStr = f"INSERT INTO `{PROJECT_ID}.{BQ_RESULT_DATASET_NAME}.{BQ_RESULT_TABLE_NAME}`(unique_id,file_name,status,error_details,execution_start_time,gcs_input_path,gcs_output_path,bq_table_name,statement_type) VALUES ('{unique_id}','{filename}','fail','{error_details}','{exec_time}','{gcsSourcePath}','{gcsTargetPath}','', '')"
+                        queryStr = ""
+                        exec_time = datetime.datetime.now()
 
-                    queryString = queryString + queryStr + ";"
+                        response_json = bq_client.query(
+                            stmt, job_config=job_config
+                        )._properties
+                        # A dry run query completes immediately.
+                        logging.debug(f"This query response json - {response_json}")
+
+                        if response_json["status"]["state"] == "DONE":
+                            successful_query_count += 1
+                            statement_type = response_json["statistics"]["query"][
+                                "statementType"
+                            ]
+                            bq_table_name = response_json["configuration"]["query"][
+                                "destinationTable"
+                            ]["tableId"]
+                            logging.info("Nothing went wrong in _dry_run")
+                            queryStr = f"INSERT INTO `{PROJECT_ID}.{BQ_RESULT_DATASET_NAME}.{BQ_RESULT_TABLE_NAME}`(unique_id,file_name,status,error_details,execution_start_time,gcs_input_path,gcs_output_path,bq_table_name,statement_type) VALUES ('{unique_id}','{filename}','success','','{exec_time}','{gcsSourcePath}','{gcsTargetPath}','{bq_table_name}','{statement_type}' )"
+                        else:
+                            failed_query_count += 1
+                            logging.info("Dry run fail")
+                            error_details = response_json["error"]["message"]
+                            queryStr = f"INSERT INTO `{PROJECT_ID}.{BQ_RESULT_DATASET_NAME}.{BQ_RESULT_TABLE_NAME}`(unique_id,file_name,status,error_details,execution_start_time,gcs_input_path,gcs_output_path,bq_table_name,statement_type) VALUES ('{unique_id}','{filename}','fail','{error_details}','{exec_time}','{gcsSourcePath}','{gcsTargetPath}','', '')"
+
+                        queryString = queryString + queryStr + ";"
 
             aggregated_results.append(
                 {
