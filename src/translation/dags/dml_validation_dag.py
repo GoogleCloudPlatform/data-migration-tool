@@ -174,7 +174,7 @@ def _dry_run(ti, **kwargs):
                                         and goto next statement"
                                 )
                                 continue
- 
+
                         queryStr = ""
                         exec_time = datetime.datetime.now()
 
