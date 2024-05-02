@@ -173,7 +173,7 @@ def _dry_run(ti, **kwargs):
                                     "BTEQ mode, skip the statement \
                                         and goto next statement"
                                 )
-                                continue 
+                                continue
 
                         queryStr = ""
                         exec_time = datetime.datetime.now()
