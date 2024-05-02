@@ -110,19 +110,23 @@ def _dry_run(ti, **kwargs):
                         # Check if line/statement have comments on starting
                         if bool(
                             re.match(
-                                r"(?=(" + "|".join(skip_comment_expr) + r"))", stmt, re.I
+                                r"(?=(" + "|".join(skip_comment_expr) + r"))",
+                                stmt,
+                                re.I,
                             )
                         ):
                             # Set uncommentedStmtPresent to false as starting characters in line has comments
                             uncommentedStmtPresent = False
                             for lineStmt in stmt.splitlines():
+                                # Check if all the lines has comments, if not update uncommentedStmtPresent flag value to True and break the loop
                                 if lineStmt == "":
                                     continue
-                                # Check if all the lines has comments, if not update uncommentedStmtPresent flag value to True and break the loop
                                 if (
                                     bool(
                                         re.match(
-                                            r"(?=(" + "|".join(skip_comment_expr) + r"))",
+                                            r"(?=("
+                                            + "|".join(skip_comment_expr)
+                                            + r"))",
                                             lineStmt,
                                             re.I,
                                         )
