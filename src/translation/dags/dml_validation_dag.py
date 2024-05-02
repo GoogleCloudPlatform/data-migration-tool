@@ -92,7 +92,7 @@ def _dry_run(ti, **kwargs):
             aggregated_results = []
 
             for filename in files:
-                if 'ddl/' in filename or 'dml/' in filename or 'sql/' in filename:
+                if "ddl/" in filename or "dml/" in filename or "sql/" in filename:
                     f = os.path.join(DIRECTORY, filename)
                     logging.info(f)
 
@@ -110,7 +110,9 @@ def _dry_run(ti, **kwargs):
                         # Check if line/statement have comments on starting
                         if bool(
                             re.match(
-                                r"(?=(" + "|".join(skip_comment_expr) + r"))", stmt, re.I
+                                r"(?=(" + "|".join(skip_comment_expr) + r"))",
+                                stmt,
+                                re.I,
                             )
                         ):
                             # Set uncommentedStmtPresent to false as starting characters in line has comments
@@ -122,7 +124,9 @@ def _dry_run(ti, **kwargs):
                                 if (
                                     bool(
                                         re.match(
-                                            r"(?=(" + "|".join(skip_comment_expr) + r"))",
+                                            r"(?=("
+                                            + "|".join(skip_comment_expr)
+                                            + r"))",
                                             lineStmt,
                                             re.I,
                                         )
