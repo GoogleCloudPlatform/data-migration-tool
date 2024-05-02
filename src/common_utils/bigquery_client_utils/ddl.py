@@ -62,7 +62,7 @@ class Script:
 
         if self.status == ScriptStatus.RETRY:
             self.retries += 1
-         
+
         self.job = Script.get_bq_client().query(
             self.get_script(), job_id_prefix=job_id_prefix
         )
@@ -104,7 +104,7 @@ class Script:
 
 
 def run_script_files(file_list, error_handler, success_handler, job_id_prefix=None):
-       
+
     scripts = []
     for file in file_list:
         if file.endswith(".sql"):

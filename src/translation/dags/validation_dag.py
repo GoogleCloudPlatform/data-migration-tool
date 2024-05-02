@@ -355,10 +355,11 @@ def parallelize_dvt_tasks(input_json):
     elif translation_type == "sql":
         files = input_json["files"]
         for file in files:
-            bash_cmd = get_dvt_cmd_sql_validation(
-                config, file, validation_params_from_gcs
-            )
-            bash_cmds_list.append(bash_cmd)
+            if file.endswith(".sql"):
+                bash_cmd = get_dvt_cmd_sql_validation(
+                    config, file, validation_params_from_gcs
+                )
+                bash_cmds_list.append(bash_cmd)
     else:
         print(f"Unknown translation type: {translation_type}")
     return bash_cmds_list

@@ -118,7 +118,7 @@ def _dry_run(ti, **kwargs):
                             for lineStmt in stmt.splitlines():
                                 # Check if all the lines has comments, if not update uncommentedStmtPresent flag value to True and break the loop
                                 if lineStmt == "":
-                                        continue
+                                    continue
                                 if (
                                     bool(
                                         re.match(
@@ -167,13 +167,13 @@ def _dry_run(ti, **kwargs):
                                         hence remove BEGIN word"
                                 )
                                 stmt = re.split(remove_expr_bteq, stmt, flags=re.I)[1]
-                                
+
                             if not uncommentedStmtPresent:
-                                    logging.info(
-                                        "BTEQ mode, skip the statement \
-                                            and goto next statement"
-                                    )
-                                    continue 
+                                logging.info(
+                                    "BTEQ mode, skip the statement \
+                                        and goto next statement"
+                                )
+                                continue 
 
                         queryStr = ""
                         exec_time = datetime.datetime.now()
