@@ -79,9 +79,10 @@ def _get_table_or_file_list(input_json):
     elif translation_type == "sql":
         files = input_json["files"]
         for file in files:
-            request_json = common_request_json.copy()
-            request_json["sql_file"] = file
-            file_or_table_list.append(request_json)
+            if file.endswith(".sql"):
+                request_json = common_request_json.copy()
+                request_json["sql_file"] = file
+                file_or_table_list.append(request_json)
     else:
         print(f"Unknown validation type: {translation_type}")
         raise AirflowFailException(f"Unknown translation type: {translation_type}")

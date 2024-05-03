@@ -104,7 +104,11 @@ class Script:
 
 
 def run_script_files(file_list, error_handler, success_handler, job_id_prefix=None):
-    scripts = [Script(file) for file in file_list]
+
+    scripts = []
+    for file in file_list:
+        if file.endswith(".sql"):
+            scripts.append(Script(file))
     marked_for_retry_count = 0
     with concurrent.futures.ThreadPoolExecutor() as executor:
         while True:
