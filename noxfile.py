@@ -37,7 +37,13 @@ LINT_PACKAGES = ["flake8", "black==22.3.0", "isort"]
 def _setup_session_requirements(session, extra_packages=[]):
     """Install requirements for nox tests."""
     session.install(
-        "--upgrade", "pip", "pytest", "pytest-mock", "wheel", "testfixtures"
+        "--upgrade",
+        "pip",
+        "pytest",
+        "pytest-cov",
+        "pytest-mock",
+        "wheel",
+        "testfixtures",
     )
     if extra_packages:
         session.install(*extra_packages)
@@ -85,6 +91,10 @@ def unit(session):
         session.run(
             "pytest",
             "--quiet",
+            "--cov=src",
+            "--cov-append",
+            "--cov-config=.coveragerc",
+            "--cov-report=term",
             test_path,
         )
 
