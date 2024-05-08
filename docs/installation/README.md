@@ -80,8 +80,8 @@ The DVT Cloud Run and Cloud Composer should only be created in the same region.
 
 
 
-* Current release supports DDLs and select queries only. DML statements will be supported with dry run option only.
-* Current release doesn't support data transfer for Oracle and Incremental data load for Teradata,Redshift.
+* Current release supports DDLs and SELECT queries only. DML statements will be supported with dry run option only.
+* Current release doesn't support data transfer for Oracle or Incremental data load for Teradata, Redshift.
 
 # DMT Deployment
 
@@ -118,6 +118,75 @@ git checkout main
 ```
 
 
+## Assign Executing User and Admin Permissions
+
+Admin User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
+
+* roles/bigquery.dataViewer
+* roles/bigquery.user
+* roles/cloudbuild.builds.editor
+* roles/run.viewer
+* roles/compute.admin
+* roles/iam.serviceAccountViewer
+* roles/logging.viewer
+* roles/run.viewer
+* roles/serviceusage.serviceUsageConsumer
+* roles/storage.admin
+* roles/iam.serviceAccountViewer
+* projects/${PROJECT_ID}/roles/DMTAdminAdditionalPermissions
+
+
+And, user who will be using the DMT tool will require the below set of permissions
+
+* roles/bigquery.dataViewer
+* roles/bigquery.admin
+* roles/run.viewer
+* roles/composer.user
+* roles/storage.admin
+* roles/vpcaccess.admin
+* roles/logging.viewer
+* projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions
+
+
+**Note - DMTUserAdditionalPermissions role is custom DMT user role and DMTAdminAdditionalPermissions is also custom role for DMT admin**
+
+
+```
+ export ADMIN_ACCOUNT=<EXECUTING_ADMIN_ACCOUNT>
+```
+
+```
+ export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
+```
+
+```
+ export SOURCE_PROJECT=<YOUR_PROJECT_ID>
+```
+
+
+**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-user-roles-setup.sh and dmt-admin-roles-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
+
+
+```
+bash dmt-user-roles-setup.sh
+```
+
+
+```
+bash dmt-admin-roles-setup.sh
+```
+
+**To assign these roles, you can execute the Bash script dmt-user-setup.sh and dmt-admin-user-setup.sh present in the root directory**
+
+```
+bash dmt-user-setup.sh
+```
+
+
+```
+bash dmt-admin-user-setup.sh
+```
+
 ## Enable Google Cloud APIs
 
 From the Cloud Shell, you can enable Google Cloud Services using the gcloud command line interface in your Google Cloud project.
@@ -142,63 +211,6 @@ gcloud services enable serviceusage.googleapis.com \
 ```
 
 
-
-## Assign Executing User Permissions
-
-User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
-
-
-
-* roles/serviceusage.serviceUsageConsumer
-* roles/storage.admin
-* roles/cloudbuild.builds.editor
-* roles/logging.viewer
-
-```
- export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-
-```
- export USER_ACCOUNT=<EXECUTING_USER_ACCOUNT>
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/serviceusage.serviceUsageConsumer" --condition="None"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/storage.admin" --condition="None"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/cloudbuild.builds.editor" --condition="None"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding "$SOURCE_PROJECT" \
-  --member="user:$USER_ACCOUNT" \
-  --role="roles/logging.viewer" --condition="None"
-```
-
-
-
-
 ## IAM permissions for Cloud Build Service Account
 
 Identify the Cloud Build default Service Account and assign the below IAM roles for the execution of the deployment of DMT architecture.
@@ -211,30 +223,26 @@ Google Cloud Console -> Cloud Build -> Settings
 
 **IAM roles required for the created Service Account**
 
-
 ```
+Artifact Registry Administrator
 BigQuery Admin
+Cloud Build Service Account
 Cloud Run Admin
 Composer Administrator
-Composer Worker
 Compute Instance Admin (v1)
+Compute Network Admin
+Create Service Accounts
 Logs Viewer
+Project IAM Admin
 Pub/Sub Admin
-Security Admin
-Service Account Admin
+Secret Manager Admin
 Service Account User
 Service Usage Admin
 Storage Admin
-Compute OS Admin Login
-Storage Object Admin
-Viewer
-Service Account Token Creator
-Compute Network Admin
-Service Usage Consumer
 ```
 
 
-**To assign these roles, you can execute the Bash script iam-setup.sh present in the root directory**
+**To assign these roles, you can execute the Bash script cloudbuild-sa-iam-setup.sh present in the root directory**
 
 
 ```
@@ -249,7 +257,7 @@ export SOURCE_PROJECT=<YOUR_PROJECT_ID>
 
 
 ```
-bash iam-setup.sh
+bash cloudbuild-sa-iam-setup.sh
 ```
 
 
@@ -271,7 +279,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/composer.admin"
+--role="roles/run.admin"
 ```
 
 
@@ -279,7 +287,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/composer.worker"
+--role="roles/composer.admin"
 ```
 
 
@@ -295,7 +303,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.securityAdmin"
+--role="roles/compute.networkAdmin"
 ```
 
 
@@ -303,23 +311,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/serviceusage.serviceUsageAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountUser"
+--role="roles/iam.serviceAccountCreator"
 ```
 
 
@@ -335,6 +327,14 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/resourcemanager.projectIamAdmin"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
 --role="roles/pubsub.admin"
 ```
 
@@ -343,7 +343,23 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/run.admin"
+--role="roles/secretmanager.admin"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/iam.serviceAccountUser"
+```
+
+
+
+```
+gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+--member="serviceAccount:$BUILD_ACCOUNT" \
+--role="roles/serviceusage.serviceUsageAdmin"
 ```
 
 
@@ -359,39 +375,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 ```
 gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 --member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/storage.objectAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/viewer"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountTokenCreator"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/compute.networkAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/serviceusage.serviceUsageConsumer"
+--role="roles/artifactregistry.admin"
 ```
 
 
@@ -509,66 +493,64 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
       export SERVICE_PROJECT_NUMBER=<service_project_number>
       ```
       
-      b. Provide **Compute Network User** Permission to Google APIs service account
+      b. Provide **Compute Network User** Permission to Google APIs service agent
 
 
       ```
-      export GOOGLE_API_SERVICE_ACCOUNT=$SERVICE_PROJECT_NUMBER@cloudservices.gserviceaccount.com
+      export GOOGLE_API_SERVICE_AGENT=$SERVICE_PROJECT_NUMBER@cloudservices.gserviceaccount.com
       ```
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GOOGLE_API_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GOOGLE_API_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
 
-      c. Provide **Compute Network User** and **Kubernetes Engine Host Service Agent User** Permission to GKE service account
+      c. Provide **Compute Network User** and **Kubernetes Engine Host Service Agent User** Permission to GKE service agent
 
 
       ```
-      export GKE_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com
+      export GKE_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com
       ```
 
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GKE_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
 
 
       ```
       gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-      --member="serviceAccount:$GKE_SERVICE_ACCOUNT" \
+      --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/container.hostServiceAgentUser"
       ```
       
 
-      d. Provide Permission to Composer Agent Service Account
+      d. Provide Permission to Composer Service Agent 
 
-         1. In the service project, if this is the first Cloud Composer environment, then provision the Composer Agent Service Account: `gcloud beta services identity create --service=composer.googleapis.com`
-
-         2. Either provide, **Composer Shared VPC Agent** Permission to Composer Agent Service Account in case for **Private environment**
+         1. Either provide **Composer Shared VPC Agent** Permission to Composer Service Agent Account in case for **Private environment**
 
          ```
-         export COMPOSER_AGENT_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
+         export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
             gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-            --member="serviceAccount:$COMPOSER_AGENT_SERVICE_ACCOUNT" \
+            --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/composer.sharedVpcAgent"
          ```
 
          Or, Provide **Compute Network User** Permission to Composer Agent Service Account in case for **Public environment**
 
          ```
-         export COMPOSER_AGENT_SERVICE_ACCOUNT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
+         export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
             gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
-            --member="serviceAccount:$COMPOSER_AGENT_SERVICE_ACCOUNT" \
+            --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/compute.networkUser"
          ```
 
@@ -977,11 +959,9 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
 
 
-8. If the **workload_identity_creator_dag** runs successfully and is in dark green status in Airflow - now you can safely remove the role **Service Account Admin** that was given to Composer Service Account (**dmt-sa-gcc**) since this is a security admin role.
+8. If you intend to migrate tables over to BQ dataset other than dmt-teradata-dataset, please ensure this dataset is manually created and is provided in the config files later  (create tables from DDLs)
 
-9. If you intend to migrate tables over to BQ dataset other than dmt-teradata-dataset, please ensure this dataset is manually created and is provided in the config files later  (create tables from DDLs)
-
-10.  **(Mandatory for teradata ddl extraction)** Teradata ddl extraction requires teradata jdbc jar. Upload the jdbc jar file to your GCS config bucket under the `software/teradata` folder as shown below:
+9.  **(Mandatory for teradata ddl extraction)** Teradata ddl extraction requires teradata jdbc jar. Upload the jdbc jar file to your GCS config bucket under the `software/teradata` folder as shown below:
 
       1) Download the jar from teradata downloads: 	[https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
 
@@ -989,7 +969,7 @@ gcloud compute firewall-rules create pod-operator-firewall \
       Make sure the file is placed in the `software/teradata` path \
       (e.g. `gs://YOUR_DMT_CONFIG_BUCKET/software/teradata/terajdbc4.jar`) 
       
-11. **(Optional - Only for Oracle)** Remove GCS bucket created to store .RPM file for setup.
+10. **(Optional - Only for Oracle)** Remove GCS bucket created to store .RPM file for setup.
 
 
 **Build connection between CloudRun and Source database [Applicable for network connectivity uses VPN connectivity]**
@@ -1065,10 +1045,10 @@ gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --
     **DDL** = gs://dmt-translation-control/input/ddl
 
 
-    **SQL** =  gs://dmt-translation-control/input/sql
+    **SQL** =  gs://dmt-translation-control/input/sql (SQL files), gs://dmt-translation-control/input/sql/ddl (DDL/Metadata files)
 
 
-    **DML** =  gs://dmt-translation-control/input/dml
+    **DML** =  gs://dmt-translation-control/input/dml (DML files), gs://dmt-translation-control/input/sql/ddl (DDL/Metadata files)
 
 3. Upload config.json into the config folder of the bucket
 

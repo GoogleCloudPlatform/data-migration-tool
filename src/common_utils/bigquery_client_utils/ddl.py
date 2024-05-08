@@ -104,7 +104,6 @@ class Script:
 
 
 def run_script_files(file_list, error_handler, success_handler, job_id_prefix=None):
-
     scripts = []
     for file in file_list:
         if file.endswith(".sql"):

@@ -59,6 +59,7 @@ bin/
 include/
 .Python/
 venv/
+.python-version
 
 # These lines are suggested according to the svn:ignore property
 # Feel free to enable them by uncommenting them

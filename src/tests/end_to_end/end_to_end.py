@@ -168,7 +168,7 @@ def delete_bq_dataset(unique_id):
 # Run the following to setup project
 """
 gcloud config set project YOUR_PROJECT_ID &&
-bash iam-setup.sh &&
+bash cloudbuild-sa-iam-setup.sh &&
 gcloud builds submit . --config cloudbuild_deploy.yaml --substitutions _DATA_SOURCE="teradata"
 """
 
