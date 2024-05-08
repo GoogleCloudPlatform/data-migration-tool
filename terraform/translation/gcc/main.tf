@@ -45,13 +45,6 @@ locals {
   worker_max_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.value["max_count"]
 }
 
-resource "google_project_iam_member" "composer_service_agent" {
-  count   = var.grant_sa_agent_permission ? 1 : 0
-  project = data.google_project.project.project_id
-  role    = "roles/composer.ServiceAgentV2Ext"
-  member  = format("serviceAccount:%s", local.cloud_composer_sa)
-}
-
 /* Cloud Composer Service Account creation that will be attached to the Composer */
 
 resource "google_service_account" "composer_service_account" {
@@ -68,6 +61,14 @@ resource "google_project_iam_member" "composer-worker" {
   for_each   = toset(var.composer_roles)
   role       = each.value
   member     = "serviceAccount:${var.service_account_gcc}@${var.project_id}.iam.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "composer_service_agent" {
+  depends_on = [google_service_account.composer_service_account]
+  count      = var.grant_sa_agent_permission ? 1 : 0
+  project    = data.google_project.project.project_id
+  role       = "roles/composer.ServiceAgentV2Ext"
+  member     = format("serviceAccount:%s", local.cloud_composer_sa)
 }
 
 /* Provide Object Admin authorization for Service Account to the created GCS buckets */
