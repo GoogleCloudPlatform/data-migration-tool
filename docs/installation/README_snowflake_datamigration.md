@@ -1,7 +1,3 @@
-# [DRAFT] [WIP]
-
-# [TODO]: Schema translation, and Data validation is yet to integerated
-
 # Data Migration Tool User Guide - Data Transfer
 * For Data Migration Tool introduction, please refer to [/README.md](/README.md)
 * For Installation user guide, please refer to [/docs/installation/README.md](/docs/installation/README.md)
@@ -32,8 +28,8 @@ As the configuration is uploaded, a new file create/update trigger is sent to pu
 * Target dataset creation to be done by the user/concerned team before uploading the configuration file.
 * Snowflake Account URL 
 * Snowflake JDBC URL
-* Snowflake Warehouse name (which has access to required tables/schemas to migrate)
-* Snowflake Storage Integeration which access to staging gcs buckets you wish to use for migration ([Steps](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration))
+* Snowflake Warehouse name with access to required snowflaketables/schemas to migrate
+* Snowflake Storage Integeration with access to staging gcs buckets you wish to use for migration ([Steps](https://docs.snowflake.com/en/user-guide/data-load-gcs-config#configuring-a-snowflake-storage-integration) - Check Step 1, 2, 3)
 * Snowflake file format (will be used for unloading data from snowflake to gcs) ([Steps](https://docs.snowflake.com/en/sql-reference/sql/create-file-format))
 * Snowflake Oauth Client ID, Client Secret and Refresh Token ([Steps](https://community.snowflake.com/s/article/HOW-TO-OAUTH-TOKEN-GENERATION-USING-SNOWFLAKE-CUSTOM-OAUTH))
 * Make sure, Cloud run service account `dmt-sa-run@<project-id>.iam.gserviceaccount.com` have permissions to read objects from the staging gcs bucket you wish to use for migration
@@ -112,7 +108,7 @@ _DATA_SOURCE=snowflake
 }
 ```
 
-[Data Transfer sample config file location](samples/configs/snowflake)
+[Data Transfer sample config file location](../../samples/configs/snowflake)
 
   
 #### Field Descriptions
@@ -320,7 +316,7 @@ This is the file format created in Snowflakes which will be used while unloading
 </table>
 
 
-**unique_id:** name to uniquely identify the batches or DTS for this config file. 
+**unique_id:** name to uniquely identify the jobs for this config file. 
 
 _<span style="text-decoration:underline;">Note</span>_ if the user opted for data migration, along with schema migration through the tool, this unique id should be the same as the one used in the schema migration config file.
 
@@ -336,6 +332,7 @@ Eg:
 
 **_Tables in the CSV file should always be in the same case as how they exist in source Snowflake and ultimately match the contents of CSV/Excel file uploaded as validation parameters file in GCS._**
 
+<!-- 
 ### Validation data in BigQuery
 
 Composer DAG validation_dag will validate the data migrated to BQ. Results for DVT can be viewed in ``<PROJECT_ID>.dmt_logs.dmt_dvt_results``
@@ -350,4 +347,4 @@ target_table_name = <target_table_name>
 
 There are two ways to validate data - column or row. Validation_type given as column verifies count aggregation on the source and target tables. Validation_type given as row verifies hash of the rows based on the primary key. Hence for row validations, providing primary_key in Validation_config json is necessary.
 
-Check the field descriptions section for detailed information on the keys in the configuration file.
+Check the field descriptions section for detailed information on the keys in the configuration file. -->
