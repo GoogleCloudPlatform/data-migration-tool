@@ -45,11 +45,16 @@ locals {
   worker_max_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.value["max_count"]
 }
 
+resource "time_sleep" "wait_60_seconds" {
+  create_duration = "60s"
+}
+
 resource "google_project_iam_member" "composer_service_agent" {
-  count   = var.grant_sa_agent_permission ? 1 : 0
-  project = data.google_project.project.project_id
-  role    = "roles/composer.ServiceAgentV2Ext"
-  member  = format("serviceAccount:%s", local.cloud_composer_sa)
+  depends_on = [time_sleep.wait_60_seconds]
+  count      = var.grant_sa_agent_permission ? 1 : 0
+  project    = data.google_project.project.project_id
+  role       = "roles/composer.ServiceAgentV2Ext"
+  member     = format("serviceAccount:%s", local.cloud_composer_sa)
 }
 
 /* Cloud Composer Service Account creation that will be attached to the Composer */
