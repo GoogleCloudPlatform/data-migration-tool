@@ -97,7 +97,6 @@ def test_get_hive_tables(
     config,
     expected_results,
 ):
-
     data = xr.DataArray(
         np.random.randn(3, 3), coords={"table": ["a", "b", "c"]}, dims=("y", "table")
     )
@@ -145,7 +144,6 @@ input_expected_output_mapping = [
     input_expected_output_mapping,
 )
 def test_get_partition_clustering_info(mocker, df, config, expected_results):
-
     print(df)
     data = xr.DataArray(
         np.random.randn(1, 3),
@@ -195,7 +193,6 @@ input_expected_output_mapping = [
     input_expected_output_mapping,
 )
 def test_get_text_format_schema(mocker, df, config, expected_results):
-
     data = xr.DataArray(
         np.random.randn(1, 3),
         coords={"bq_dataset": ["s", "b", "c"]},

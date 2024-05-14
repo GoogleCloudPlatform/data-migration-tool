@@ -1,0 +1,11 @@
+{
+  "UnloadDataRequest": {
+    "warehouse": "{{ warehouse }}",
+    "statement": "CREATE or replace STAGE DMT_GCS_STAGE_COPY_INTO_%s STORAGE_INTEGRATION = {{ storageIntegration }} URL = 'gcs://%s/%s' FILE_FORMAT = %s; COPY INTO @DMT_GCS_STAGE_COPY_INTO_%s/%s FROM %s  OVERWRITE=TRUE HEADER=TRUE",
+    "database": "{{ database }}",
+    "schema": "{{ schema }}",
+    "parameters": {
+      "MULTI_STATEMENT_COUNT": "2"
+    }
+  }
+}
