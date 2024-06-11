@@ -53,7 +53,7 @@ variable "zone" {
 variable "machine_type" {
   type        = string
   description = "machine_type for compute engine instance"
-  default     = "n2-standard-2"
+  default     = "n1-highcpu-8"
 }
 variable "network" {
   type        = string
