@@ -16,9 +16,9 @@ data "google_project" "project" {
 locals {
 
   /* Check if network topology is host-service (shared VPC) */
-  network_project_id = var.network_project_id != "" ? var.network_project_id : var.project_id
-  subnetwork_region  = var.subnetwork_region != "" ? var.subnetwork_region : var.location
-  cloud_composer_service_agent  = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com", data.google_project.project.number)
+  network_project_id           = var.network_project_id != "" ? var.network_project_id : var.project_id
+  subnetwork_region            = var.subnetwork_region != "" ? var.subnetwork_region : var.location
+  cloud_composer_service_agent = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com", data.google_project.project.number)
   /* Check if master authorized network has been set */
   master_authorized_networks_config = length(var.master_authorized_networks) == 0 ? [] : [{
     cidr_blocks : var.master_authorized_networks
