@@ -18,7 +18,7 @@ locals {
   /* Check if network topology is host-service (shared VPC) */
   network_project_id = var.network_project_id != "" ? var.network_project_id : var.project_id
   subnetwork_region  = var.subnetwork_region != "" ? var.subnetwork_region : var.location
-  cloud_composer_sa  = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com", data.google_project.project.number)
+  cloud_composer_service_agent  = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com", data.google_project.project.number)
   /* Check if master authorized network has been set */
   master_authorized_networks_config = length(var.master_authorized_networks) == 0 ? [] : [{
     cidr_blocks : var.master_authorized_networks
@@ -54,7 +54,7 @@ resource "google_project_iam_member" "composer_service_agent" {
   count      = var.grant_sa_agent_permission ? 1 : 0
   project    = data.google_project.project.project_id
   role       = "roles/composer.ServiceAgentV2Ext"
-  member     = format("serviceAccount:%s", local.cloud_composer_sa)
+  member     = format("serviceAccount:%s", local.cloud_composer_service_agent)
 }
 
 /* Cloud Composer Service Account creation that will be attached to the Composer */
@@ -88,7 +88,7 @@ resource "google_storage_bucket_iam_member" "storage_object_admin" {
 /* Properties of Composer Environment*/
 
 resource "google_composer_environment" "composer_env" {
-  depends_on = [google_storage_bucket_iam_member.storage_object_admin]
+  depends_on = [google_storage_bucket_iam_member.storage_object_admin, google_project_iam_member.composer_service_agent]
   project    = var.project_id
   provider   = google-beta
   name       = "${var.composer_env_name}-${var.customer_name}"

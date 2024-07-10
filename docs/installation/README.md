@@ -13,8 +13,8 @@
 
 * Firewall rules - enable firewall between the source database and Google Cloud VPC
 
-   **[For Redshift]** 
-   
+   **[For Redshift]**
+
    For AWS Redshift connectivity, please refer guide [https://cloud.google.com/bigquery/docs/migration/redshift-vpc](https://cloud.google.com/bigquery/docs/migration/redshift-vpc)
 
    >Note:- It is necessary to create VPC GCC subnetwork region as the same region (in GCP) to which VPN tunnel is established (to connect to AWS Redshift cluster)
@@ -31,7 +31,7 @@
     In the case of manual creation of Cloud NAT and Cloud router, to turn off automatic creation of Cloud NAT, change the value of the variable create_nat = “false” in **~/terraform/datamigration/gce/variables.tf** after cloning the DMT repository
 
 
-	
+
 
 
     If you are okay with automatic NAT creation through terraform, please  proceed without any changes.
@@ -62,7 +62,7 @@ The DVT Cloud Run and Cloud Composer should only be created in the same region.
 
     It is recommended to keep the migration pipeline components in the same regions as much as possible.
 
-* By default, GCP services requiring a VPC and subnet will be deployed in default VPC and subnet. To provide custom VPCs and subnets, go to variables.tf file under each applicable GCP service terraform module and update the vpc names and subnet names. This step is applicable for 
+* By default, GCP services requiring a VPC and subnet will be deployed in default VPC and subnet. To provide custom VPCs and subnets, go to variables.tf file under each applicable GCP service terraform module and update the vpc names and subnet names. This step is applicable for
     * Cloud Composer (gcc)
     * Teradata Agent Compute Engine VM (gce)
     * Cloud Run
@@ -92,7 +92,7 @@ Deployment of DMT through terraform modules is split into 2 parts
 * Translation – For DDL, DML, SQL translation and validation.
 * Data Migration - For data migration from different sources (Teradata and Hive)
 
-## Clone the DMT git repository 
+## Clone the DMT git repository
 
 The code repository is hosted on Github and can be cloned using below command.
 
@@ -164,27 +164,27 @@ And, user who will be using the DMT tool will require the below set of permissio
 ```
 
 
-**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-user-roles-setup.sh and dmt-admin-roles-setup.sh present in the root directory to create custom dmt user/admin additional permission role**
+**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-user-custom-role-creation.sh and dmt-admin-custom-role-creation.sh present in the root directory to create custom dmt user/admin additional permission role**
 
 
 ```
-bash dmt-user-roles-setup.sh
-```
-
-
-```
-bash dmt-admin-roles-setup.sh
-```
-
-**To assign these roles, you can execute the Bash script dmt-user-setup.sh and dmt-admin-user-setup.sh present in the root directory**
-
-```
-bash dmt-user-setup.sh
+bash dmt-user-custom-role-creation.sh
 ```
 
 
 ```
-bash dmt-admin-user-setup.sh
+bash dmt-admin-custom-role-creation.sh
+```
+
+**To assign these roles, you can execute the Bash script dmt-user-iam-setup.sh and dmt-admin-user-iam-setup.sh present in the root directory**
+
+```
+bash dmt-user-iam-setup.sh
+```
+
+
+```
+bash dmt-admin-user-iam-setup.sh
 ```
 
 ## Enable Google Cloud APIs
@@ -213,13 +213,7 @@ gcloud services enable serviceusage.googleapis.com \
 
 ## IAM permissions for Cloud Build Service Account
 
-Identify the Cloud Build default Service Account and assign the below IAM roles for the execution of the deployment of DMT architecture.
-
-Google Cloud Console -> Cloud Build -> Settings
-
-
-![alt_text](images/cloudbuild_sa.png "image_tooltip")
-
+The Cloud Build service account needs to be granted the following IAM roles to be able to deploy DMT using Terraform. If no `BUILD_ACCOUNT` environment variable is specified, the project's default Cloud Build service account is used.
 
 **IAM roles required for the created Service Account**
 
@@ -244,28 +238,15 @@ Storage Admin
 
 **To assign these roles, you can execute the Bash script cloudbuild-sa-iam-setup.sh present in the root directory**
 
-
 ```
-export BUILD_ACCOUNT=<CLOUDBUILD_SERVICE_ACCOUNT>
-```
+export BUILD_ACCOUNT=<CLOUDBUILD_SERVICE_ACCOUNT>  # If not specified, default Cloud Build SA is used.
 
-
-
-```
-export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-```
 bash cloudbuild-sa-iam-setup.sh
 ```
 
-
-This script will assign all necessary IAM permissions to the Cloud Build Service Account for deployment of the DMT tool.
-
 Once the execution of the bash script is successful, you can proceed directly to the next step [Deploying DMT Infrastructure](#deploying-dmt-infrastructure)
 
-Alternatively, you can also assign the roles by running gcloud command from your cloud shell
+While we strongly recommend using the above script instead, you can also assign the roles by running these `gcloud` commands from your cloud shell.
 
 
 ```
@@ -398,7 +379,7 @@ If you choose the deployment of Translation + Data Migration, in addition to the
 * Perform initial data loads
 * Row and column data validation using [DVT tool](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
 
- 
+
 
 
 ### Pre deployment Steps
@@ -420,14 +401,14 @@ gcloud storage buckets create gs://${SOURCE_PROJECT}-dmt-state-bucket
 ```
 
 
-#### 2. [Mandatory for Oracle] Before you proceed with DMT terraform deployment, ensure that Oracle client .RPM library is uploaded in the GCS bucket 
+#### 2. [Mandatory for Oracle] Before you proceed with DMT terraform deployment, ensure that Oracle client .RPM library is uploaded in the GCS bucket
 
 Guideline to download oracle_client_rpm_file and upload in GCS bucket -
 
    1) Download oracle instant client library(.rpm extension) file from Oracle downloads: [https://www.oracle.com/in/database/technologies/instant-client/linux-x86-64-downloads.html](https://www.oracle.com/in/database/technologies/instant-client/linux-x86-64-downloads.html)
 
    2) Upload the file in GCS bucket
-   
+
    ```
    gsutil cp <downloaded_oracle_client_rpm_file> gs://<gcs_bucket>/<nested_folders_if_any>/
    ```
@@ -441,7 +422,7 @@ Guideline to download oracle_client_rpm_file and upload in GCS bucket -
    export ORACLE_RPM_GCS_BUCKET_PATH=<Fully Qualified RPM file GCS bucket path>
    ```
    > For example, Fully Qualified RPM file GCS bucket path is `gs://<gcs_bucket>/<nested_folders_if_any>/downloaded_filename.rpm`
-   
+
    ```
    export ORACLE_INSTANT_CLIENT_LIB_VERSION=<Oracle_Instant_Client_Lib_Version>
    ```
@@ -470,9 +451,9 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
 
    2. Network resource configuration - VPC network should have subnetwork with the region available for cloud composer [see available regions list under Products available by location section](https://cloud.google.com/about/locations#regions) deployment. Subnetwork should have 2 Secondary IP ranges created explicitly which is required for GKE pods and services.
 
-   Note:- 
+   Note:-
 
-   - Mask size for secondary IP ranges should be between /9 to /23 bits based on composer environment size. 
+   - Mask size for secondary IP ranges should be between /9 to /23 bits based on composer environment size.
 
       > For Example, /17 and /22 is recommended for medium composer environment.
 
@@ -492,7 +473,7 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
       ```
       export SERVICE_PROJECT_NUMBER=<service_project_number>
       ```
-      
+
       b. Provide **Compute Network User** Permission to Google APIs service agent
 
 
@@ -526,9 +507,9 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
       --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/container.hostServiceAgentUser"
       ```
-      
 
-      d. Provide Permission to Composer Service Agent 
+
+      d. Provide Permission to Composer Service Agent
 
          1. Either provide **Composer Shared VPC Agent** Permission to Composer Service Agent Account in case for **Private environment**
 
@@ -682,12 +663,12 @@ Otherwise DMT deploys with default predefined values.
 
 
 Additional substitution variable for **Oracle data source**
-   - _ORACLE_INSTANTCLIENT_FILE_PATH=${ORACLE_RPM_GCS_BUCKET_PATH} 
+   - _ORACLE_INSTANTCLIENT_FILE_PATH=${ORACLE_RPM_GCS_BUCKET_PATH}
    - _ORACLE_ODBC_VERSION_NUMBER=${ORACLE_INSTANT_CLIENT_LIB_VERSION}
 
    > Used environment variable created in pre-deployment steps
 
-For instance, if you would like to leverage DMT for 
+For instance, if you would like to leverage DMT for
 
 **Teradata to BigQuery Migration**
 
@@ -803,9 +784,9 @@ starting build "206986f5-4e41-48f6-bff7-xyz"
 FETCHSOURCE
 Fetching storage object: gs://dmt-1_cloudbuild/source/1684304084.135633-xyz.tgz#1684304086786340
 Copying gs://dmt-1_cloudbuild/source/1684304084.135633-xyz.tgz#1684304086786340...
-/ [0 files][    0.0 B/115.2 KiB]                                                
-/ [1 files][115.2 KiB/115.2 KiB]                                                
-Operation completed over 1 objects/115.2 KiB.                                    
+/ [0 files][    0.0 B/115.2 KiB]
+/ [1 files][115.2 KiB/115.2 KiB]
+Operation completed over 1 objects/115.2 KiB.
 BUILD
 Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 latest: Pulling from google.com/cloudsdktool/cloud-sdk
@@ -850,8 +831,8 @@ Since the chosen option is Translation + Data Migration for Teradata
 Cloud Build will automatically trigger the deployment of Data Migration architecture as well.
 
 
-``` 
-Successful execution log - 
+```
+Successful execution log -
 Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 google_compute_router.router[0]: Still creating... [20s elapsed]
 google_compute_router.router[0]: Creation complete after 21s [id=projects/dmt-1/regions/us-central1/routers/dmt-cloud-router]
@@ -872,7 +853,7 @@ DONE
 ```
 
 
-### Post-Installation setup 
+### Post-Installation setup
 
 **Follow the below steps for Teradata and Oracle**
 
@@ -881,7 +862,7 @@ Check if the environment values still exist and are correct, if not, set them ag
 Ensure you have an existing source database environment for testing:
 
 * For Teradata,
-   * If you do not have one,  you can create one [following the steps here](https://quickstarts.teradata.com/vantage.express.gcp.html). 
+   * If you do not have one,  you can create one [following the steps here](https://quickstarts.teradata.com/vantage.express.gcp.html).
    * If you want to follow the qwiklab to set up TD instance with tpch installed when finished, you can [follow the steps here](https://gcpstaging.qwiklabs.com/catalog_lab/25971).
 * For Oracle,
    * If you do not have one,  you can create one [following the steps here](https://github.com/oracle/docker-images/tree/main/OracleDatabase/SingleInstance).
@@ -908,7 +889,7 @@ gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
 
 2. Go to the GCP console and search for Kubernetes Clusters - select your composer cluster instance and identify the IP subnet range of the Pod **_Address range_**.
 
-3. Go to your VPC network (default in this case) and create a firewall rule with the name **_pod-operator-firewall._** 
+3. Go to your VPC network (default in this case) and create a firewall rule with the name **_pod-operator-firewall._**
 * Direction of Traffic - Ingress
 * Action on Match - Allow
 * Targets - All instances in the network [Teradata/Oracle GCE instance]
@@ -939,9 +920,9 @@ gcloud compute firewall-rules create pod-operator-firewall \
     This should contain the password for Teradata/Oracle DB. It is recommended to keep the name of the secret as **secret-edw_credentials**
 
 
-**<span style="text-decoration:underline;">Note</span>** (Real customer use cases): please create vpc access connectors as part of the VPC that has firewalls open to connect to customer’s on prem teradata instance. The Cloud Run service (to execute the DVT tool) requires the VPC access connector to be attached to it to hit the Teradata/Oracle DB 
+**<span style="text-decoration:underline;">Note</span>** (Real customer use cases): please create vpc access connectors as part of the VPC that has firewalls open to connect to customer’s on prem teradata instance. The Cloud Run service (to execute the DVT tool) requires the VPC access connector to be attached to it to hit the Teradata/Oracle DB
 * [Teradata TCP DB connection port](https://docs.teradata.com/r/Teradata-Unity-Installation-Configuration-and-Upgrade-Guide-for-Customers/January-2018/Overview/Ports-Used-by-Unity).
-* [Oracle TCP DB connection port](https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/oracle-database-component-port-numbers-and-protocols.html#GUID-B530F5CD-DD07-44D9-8499-0828B716C3A8). 
+* [Oracle TCP DB connection port](https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/oracle-database-component-port-numbers-and-protocols.html#GUID-B530F5CD-DD07-44D9-8499-0828B716C3A8).
 
 **<span style="text-decoration:underline;">Note</span>** (_If you are a Googler_): _If you are a Googler and are running a test environment with Teradata express edition or Oracle on GCP Compute VMs, ensure you add a network tag cc-dvt to the on TD/Oracle instance_
 
@@ -967,8 +948,8 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
       2) Upload the jar to your GCS config bucket and ensure that the jar file name exactly matches `terajdbc4.jar`. \
       Make sure the file is placed in the `software/teradata` path \
-      (e.g. `gs://YOUR_DMT_CONFIG_BUCKET/software/teradata/terajdbc4.jar`) 
-      
+      (e.g. `gs://YOUR_DMT_CONFIG_BUCKET/software/teradata/terajdbc4.jar`)
+
 10. **(Optional - Only for Oracle)** Remove GCS bucket created to store .RPM file for setup.
 
 
@@ -978,6 +959,7 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
 ```
 gcloud compute networks vpc-access connectors create crun-dvt-connector \
+--project $SOURCE_PROJECT \
 --network default \
 --region us-central1 \
 --range 10.6.0.0/28 \
@@ -1005,12 +987,12 @@ gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --
 
 
 5. Deploy a new version of the Cloud Run DVT service ([edw-dvt-tool-](https://console.cloud.google.com/run/detail/us-central1/edw-dvt-tool-control?project=dmt-test-12)&lt;customerid>) after performing the below changes
-    1. Setting the connector 
+    1. Setting the connector
     ![alt_text](images/vpc_connector.png "image_tooltip")
-    2. Go to the Secrets section in the Cloud Run and configure as shown below 
+    2. Go to the Secrets section in the Cloud Run and configure as shown below
 
-   Secret: **secret-edw_credentials** 
-        
+   Secret: **secret-edw_credentials**
+
 
 
    Reference Method **:  Exposed as Environment variable**
@@ -1097,7 +1079,7 @@ gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --
 8. Translation Summary results can be found in the output buckets along with translated files - **batch_translation_report.csv**
 
 
-### Sample config.json   
+### Sample config.json
 
 [Click here for sample config.json files](/samples/configs)
 
@@ -1164,7 +1146,7 @@ Matchtype : equals
 <p>
 Value : &lt;>
 <p>
-Allows bypassing of warnings and BQ dialect translation errors; 
+Allows bypassing of warnings and BQ dialect translation errors;
 <p>
 Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTargetSupportForIndexBackedConstraints, NoTargetSupportForPartitionSemantics
    </td>
@@ -1180,7 +1162,7 @@ Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTarg
    <td>
     migrationTask:translationConfigDetails:sourceDialect:teradataDialect:mode
    </td>
-   <td>Teradata - SQL, BTEQ 
+   <td>Teradata - SQL, BTEQ
    </td>
   </tr>
   <tr>
@@ -1297,11 +1279,11 @@ For example - secret:edw_credentials
    <td>GCS location of the CSV file or Excel sheet, containing table or file names along with DVT Validation Flags.
    <p>
    Examples:
-   
+
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.csv
 
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.xlsx
-   
+
 <strong><em>Read [Instructions](#instructions-to-populate-and-upload-validation-paramaters-file) below to understand how to populate and upload this file/sheet</em></strong>
    </td>
   </tr>
@@ -1397,7 +1379,7 @@ Matchtype : equals
 <p>
 Value : &lt;>
 <p>
-Allows bypassing of warnings and BQ dialect translation errors; 
+Allows bypassing of warnings and BQ dialect translation errors;
 <p>
 Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTargetSupportForIndexBackedConstraints, NoTargetSupportForPartitionSemantics
    </td>
@@ -1413,7 +1395,7 @@ Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTarg
    <td>
     migrationTask:translationConfigDetails:sourceDialect:teradataDialect:mode
    </td>
-   <td>Teradata - SQL, BTEQ 
+   <td>Teradata - SQL, BTEQ
    </td>
   </tr>
   <tr>
@@ -1538,11 +1520,11 @@ For example - secret:edw_credentials
    <td>GCS location of the CSV file or Excel sheet, containing table or file names along with DVT Validation Flags.
    <p>
    Examples:
-   
+
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.csv
 
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.xlsx
-   
+
 <strong><em>Read [Instructions](#instructions-to-populate-and-upload-validation-paramaters-file) below to understand how to populate and upload this file/sheet</em></strong>
    </td>
   </tr>
@@ -1637,7 +1619,7 @@ Matchtype : equals
 <p>
 Value : &lt;>
 <p>
-Allows bypassing of warnings and BQ dialect translation errors; 
+Allows bypassing of warnings and BQ dialect translation errors;
 <p>
 Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTargetSupportForIndexBackedConstraints, NoTargetSupportForPartitionSemantics
    </td>
@@ -1653,7 +1635,7 @@ Example  Values - NoTargetSupportForFeature, NoTargetSupportForSetTables, NoTarg
    <td>
     migrationTask:translationConfigDetails:sourceDialect:teradataDialect:mode
    </td>
-   <td>Teradata - SQL, BTEQ 
+   <td>Teradata - SQL, BTEQ
    </td>
   </tr>
   <tr>
@@ -1717,12 +1699,12 @@ Refer to <a href="https://cloud.google.com/bigquery/docs/output-name-mapping">ht
    <br><strong>
    Fill the columns according to the use-case. Data Validation Rules within the sheet will help to fill the fields correctly.
    To know more about which flags are relevant for which translation (ddl,sql,custom-query) and migration (data), please refer to the tab named `DVT Guide`. This sheet contains link to DVT Github pages which explain about all possible flags in DVT CLI.
-   
+
    You can refer to the tab `Example Sheet` to get an idea of which flags can be supplied for which validation. </strong>
 * To follow along with Excel sheet
    * Open this [Excel Template File](/samples/validation_params_files/validation_params.xltx) in Microsoft Excel. (not in Google Sheets, as opening .xlsx in Google Sheets will corrupt the existing Data Validation Rules)
    * Fill the sheet `Validation` . Once filled, save the file in `.xlsx` format. (Excel will convert the template file format `.xltx` to `.xlsx` file for you)
-  
+
   <br>
  * To follow along with CSV file format
    * Open this <a href="https://docs.google.com/spreadsheets/d/1pNgvx23sBORssZj0de7mWgB8quYw6iCXngY_giijZhk/edit#gid=0">Google Sheet</a> in browser (Viewer Access).
@@ -1842,26 +1824,26 @@ Refer to <a href="https://cloud.google.com/bigquery/docs/output-name-mapping">ht
 This will navigate you to the next page.
 
 ![alt_text](images/ds/image4.png "image_tooltip")
-7. Click on **EDIT CONNECTION** 
+7. Click on **EDIT CONNECTION**
 
 ![alt_text](images/ds/image5.png "image_tooltip")
-8. In the search bar type your GCP Project Name and select it. And then select logs dataset and respective table. 
+8. In the search bar type your GCP Project Name and select it. And then select logs dataset and respective table.
 Now click on **RECONNECT**
 
 ![alt_text](images/ds/image6.png "image_tooltip")
-9.  You'll get a pop-up, click on **Apply** and then click on **Done** 
+9.  You'll get a pop-up, click on **Apply** and then click on **Done**
 
 ![alt_text](images/ds/image7.png "image_tooltip")
 ![alt_text](images/ds/image8.png "image_tooltip")
-10. Repeat Steps 5 to 8 for all the remaining data sources, until 
+10. Repeat Steps 5 to 8 for all the remaining data sources, until
 all the data sources have been replaced.
 11. Your dashboard will be named **Copy of DMT Dashboard.** Click on the name to **Rename** it to any name that you would prefer for the dashboard
 
 ![alt_text](images/ds/image9.png "image_tooltip")
 
-## DMT Infrastructure Destroy 
+## DMT Infrastructure Destroy
 
-> Pre destroy step 
+> Pre destroy step
 
    - At the time of deployment if you haven't given _DELETE_BQ_TABLES substitution parameter as true then delete `dmt_dataset` and `dmt_logs` bigquery dataset from the Bigquery manually before destroy command.
 

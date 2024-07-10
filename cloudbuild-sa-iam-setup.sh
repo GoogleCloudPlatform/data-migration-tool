@@ -19,7 +19,7 @@
 PROJECT_ID=$(gcloud config get project)
 
 if [[ -z "${BUILD_ACCOUNT}" ]]; then
-  BUILD_ACCOUNT=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")@cloudbuild.gserviceaccount.com
+  BUILD_ACCOUNT=$(gcloud builds get-default-service-account --format="value(serviceAccountEmail)" | awk -F"/" '{print $NF}')
 fi
 
 gcloud services enable \

@@ -4,7 +4,7 @@
 
 ### Tool Features
 
-* Initial release will support bulk load data transfer only. 
+* Initial release will support bulk load data transfer only.
 * Initial release will support Teradata to BigQuery translation using BQ DTS, row and column validation of the data in source and target.
 
 ### Things to Take Note of
@@ -22,7 +22,7 @@ The user uploads a configuration json file to **dmt-config-&lt;project-id-or-cus
 
 As the configuration is uploaded, a new file create/update trigger is sent to pub/sub which triggers the DAG **controller_dag**.
 
-### Prerequisites 
+### Prerequisites
 
 
 * Target dataset creation to be done by the user/concerned team before uploading the configuration file.
@@ -62,6 +62,41 @@ _DATA_SOURCE=teradata
     * Cloud Run
     * Big Query
 
+
+* Install teradata utilities on Agent VM (_dm-vm-teradata-bq_)
+
+    1. Download utility package from teradata downloads [https://downloads.teradata.com](https://downloads.teradata.com) (Linux Package: [https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0](https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0) ).<br/>
+    **Note:** Ubuntu OS has a separate software package compared to other Linux OS. Please make sure you download the Ubuntu-specific (DMT's default Terraform deployment uses Ubuntu for the Teradata Agent VM).
+    2. Upload the package to a bucket (_&lt;temp-bucket>_)
+    3. SSH into the Agent VM and switch user to root
+    4. Copy the utility from _&lt;temp-bucket>_ to Agent VM
+        _(Can also be done via web ssh console upload feature or sftp client)_
+        ```
+        sudo gsutil cp gs://<temp-bucket>/TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz /opt/migration_project_teradata_bq/
+        ```
+    5. Go to the `migration_project_teradata_bq` directory
+       ```
+        cd /opt/migration_project_teradata_bq/
+       ```
+    6. Extract the new package
+        ```
+        sudo tar -xf TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz
+        ```
+    7. Install the utilities via setup.sh (with root) : bteq, fastexp, mload, tptbase
+        ```
+        sudo ./TeradataToolsAndUtilitiesBase/setup.sh 1 2 5 15
+        ```
+
+* Copy teradata jdbc jar to Agent VM (dm-vm-teradata-bq) at path:  `/opt/migration_project_teradata_bq/`
+    1. Download the jar from teradata downloads (if you have not already done this in the main ReadMe setup): [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
+    2. Upload the package to a bucket (_&lt;temp-bucket>_)
+    3. SSH into the Agent VM and switch user to root
+    4. Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM (Make sure it is copied with name `terajdbc4.jar`)
+        ```
+        gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
+        ```
+
+
 * Ensure the teradata agent VM (Google Compute Engine) has the following folder structure which signifies successful deployment of executables in the Agent VM `/opt/migration_project_teradata_bq/`
 
 ```
@@ -79,38 +114,6 @@ drwxr-xr-x 4 root  root      4096 May 17 07:05 agent_controller
 drwxrwxrwx 4 root  root      4096 May 19 12:06 local_processing_space
 ```
 
-* Install teradata utilities on Agent VM (_dm-vm-teradata-bq_) 
-
-    1. Download utility package from teradata downloads [https://downloads.teradata.com](https://downloads.teradata.com) (Linux Package: [https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0](https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0) ).<br/>
-    **Note:** Ubuntu OS has a separate software package compared to other Linux OS. Please make sure you download the right package if you plan to run TTU on Ubuntu OS.
-    2. Upload the package to a bucket (_&lt;temp-bucket>_)
-    3. SSH into the Agent VM and switch user to root
-    4. Copy the utility from _&lt;temp-bucket>_ to Agent VM 
-        _(Can also be done via web ssh console upload feature or sftp client)_
-        ```
-        gsutil cp gs://<temp-bucket>/TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz /opt/migration_project_teradata_bq/
-        ```
-    5. Go to the `migration_project_teradata_bq` directory
-       ```
-        cd /opt/migration_project_teradata_bq/
-       ```
-    6. Extract the new package 
-        ```
-        tar -xf TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz
-        ```
-    7. Install the utilities via setup.sh (with root) : bteq, fastexp, mload, tptbase
-        ```
-        sudo ./TeradataToolsAndUtilitiesBase/setup.sh 1 2 5 15
-        ```
-
-* Copy teradata jdbc jar to Agent VM (dm-vm-teradata-bq) at path:  `/opt/migration_project_teradata_bq/`
-    1. Download the jar from teradata downloads: [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver) 
-    2. Upload the package to a bucket (_&lt;temp-bucket>_)
-    3. SSH into the Agent VM and switch user to root
-    4. Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM (Make sure it is copied with name `terajdbc4.jar`)
-        ```
-        gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
-        ```
 
 ## Audit Tables for Data Migration & Validation
 
@@ -153,10 +156,10 @@ The below list of logging tables are created by terraform templates and record a
 </table>
 
 
-## Trigger Data Migration Tool 
+## Trigger Data Migration Tool
 
 
-* Data Migration 
+* Data Migration
 * Data Validations
 * SQL Validations
 
@@ -234,7 +237,7 @@ The below list of logging tables are created by terraform templates and record a
 
 [Data Transfer sample config file location](samples/configs/teradata)
 
-  
+
 #### Field Descriptions
 
 
@@ -249,7 +252,7 @@ The below list of logging tables are created by terraform templates and record a
    <td>
     unique_id
    </td>
-   <td>Provide an unique name for identifying the data migration 
+   <td>Provide an unique name for identifying the data migration
 <p>
 <strong>–</strong>
 <p>
@@ -276,7 +279,7 @@ The below list of logging tables are created by terraform templates and record a
    </td>
    <td>File uploaded in GCS bucket same as the one used for uploading config file. This file should provide table names to be migrated from a particular database.
 <p>
-<strong>Note: table_list_file</strong> key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation). 
+<strong>Note: table_list_file</strong> key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation).
 <p>
 <strong>Tables in the CSV file should always be in the same case as how they exist in source Teradata and ultimately match with validation_config source_target_table mapping in json config for DVT validations to avoid any failures in testdb.<Strong>
    </td>
@@ -287,7 +290,7 @@ The below list of logging tables are created by terraform templates and record a
    </td>
    <td>Sub json config to be used to create data transfer config on bigquery
 <p>
-Refer: <a href="https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig">REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud</a> for exhaustive keys under transfer_config sub json. 
+Refer: <a href="https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig">REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud</a> for exhaustive keys under transfer_config sub json.
    </td>
   </tr>
   <tr>
@@ -440,7 +443,7 @@ Check: <a href="https://cloud.google.com/bigquery/docs/migration/teradata#config
    <td>
     agent_config:max-local-storage
    </td>
-   <td>The maximum amount of local storage to use for the extraction in the specified staging directory. 
+   <td>The maximum amount of local storage to use for the extraction in the specified staging directory.
 <p>
 The default value is 200GB. The supported format is: <em>number</em>KB|MB|GB|TB.
 <p>
@@ -451,7 +454,7 @@ This parameter is not enforced for TPT extractions.
    <td>
     agent_config:gcs-upload-chunk-size
    </td>
-   <td>This parameter along with max-parallel-upload are used to control how much data gets uploaded to Cloud Storage at the same time. 
+   <td>This parameter along with max-parallel-upload are used to control how much data gets uploaded to Cloud Storage at the same time.
    </td>
   </tr>
   <tr>
@@ -481,7 +484,7 @@ If given false FastExport will be used as the extraction method.
    <td>
     agent_config:max-sessions
    </td>
-   <td>Specifies the maximum number of sessions used by the export job. 
+   <td>Specifies the maximum number of sessions used by the export job.
 <p>
 If set to 0, then the Teradata database will determine the maximum number of sessions for each export job.
    </td>
@@ -490,7 +493,7 @@ If set to 0, then the Teradata database will determine the maximum number of ses
    <td>
     agent_config:spool-mode
    </td>
-   <td>Default value: NoSpool. 
+   <td>Default value: NoSpool.
 <p>
 You can change this parameter if any of the disadvantages of NoSpool apply to your case.
    </td>
@@ -513,7 +516,7 @@ You can change this parameter if any of the disadvantages of NoSpool apply to yo
    <td>
     agent_config:max-unload-file-size
    </td>
-   <td>Determines the maximum extracted file size. 
+   <td>Determines the maximum extracted file size.
 <p>
 This parameter is not enforced for TPT extractions.
    </td>
@@ -587,11 +590,11 @@ For example - secret:edw_credentials
    <td>GCS location of the CSV file or Excel sheet, containing table or file names along with DVT Validation Flags.
    <p>
    Examples:
-   
+
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.csv
 
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.xlsx
-   
+
 <strong><em>Read [Instructions](#instructions-to-populate-and-upload-validation-paramaters-file) below to understand how to populate and upload this file/sheet</em></strong>
    </td>
   </tr>
@@ -634,7 +637,7 @@ Default Value - 800m
 </table>
 
 
-**unique_id:** name to uniquely identify the batches or DTS for this config file. 
+**unique_id:** name to uniquely identify the batches or DTS for this config file.
 
 _<span style="text-decoration:underline;">Note</span>_ if the user opted for data migration, along with schema migration through the tool, this unique id should be the same as the one used in the schema migration config file.
 
@@ -644,17 +647,17 @@ _<span style="text-decoration:underline;">Note</span>_ if the user opted for dat
 
 **notificationPubsubTopic:** field necessary to continue flow from Data Transfer Run Logging, including data validation. Given in the format _projects/&lt;project-name>/topics/dmt-teradata-dts-notification-topic-**<customer_name provided in TF>.** Use the same topic as mentioned above, as required mappings are already done for this topic using the Foundations deployment.
 
-**destinationDatasetId:** Target dataset id for the particular schema migrated from teradata. 
+**destinationDatasetId:** Target dataset id for the particular schema migrated from teradata.
 
-**table_list_file:** file uploaded in GCS bucket same as the one used for uploading config file. This file should provide table names to be migrated from a particular schema in newlines. 
-Eg: 
+**table_list_file:** file uploaded in GCS bucket same as the one used for uploading config file. This file should provide table names to be migrated from a particular schema in newlines.
+Eg:
 - DEPARTMENT
 - EMPLOYEE
 - SALARY
 - HR_RECORDS
 
 
-<span style="text-decoration:underline;">Note</span> that this key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation). As such, tables structure is created by Bigquery DTS itself rather than the CompilerWorks schema migration feature from the tool. 
+<span style="text-decoration:underline;">Note</span> that this key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation). As such, tables structure is created by Bigquery DTS itself rather than the CompilerWorks schema migration feature from the tool.
 
 **_Tables in the CSV file should always be in the same case as how they exist in source Teradata and ultimately match the contents of CSV/Excel file uploaded as validation parameters file in GCS._**
 
@@ -674,7 +677,7 @@ Eg:
 
 **primary_key:** If Validation_type is _row, _please provide another key called **primary_key** in the same section with the primary key for the particular table.
 
-Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud](https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig) for exhaustive keys under transfer_config sub json. 
+Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud](https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig) for exhaustive keys under transfer_config sub json.
 
 ## Instructions To Populate And Upload Validation Paramaters File
 
@@ -683,12 +686,12 @@ Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Clo
    <br><strong>
    Fill the columns according to the use-case. Data Validation Rules within the sheet will help to fill the fields correctly.
    To know more about which flags are relevant for which translation (ddl,sql,custom-query) and migration (data), please refer to the tab named `DVT Guide`. This sheet contains link to DVT Github pages which explain about all possible flags in DVT CLI.
-   
+
    You can refer to the tab `Example Sheet` to get an idea of which flags can be supplied for which validation. </strong>
 * To follow along with Excel sheet
    * Open this [Excel Template File](/samples/validation_params_files/validation_params.xltx) in Microsoft Excel. (not in Google Sheets, as opening .xlsx in Google Sheets will corrupt the existing Data Validation Rules)
    * Fill the sheet `Validation` . Once filled, save the file in `.xlsx` format. (Excel will convert the template file format `.xltx` to `.xlsx` file for you)
-  
+
   <br>
  * To follow along with CSV file format
    * Open this <a href="https://docs.google.com/spreadsheets/d/1pNgvx23sBORssZj0de7mWgB8quYw6iCXngY_giijZhk/edit#gid=0">Google Sheet</a> in browser (Viewer Access).
@@ -708,7 +711,7 @@ Each bigquery DTS can be identified with a transfer_run_id. The same can be trac
 Below tasks happens with **teradata_data_load_dag** DAG execution
 1. Migration agent will run TPT / FastExport extraction from teradata source into agent VM and upload the extracts to configured bucket
 2. Data Transfer Service will load data from buckets to bigquery.
-   
+
 
 ### Create tables in BigQuery
 
