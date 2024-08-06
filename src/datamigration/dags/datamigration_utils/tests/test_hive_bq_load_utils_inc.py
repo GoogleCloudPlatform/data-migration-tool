@@ -54,7 +54,6 @@ def test_get_inc_gcs_files(
     row_count,
     expected_len,
 ):
-
     data = xr.DataArray(
         np.random.randn(row_count, 3), coords={"x": ["a", "b", "c"]}, dims=("y", "x")
     )
@@ -235,7 +234,6 @@ input_expected_output_mapping = [
 def test_check_bq_table(
     mocker, gcs_path, dbname, tblname, dict, side_effect_value, expected_results
 ):
-
     d = {
         "t": {"dims": ("query_results"), "data": ["bq_dataset"]},
     }
@@ -452,7 +450,6 @@ input_expected_output_mapping = [
     input_expected_output_mapping,
 )
 def test_get_partition_clustering_info(mocker, df, config, expected_results):
-
     print(df)
     data = xr.DataArray(
         np.random.randn(1, 3),
@@ -510,7 +507,6 @@ input_expected_output_mapping = [
     input_expected_output_mapping,
 )
 def test_get_text_format_schema(mocker, df, config, expected_results):
-
     print(df)
     data = xr.DataArray(
         np.random.randn(1, 3),

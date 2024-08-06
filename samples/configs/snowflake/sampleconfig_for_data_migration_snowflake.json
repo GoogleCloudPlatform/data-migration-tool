@@ -1,0 +1,31 @@
+{
+   "unique_id": "sf_test_migrate-1",
+   "type": "data",
+   "source": "snowflake",
+   "table_list_file": "gs://<bucket>/<table_list_file_path>",
+   "oauth_config": {
+     "clientId": "secret:<CLIENT_ID_secret_name>",
+     "clientSecret": "secret:<CLIENT_SECRET_secret_name>",
+     "refreshToken": "secret:<REFRESH_TOKEN_secret_name>"
+   },
+   "setup_config": {
+       "jdbcUrl": "jdbc:snowflake://<ACCOUNT_URL>",
+       "accountUrl": "<ACCOUNT_URL>",
+       "warehouse": "<WAREHOUSE>",
+       "storageIntegration": "<STORAGE_INTEGRATION>"
+   },
+   "migration_config": {
+       "sourceDatabaseName": "<SOURCE_DATABASE>",
+       "sourceSchemaName": "<SOURCE_SCHEMA>",
+       "targetDatabaseName": "<GCP_PROJECT_ID>",
+       "targetSchemaName": "<BIGQUERY_DATASET>",
+       "schema": false,
+       "bqTableExists": false,
+       "gcsBucketForDDLs": "<GCS_BUCKET>",
+       "gcsBucketForTranslation": "<GCS_BUCKET>",
+       "location": "us",
+       "snowflakeStageLocation": "<GCS_BUCKET>/data-unload",
+       "snowflakeFileFormatValue": "SF_GCS_CSV_FORMAT_DMT",
+       "bqLoadFileFormat": "CSV"
+   }
+}
