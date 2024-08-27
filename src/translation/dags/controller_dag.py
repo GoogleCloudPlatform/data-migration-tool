@@ -202,7 +202,7 @@ def _determine_next_dag(ti, **kwargs):
                 next_dag_id = None
         elif op_type == "data":
             if "validation_only" in config and config["validation_only"] == "yes":
-                    next_dag_id = determine_validation_dag(config)
+                next_dag_id = determine_validation_dag(config)
             elif data_source == "teradata":
                 next_dag_id = DATA_LOAD_TERADATA_DAG_ID
             elif data_source == "hive":
