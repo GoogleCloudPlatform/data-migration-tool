@@ -13,11 +13,6 @@ variable "customer_name" {
   type        = string
   description = "Name of the customer to append in all service names"
 }
-variable "grant_sa_agent_permission" {
-  type        = bool
-  default     = true
-  description = "Cloud Composer relies on Workload Identity as Google API authentication mechanism for Airflow. Cloud Composer v2 API service agent extension role is granted"
-}
 variable "composer_env_name" {
   description = "Name of Cloud Composer Environment that will be created"
   type        = string

@@ -51,11 +51,14 @@ resource "google_project_service_identity" "composer_service_agent_identity" {
   service = "composer.googleapis.com"
 }
 
-resource "google_project_iam_member" "composer_service_agent" {
-  count   = var.grant_sa_agent_permission ? 1 : 0
+resource "google_project_iam_member" "composer_service_agent_roles" {
   project = data.google_project.project.project_id
-  role    = "roles/composer.ServiceAgentV2Ext"
-  member  = google_project_service_identity.composer_service_agent_identity.member
+  for_each = toset([
+    "roles/composer.serviceAgent",
+    "roles/composer.ServiceAgentV2Ext",
+  ])
+  role   = each.key
+  member = google_project_service_identity.composer_service_agent_identity.member
 }
 
 /* Cloud Composer Service Account creation that will be attached to the Composer */
