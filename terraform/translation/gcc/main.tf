@@ -16,9 +16,8 @@ data "google_project" "project" {
 locals {
 
   /* Check if network topology is host-service (shared VPC) */
-  network_project_id           = var.network_project_id != "" ? var.network_project_id : var.project_id
-  subnetwork_region            = var.subnetwork_region != "" ? var.subnetwork_region : var.location
-  cloud_composer_service_agent = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com", data.google_project.project.number)
+  network_project_id = var.network_project_id != "" ? var.network_project_id : var.project_id
+  subnetwork_region  = var.subnetwork_region != "" ? var.subnetwork_region : var.location
   /* Check if master authorized network has been set */
   master_authorized_networks_config = length(var.master_authorized_networks) == 0 ? [] : [{
     cidr_blocks : var.master_authorized_networks
@@ -45,16 +44,18 @@ locals {
   worker_max_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.value["max_count"]
 }
 
-resource "time_sleep" "wait_60_seconds" {
-  create_duration = "60s"
+resource "google_project_service_identity" "composer_service_agent_identity" {
+  provider = google-beta
+
+  project = data.google_project.project.project_id
+  service = "composer.googleapis.com"
 }
 
 resource "google_project_iam_member" "composer_service_agent" {
-  depends_on = [time_sleep.wait_60_seconds]
-  count      = var.grant_sa_agent_permission ? 1 : 0
-  project    = data.google_project.project.project_id
-  role       = "roles/composer.ServiceAgentV2Ext"
-  member     = format("serviceAccount:%s", local.cloud_composer_service_agent)
+  count   = var.grant_sa_agent_permission ? 1 : 0
+  project = data.google_project.project.project_id
+  role    = "roles/composer.ServiceAgentV2Ext"
+  member  = google_project_service_identity.composer_service_agent_identity.member
 }
 
 /* Cloud Composer Service Account creation that will be attached to the Composer */
@@ -67,12 +68,12 @@ resource "google_service_account" "composer_service_account" {
 
 /* Provide Composer Worker IAM role and Composer Admin IAM role */
 
-resource "google_project_iam_member" "composer-worker" {
+resource "google_project_iam_member" "composer_worker" {
   depends_on = [google_service_account.composer_service_account]
   project    = var.project_id
   for_each   = toset(var.composer_roles)
   role       = each.value
-  member     = "serviceAccount:${var.service_account_gcc}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.composer_service_account.member
 }
 
 /* Provide Object Admin authorization for Service Account to the created GCS buckets */
@@ -82,7 +83,7 @@ resource "google_storage_bucket_iam_member" "storage_object_admin" {
   for_each   = toset(var.bucket_names)
   bucket     = "${each.value}-${var.customer_name}"
   role       = "roles/storage.objectAdmin"
-  member     = "serviceAccount:${var.service_account_gcc}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.composer_service_account.member
 }
 
 /* Properties of Composer Environment*/
@@ -99,7 +100,7 @@ resource "google_composer_environment" "composer_env" {
       /* Picks up VPC network and subnet name based on Choice of Shared VPC project or not */
       network         = "projects/${local.network_project_id}/global/networks/${var.network}"
       subnetwork      = "projects/${local.network_project_id}/regions/${local.subnetwork_region}/subnetworks/${var.subnetwork}"
-      service_account = "${var.service_account_gcc}@${var.project_id}.iam.gserviceaccount.com"
+      service_account = google_service_account.composer_service_account.email
       dynamic "ip_allocation_policy" {
         for_each = (var.pod_ip_allocation_range_name != null || var.service_ip_allocation_range_name != null) ? [1] : []
         content {
