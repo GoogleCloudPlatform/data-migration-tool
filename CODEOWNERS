@@ -7,9 +7,10 @@
 # by that code owner before the pull request can be merged
 # into the protected branch.
 
-# Pull requests which modify any of the following 
+# Pull requests which modify any of the following
 # file types must be approved by one of the listed owner(s):
-*.py    @GoogleCloudPlatform/pso-code-review-committee
-*.tf    @danieldeleo @raniksingh @abcubed3 @zhaber @dmedora
-*.yaml  @danieldeleo @raniksingh @abcubed3 @zhaber @dmedora
-*.md    @danieldeleo @raniksingh @abcubed3 @zhaber @celiajmd @pcigoor @dmedora
+*       @abcubed3 @danieldeleo @dmedora @pcigoor @raniksingh @zhaber
+*.py    @abcubed3 @danieldeleo @dmedora @latika-wadhwa @pcigoor @raniksingh @zhaber
+*.tf    @abcubed3 @danieldeleo @dmedora @pcigoor @raniksingh @zhaber
+*.yaml  @abcubed3 @danieldeleo @dmedora @pcigoor @raniksingh @zhaber
+*.md    @abcubed3 @danieldeleo @dmedora @pcigoor @raniksingh @zhaber
