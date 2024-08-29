@@ -92,7 +92,7 @@ resource "google_storage_bucket_iam_member" "storage_object_admin" {
 /* Properties of Composer Environment*/
 
 resource "google_composer_environment" "composer_env" {
-  depends_on = [google_storage_bucket_iam_member.storage_object_admin, google_project_iam_member.composer_service_agent]
+  depends_on = [google_storage_bucket_iam_member.storage_object_admin, google_project_iam_member.composer_worker]
   project    = var.project_id
   provider   = google-beta
   name       = "${var.composer_env_name}-${var.customer_name}"
