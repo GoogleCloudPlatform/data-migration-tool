@@ -53,7 +53,7 @@ variable "zone" {
 variable "machine_type" {
   type        = string
   description = "machine_type for compute engine instance"
-  default     = "n2-standard-2"
+  default     = "n2-standard-32"
 }
 variable "network" {
   type        = string
@@ -89,7 +89,7 @@ variable "disk_type" {
 variable "disk_size" {
   type        = number
   description = "attached disk size for data migration"
-  default     = 100
+  default     = 1000
 }
 variable "datamigration_teradata_script" {
   type        = string
