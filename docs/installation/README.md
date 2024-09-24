@@ -239,126 +239,12 @@ Storage Admin
 **To assign these roles, you can execute the Bash script cloudbuild-sa-iam-setup.sh present in the root directory**
 
 ```
-export BUILD_ACCOUNT=<CLOUDBUILD_SERVICE_ACCOUNT>  # If not specified, default Cloud Build SA is used.
+export BUILD_ACCOUNT=<CLOUDBUILD_SERVICE_ACCOUNT>  # If not specified, the default Cloud Build SA is used.
 
 bash cloudbuild-sa-iam-setup.sh
 ```
 
-Once the execution of the bash script is successful, you can proceed directly to the next step [Deploying DMT Infrastructure](#deploying-dmt-infrastructure)
-
-While we strongly recommend using the above script instead, you can also assign the roles by running these `gcloud` commands from your cloud shell.
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/bigquery.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/run.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/composer.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/compute.instanceAdmin.v1"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/compute.networkAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountCreator"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/logging.viewer"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/resourcemanager.projectIamAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/pubsub.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/secretmanager.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/iam.serviceAccountUser"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/serviceusage.serviceUsageAdmin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/storage.admin"
-```
-
-
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:$BUILD_ACCOUNT" \
---role="roles/artifactregistry.admin"
-```
-
+Once the execution of the bash script is successful, you can proceed to the next step [Deploying DMT Infrastructure](#deploying-dmt-infrastructure).
 
 
 ## Deploying DMT infrastructure
@@ -482,7 +368,7 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
       ```
 
       ```
-      gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+      gcloud projects add-iam-policy-binding $HOST_PROJECT \
       --member="serviceAccount:$GOOGLE_API_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
@@ -496,41 +382,41 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
 
 
       ```
-      gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+      gcloud projects add-iam-policy-binding $HOST_PROJECT \
       --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/compute.networkUser"
       ```
 
 
       ```
-      gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+      gcloud projects add-iam-policy-binding $HOST_PROJECT \
       --member="serviceAccount:$GKE_SERVICE_AGENT" \
       --role="roles/container.hostServiceAgentUser"
       ```
 
 
-      d. Provide Permission to Composer Service Agent
+      d. Provide Permission to Composer Service Agent ([Composer public docs](https://cloud.google.com/composer/docs/composer-2/configure-shared-vpc))
 
-         1. Either provide **Composer Shared VPC Agent** Permission to Composer Service Agent Account in case for **Private environment**
+         1. For **Private IP environments**, grant the **Composer Shared VPC Agent** permission to the Composer Service Agent Account
 
          ```
          export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
-            gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+            gcloud projects add-iam-policy-binding $HOST_PROJECT \
             --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/composer.sharedVpcAgent"
          ```
 
-         Or, Provide **Compute Network User** Permission to Composer Agent Service Account in case for **Public environment**
+         2. OR, for  **Public IP environments**, grant the **Compute Network User** permission to Composer Agent Service Account instead
 
          ```
          export COMPOSER_SERVICE_AGENT=service-$SERVICE_PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com
          ```
 
          ```
-            gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
+            gcloud projects add-iam-policy-binding $HOST_PROJECT \
             --member="serviceAccount:$COMPOSER_SERVICE_AGENT" \
             --role="roles/compute.networkUser"
          ```
@@ -942,11 +828,11 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
 8. If you intend to migrate tables over to BQ dataset other than dmt-teradata-dataset, please ensure this dataset is manually created and is provided in the config files later  (create tables from DDLs)
 
-9.  **(Mandatory for teradata ddl extraction)** Teradata ddl extraction requires teradata jdbc jar. Upload the jdbc jar file to your GCS config bucket under the `software/teradata` folder as shown below:
+9.  **(Mandatory for Teradata DDL Extraction)** Teradata DDL extraction requires Teradata JDBC JAR. Upload the JDBC JAR file to your GCS config bucket under the `software/teradata` folder as shown below:
 
-      1) Download the jar from teradata downloads: 	[https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
+      1) Download the JAR from teradata downloads: 	[https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
 
-      2) Upload the jar to your GCS config bucket and ensure that the jar file name exactly matches `terajdbc4.jar`. \
+      2) Upload the JAR to your GCS config bucket and ensure that the file name is exactly `terajdbc4.jar`. \
       Make sure the file is placed in the `software/teradata` path \
       (e.g. `gs://YOUR_DMT_CONFIG_BUCKET/software/teradata/terajdbc4.jar`)
 
