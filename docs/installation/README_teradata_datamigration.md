@@ -87,17 +87,17 @@ _DATA_SOURCE=teradata
         sudo ./TeradataToolsAndUtilitiesBase/setup.sh 1 2 5 15
         ```
 
-* Copy teradata jdbc jar to Agent VM (dm-vm-teradata-bq) at path:  `/opt/migration_project_teradata_bq/`
-    1. Download the jar from teradata downloads (if you have not already done this in the main ReadMe setup): [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
+* Copy Teradata JDBC JAR to Agent VM (dm-vm-teradata-bq) at path:  `/opt/migration_project_teradata_bq/`
+    1. If you have not already done this during the main ReadMe setup instructions, download the JAR from Teradata downloads: [https://downloads.teradata.com/download/connectivity/jdbc-driver](https://downloads.teradata.com/download/connectivity/jdbc-driver)
     2. Upload the package to a bucket (_&lt;temp-bucket>_)
     3. SSH into the Agent VM and switch user to root
-    4. Copy the teradata jdbc jar from _&lt;temp-bucket>_ to Agent VM (Make sure it is copied with name `terajdbc4.jar`)
+    4. Copy the Teradata JDBC JAR from _&lt;temp-bucket>_ to Agent VM (ensure it is named `terajdbc4.jar`)
         ```
         gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
         ```
 
 
-* Ensure the teradata agent VM (Google Compute Engine) has the following folder structure which signifies successful deployment of executables in the Agent VM `/opt/migration_project_teradata_bq/`
+* Ensure the Teradata Agent VM (Google Compute Engine) has the following folder structure which signifies successful deployment of executables in the Agent VM `/opt/migration_project_teradata_bq/`
 
 ```
 > pwd
