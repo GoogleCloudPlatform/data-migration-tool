@@ -6,7 +6,7 @@
  */
 
 /*********************************************
-Cloud Run updates for data migration topics                                               
+Cloud Run updates for data migration topics
 **********************************************/
 
 /* Retrieve Cloud run API endpoint URL */
@@ -52,6 +52,9 @@ resource "google_pubsub_subscription" "push_subscribe" {
     attributes = {
       x-goog-version = "v1"
     }
+  }
+  expiration_policy {
+    ttl = ""
   }
   enable_message_ordering = true
 }
