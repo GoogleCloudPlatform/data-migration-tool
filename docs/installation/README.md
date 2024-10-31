@@ -668,56 +668,14 @@ DONE
 
 **Follow the below steps for Teradata and Oracle**
 
-Check if the environment values still exist and are correct, if not, set them again for post-installation steps
 
-Ensure you have an existing source database environment for testing:
+1. Ensure you have an existing source database environment for testing, with network connectivity to the project's VPC:
 
 * For Teradata,
-   * If you do not have one,  you can create one [following the steps here](https://quickstarts.teradata.com/vantage.express.gcp.html).
-   * If you want to follow the qwiklab to set up TD instance with tpch installed when finished, you can [follow the steps here](https://gcpstaging.qwiklabs.com/catalog_lab/25971).
+   * If you do not have one, you can create one [following the steps here](https://quickstarts.teradata.com/vantage.express.gcp.html).
+   * If you want to follow the Qwiklab to set up TD instance with tpch installed when finished, you can [follow the steps here](https://gcpstaging.qwiklabs.com/catalog_lab/25971).
 * For Oracle,
    * If you do not have one,  you can create one [following the steps here](https://github.com/oracle/docker-images/tree/main/OracleDatabase/SingleInstance).
-
-Set environment variables in Cloud Shell
-
-
-```
-export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-**&lt;SOURCE_PROJECT>** -   Project ID where you will be deploying DMT tool
-
-
-
-1. Grant **Cloud Run invoker** role to PubSub service account (**dmt-sa-pubsub**) under GCP IAM roles.
-
-```
-gcloud projects add-iam-policy-binding $SOURCE_PROJECT \
---member="serviceAccount:dmt-sa-pubsub@$SOURCE_PROJECT.iam.gserviceaccount.com" \
---role="roles/run.invoker"
-```
-
-2. Go to the GCP console and search for Kubernetes Clusters - select your composer cluster instance and identify the IP subnet range of the Pod **_Address range_**.
-
-3. Go to your VPC network (default in this case) and create a firewall rule with the name **_pod-operator-firewall._**
-* Direction of Traffic - Ingress
-* Action on Match - Allow
-* Targets - All instances in the network [Teradata/Oracle GCE instance]
-* Source Filter - IPv4
-* Source IPv4 ranges - <Pod Address range> that you got in step #2. E.g: 10.57.0.0/17
-* Protocols and Ports - Allow all / Allowed Teradata ports
-
-```
-gcloud compute firewall-rules create pod-operator-firewall \
---project=$SOURCE_PROJECT \
---direction=INGRESS \
---priority=1000 \
---network=<YOUR Composer VPC name> \
---action=ALLOW \
---rules=all \
---source-ranges=<YOUR Composer Kubernetes Pod Cluster IP obtained from Step 2>
-```
 
 
 
@@ -726,28 +684,27 @@ gcloud compute firewall-rules create pod-operator-firewall \
    * [Teradata TCP DB connection port](https://docs.teradata.com/r/Teradata-Unity-Installation-Configuration-and-Upgrade-Guide-for-Customers/January-2018/Overview/Ports-Used-by-Unity)
    * [Oracle TCP DB connection port](https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/oracle-database-component-port-numbers-and-protocols.html#GUID-B530F5CD-DD07-44D9-8499-0828B716C3A8)
 
-4. Go to Secret Manager and create a new secret with the name **secret-edw_credentials**
+
+   **<span style="text-decoration:underline;">Note</span>** (Real customer use cases): please create vpc access connectors as part of the VPC that has firewalls open to connect to customer’s on prem teradata instance. The Cloud Run service (to execute the DVT tool) requires the VPC access connector to be attached to it to hit the Teradata/Oracle DB.
+   * [Teradata TCP DB connection port](https://docs.teradata.com/r/Teradata-Unity-Installation-Configuration-and-Upgrade-Guide-for-Customers/January-2018/Overview/Ports-Used-by-Unity).
+   * [Oracle TCP DB connection port](https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/oracle-database-component-port-numbers-and-protocols.html#GUID-B530F5CD-DD07-44D9-8499-0828B716C3A8).
+
+   **<span style="text-decoration:underline;">Note</span>** (_If you are a Googler_): _If you are a Googler and are running a test environment with Teradata Express edition or Oracle on GCP Compute VMs, ensure you add a network tag cc-dvt to the on TD/Oracle instance.
+
+
+2. Go to Secret Manager and create a new secret with the name **secret-edw_credentials**
 
     This should contain the password for Teradata/Oracle DB. It is recommended to keep the name of the secret as **secret-edw_credentials**
 
 
-**<span style="text-decoration:underline;">Note</span>** (Real customer use cases): please create vpc access connectors as part of the VPC that has firewalls open to connect to customer’s on prem teradata instance. The Cloud Run service (to execute the DVT tool) requires the VPC access connector to be attached to it to hit the Teradata/Oracle DB
-* [Teradata TCP DB connection port](https://docs.teradata.com/r/Teradata-Unity-Installation-Configuration-and-Upgrade-Guide-for-Customers/January-2018/Overview/Ports-Used-by-Unity).
-* [Oracle TCP DB connection port](https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/oracle-database-component-port-numbers-and-protocols.html#GUID-B530F5CD-DD07-44D9-8499-0828B716C3A8).
+1. Validate if all DAG Airflows in the Cloud Composer instance are in paused state through Airflow URI
 
-**<span style="text-decoration:underline;">Note</span>** (_If you are a Googler_): _If you are a Googler and are running a test environment with Teradata express edition or Oracle on GCP Compute VMs, ensure you add a network tag cc-dvt to the on TD/Oracle instance_
+2. Switch all the DAG status to Active
 
-
-
-5. Validate if all DAG Airflows in the Cloud Composer instance are in paused state through Airflow URI
-
-6. Switch all the DAG status to Active
-
-7. Validate **workload_identity_creator_dag in Airflow UI** is executed one time automatically on turning DAGs active and is successful
+3. Validate **workload_identity_creator_dag in Airflow UI** is executed one time automatically on turning DAGs active and is successful
 
 
 ![alt_text](images/workload_identity.png "image_tooltip")
-
 
 
 
@@ -766,6 +723,12 @@ gcloud compute firewall-rules create pod-operator-firewall \
 
 **Build connection between CloudRun and Source database [Applicable for network connectivity uses VPN connectivity]**
 
+1. Set environment variable in Cloud Shell:
+
+```
+export SOURCE_PROJECT=<YOUR_DMT_PROJECT_ID>
+```
+
 1. Create serverless VPC Connector (specify same network as well as region which has firewall rules allowed to connect to on prem/ cloud data source)
 
 ```
@@ -779,9 +742,7 @@ gcloud compute networks vpc-access connectors create crun-dvt-connector \
 --machine-type f1-micro
 ```
 
-
 2. Attach the network tag **cc-dvt** as the target or provide directly the IP address of the on prem TD/Oracle instance. (This tag can be used as target tag while creating a firewall rule at a later stage)
-
 
 3. Create an ingress firewall rule (in source database network) to deny traffic from connector network tag:
 
@@ -789,38 +750,22 @@ gcloud compute networks vpc-access connectors create crun-dvt-connector \
 gcloud compute firewall-rules create deny-vpc-connector --action=DENY --rules=all --source-tags=vpc-connector-us-central1-crun-dvt-connector --direction=INGRESS --network=default --priority=990
 ```
 
-
 4. Create an ingress firewall rule targeting the Teradata/Oracle IP that you want the VPC connector to access. Set the priority for this rule to be a lower value than the priority of the rule you made in Step 25. (Here **cc-dvt **is the network tag attached to Teradata/Oracle VM)
 
 ```
 gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --allow=all --source-tags=vpc-connector-us-central1-crun-dvt-connector --direction=INGRESS --network=default --target-tags=cc-dvt --priority=980
 ```
 
-
 5. Deploy a new version of the Cloud Run DVT service ([edw-dvt-tool-](https://console.cloud.google.com/run/detail/us-central1/edw-dvt-tool-control?project=dmt-test-12)&lt;customerid>) after performing the below changes
     1. Setting the connector
     ![alt_text](images/vpc_connector.png "image_tooltip")
-    2. Go to the Secrets section in the Cloud Run and configure as shown below
+    2. Go to the Secrets section in Cloud Run and configure as shown below:
+         - Secret: **secret-edw_credentials**
+         - Reference Method **:  Exposed as Environment variable**
+         - Environment_variables
+           - Name 1: **edw_credentials**
 
-   Secret: **secret-edw_credentials**
-
-
-
-   Reference Method **:  Exposed as Environment variable**
-
-
-   Environment_variables
-
-
-   Name 1: **edw_credentials**
-
-
-
-![alt_text](images/secret_manager.png "image_tooltip")
-
-
-
-
+         ![alt_text](images/secret_manager.png "image_tooltip")
 
 
 
@@ -847,12 +792,9 @@ gcloud compute firewall-rules create allow-vpc-connector-for-select-resources --
 
     For example,
 
-
     **DDL** = gs://dmt-config-control/input/ddl
 
-
     **SQL** = gs://dmt-config-control/input/sql
-
 
     **DML** = gs://dmt-config-control/input/dml
 
