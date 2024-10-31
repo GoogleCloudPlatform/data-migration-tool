@@ -23,6 +23,9 @@ RUN apt-get update \
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+#DB2 Dependencies
+RUN pip install ibm_db_sa
+
 # Install gcloud sdk
 RUN apt-get update && \
     apt-get install -y curl gnupg && \
