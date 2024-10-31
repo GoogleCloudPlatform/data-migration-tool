@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-TERRAFORM_VERSION=1.3.7
-TERRAGRUNT_VERSION=0.43.0
+TERRAFORM_VERSION=1.5.7-*
+TERRAGRUNT_VERSION=0.67.16
 
 #######################################
 # Installs Terraform according to website:

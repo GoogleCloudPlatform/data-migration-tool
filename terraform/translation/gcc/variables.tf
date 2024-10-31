@@ -25,8 +25,8 @@ variable "location" {
 }
 variable "image_version" {
   type        = string
-  description = "The version of the aiflow running in the cloud composer environment."
-  default     = "composer-2.4.6-airflow-2.5.3"
+  description = "The version of the Airflow running in the cloud composer environment."
+  default     = "composer-2-airflow-2"
 }
 variable "service_account_gcc" {
   type        = string

@@ -87,69 +87,36 @@ The DVT Cloud Run and Cloud Composer should only be created in the same region.
 
 Deployment of DMT through terraform modules is split into 2 parts
 
-
-
 * Translation – For DDL, DML, SQL translation and validation.
 * Data Migration - For data migration from different sources (Teradata and Hive)
 
-## Clone the DMT git repository
 
-The code repository is hosted on Github and can be cloned using below command.
+## Clone the DMT GitHub repository
 
+The code repository is hosted on Github. Clone it and check out the main branch using the commands below.
 
 ```
 git clone https://github.com/GoogleCloudPlatform/data-migration-tool
-```
-
-
-Navigate to clone directory using below command
-
-
-```
 cd data-migration-tool
-```
-
-Checkout the main branch using below command
-
-
-
-```
 git checkout main
 ```
 
+## Set project environment variables
+```
+export SOURCE_PROJECT=<YOUR_PROJECT_ID>
+```
 
-## Assign Executing User and Admin Permissions
+```
+gcloud config set project $SOURCE_PROJECT
+```
 
-Admin User who will be executing the deployment of DMT through Cloud Build will require the below set of permissions
+## Assign Admin and Executing User Permissions
 
-* roles/bigquery.dataViewer
-* roles/bigquery.user
-* roles/cloudbuild.builds.editor
-* roles/run.viewer
-* roles/compute.admin
-* roles/iam.serviceAccountViewer
-* roles/logging.viewer
-* roles/run.viewer
-* roles/serviceusage.serviceUsageConsumer
-* roles/storage.admin
-* roles/iam.serviceAccountViewer
-* projects/${PROJECT_ID}/roles/DMTAdminAdditionalPermissions
+There are two main personas for DMT - the Admin and the User. The Admin is responsible for managing DMT infrastructure (such as granting permissions to the Cloud Build service account which executes the Terraform deployment). The User is responsible for using DMT post-deployment for migration activities, such as triggering SQL translation or data validation.
 
+We provide scripts to assign the required permissions for each of these personas by a superadmin. This includes creating two custom roles with a limited set of granular permissions.
 
-And, user who will be using the DMT tool will require the below set of permissions
-
-* roles/bigquery.dataViewer
-* roles/bigquery.admin
-* roles/run.viewer
-* roles/composer.user
-* roles/storage.admin
-* roles/vpcaccess.admin
-* roles/logging.viewer
-* projects/${PROJECT_ID}/roles/DMTUserAdditionalPermissions
-
-
-**Note - DMTUserAdditionalPermissions role is custom DMT user role and DMTAdminAdditionalPermissions is also custom role for DMT admin**
-
+Set the following environment variables for the Admin and User, and then execute the provided bash scripts to create the custom roles and IAM permission bindings.
 
 ```
  export ADMIN_ACCOUNT=<EXECUTING_ADMIN_ACCOUNT>
@@ -160,49 +127,19 @@ And, user who will be using the DMT tool will require the below set of permissio
 ```
 
 ```
- export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-**DMT requires additional user/admin permission except predefined role, you can execute the Bash script dmt-user-custom-role-creation.sh and dmt-admin-custom-role-creation.sh present in the root directory to create custom dmt user/admin additional permission role**
-
-
-```
+bash dmt-admin-custom-role-creation.sh
 bash dmt-user-custom-role-creation.sh
 ```
 
-
 ```
-bash dmt-admin-custom-role-creation.sh
-```
-
-**To assign these roles, you can execute the Bash script dmt-user-iam-setup.sh and dmt-admin-user-iam-setup.sh present in the root directory**
-
-```
+bash dmt-admin-user-iam-setup.sh
 bash dmt-user-iam-setup.sh
 ```
 
 
-```
-bash dmt-admin-user-iam-setup.sh
-```
-
 ## Enable Google Cloud APIs
 
 From the Cloud Shell, you can enable Google Cloud Services using the gcloud command line interface in your Google Cloud project.
-
-
-```
-export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-
-```
-gcloud config set project $SOURCE_PROJECT
-```
-
-
 
 ```
 gcloud services enable serviceusage.googleapis.com \
@@ -252,7 +189,6 @@ Once the execution of the bash script is successful, you can proceed to the next
 Translations deployment will take care of the workflow needed to perform
 
 
-
 * DDL, DML and SQL translations
 * Schema migration to BQ (Creation of tables from translated DDLs)
 * Schema Validation and Custom query(row/column for SQL validation) using [DVT tool](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
@@ -271,15 +207,6 @@ If you choose the deployment of Translation + Data Migration, in addition to the
 ### Pre deployment Steps
 
 #### 1. Before you proceed with DMT terraform deployment, ensure that there is a GCS bucket created to store Terraform infrastructure State Files
-
-```
-export SOURCE_PROJECT=<YOUR_PROJECT_ID>
-```
-
-
-```
-gcloud config set project ${SOURCE_PROJECT}
-```
 
 
 ```
@@ -329,11 +256,9 @@ Perform below predeployment steps to setup/configure shared VPC for composer -
    export HOST_PROJECT=<HOST_PROJECT_ID>
    ```
 
-
    ```
    export SOURCE_PROJECT=<YOUR_PROJECT_ID>
    ```
-
 
    2. Network resource configuration - VPC network should have subnetwork with the region available for cloud composer [see available regions list under Products available by location section](https://cloud.google.com/about/locations#regions) deployment. Subnetwork should have 2 Secondary IP ranges created explicitly which is required for GKE pods and services.
 
@@ -430,7 +355,7 @@ For more information and references please visit [Configure Shared VPC networkin
 
 
 
-1. Set default GCP project in your Cloud shell or terminal or bastion host with terraform, terragrunt and gcloud sdk installed
+1. Set default GCP project in your Cloud Shell or terminal or bastion host with Terraform, Terragrunt and gcloud SDK installed
 
 ```
 gcloud config set project ${SOURCE_PROJECT}

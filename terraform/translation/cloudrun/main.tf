@@ -6,7 +6,7 @@
  */
 
 /*********************************************
- Eventarc setup with Cloud Run as destination                                                 
+ Eventarc setup with Cloud Run as destination
 **********************************************/
 
 /* Retrieve Composer API endpoint URL */
@@ -173,6 +173,9 @@ resource "google_pubsub_subscription" "push_subscribe" {
     attributes = {
       x-goog-version = "v1"
     }
+  }
+  expiration_policy {
+    ttl = ""
   }
   enable_message_ordering = true
 }

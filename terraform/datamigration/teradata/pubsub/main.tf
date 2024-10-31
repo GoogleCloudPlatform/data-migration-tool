@@ -6,7 +6,7 @@
  */
 
 /******************************************
- Pub Sub topics notification                                                   
+ Pub Sub topics notification
 *****************************************/
 
 data "google_storage_project_service_account" "gcs_account" {
@@ -40,7 +40,7 @@ resource "google_pubsub_subscription" "dmt_dts_controller_subscription" {
   retain_acked_messages      = true
   ack_deadline_seconds       = 60
   expiration_policy {
-    ttl = "300000.5s"
+    ttl = ""
   }
   retry_policy {
     minimum_backoff = "10s"

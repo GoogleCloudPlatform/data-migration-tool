@@ -17,14 +17,14 @@ SOURCE_DB=$3
 FOLDER_NAME=$4
 
 # DWH Library version
-DWH_LIB_VERSION="1.0.13"
+DWH_LIB_VERSION="1.0.62"
 
 # Check if dwh lib folder is not found, unzip directory
-if [ ! -d "$WORK_DIR/dwh-migration-tools-v$DWH_LIB_VERSION" ]; 
+if [ ! -d "$WORK_DIR/dwh-migration-tools-v$DWH_LIB_VERSION" ];
 then
     echo "$WORK_DIR/dwh-migration-tools-v$DWH_LIB_VERSION not found"
-    
-    cd $WORK_DIR 
+
+    cd $WORK_DIR
 
     echo "Download dwh-migration-tools-v$DWH_LIB_VERSION.zip"
     wget https://github.com/google/dwh-migration-tools/releases/download/v$DWH_LIB_VERSION/dwh-migration-tools-v$DWH_LIB_VERSION.zip
@@ -56,16 +56,16 @@ echo "Execute dwh dumper to generate metadata"
 
 # Check file is exist or not
 outputFile=dwh-migration-${SOURCE_DB}-metadata.zip
-if test -f "$outputFile"; 
+if test -f "$outputFile";
 then
     echo "$outputFile is generated."
     # Unzip generated folder
     unzip dwh-migration-${SOURCE_DB}-metadata.zip -d dwh-migration-${SOURCE_DB}-metadata
-    
+
     # Copy metadata to composer bucket data folder
     mkdir -p $DATA_FOLDER_PATH/$FOLDER_NAME
     cp -R dwh-migration-${SOURCE_DB}-metadata/* $DATA_FOLDER_PATH/$FOLDER_NAME
-    
+
     # Remove generated zip from working directory
     rm dwh-migration-${SOURCE_DB}-metadata.zip
     rm -r dwh-migration-${SOURCE_DB}-metadata

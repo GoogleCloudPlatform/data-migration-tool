@@ -59,10 +59,11 @@ resource "google_pubsub_subscription" "hive_incremental_sub" {
   ack_deadline_seconds = 600
 
   bigquery_config {
-
     table          = "${var.project_id}:${var.logging_dataset}.${var.hive_inc_load_pubsub_audit}"
     write_metadata = true
-
+  }
+  expiration_policy {
+    ttl = ""
   }
 
 }

@@ -68,7 +68,8 @@ variable "subnetwork" {
 variable "image" {
   type        = string
   description = "image of compute engine instance"
-  default     = "ubuntu-minimal-2204-jammy-v20220902"
+  default     = "family/ubuntu-minimal-2204-lts"
+  # Can pin to a specific version, eg. "ubuntu-minimal-2204-jammy-v20240926"
 }
 variable "boot_size" {
   type        = number
