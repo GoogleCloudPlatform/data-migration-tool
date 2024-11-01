@@ -12,4 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# SECRET_PREFIX hardcoded in 'src/translation/dvt/main.py' and 'src/datamigration/scripts/teradata/agent_controller/controller.py'
 SECRET_PREFIX = "secret-"
