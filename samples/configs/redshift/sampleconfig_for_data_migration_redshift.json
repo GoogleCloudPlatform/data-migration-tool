@@ -1,47 +1,47 @@
 {
-    "unique_id":"unique_id_to_filter_bq_result_table",
-   "batchDistribution": 1,
-   "type": "data",
-   "source": "redshift",
-   "table_list_file": "gs://dmt-redshift-data-<project-id-or-customer-name-given-in-deployment>/tables_list.csv",
-   "transfer_config": {
-       "dataSourceId": "redshift",
-       "displayName": "unique_id_to_filter_bq_result_table",
-       "params": {
-           "jdbc_url": "jdbc:redshift://<host>.<region>.redshift.amazonaws.com:5439/dev",
-           "database_username": "<source_db_username>",
-           "database_password": "secret:<redshift_secret_name>",
-           "access_key_id": "<aws_access_key_id>",
-           "secret_access_key": "secret:<aws_access_key>",
-           "s3_bucket": "s3://<bucketname>/",
-           "redshift_schema": "<redshift_schema_name>",
-           "migration_infra_cidr": "<vpc>:<10.0.0.0/24(use this variable only when your Redshift cluster is private. If its public remove this line)>"
-       },
-       "emailPreferences": {
-           "enableFailureEmail": false
-       },
-       "notificationPubsubTopic": "projects/<project-id>/topics/dmt-redshift-dts-notification-topic-<project-id-or-customer-name-given-in-deployment>",
-       "destinationDatasetId": "<bq_target_dataset>"
-   },
-   "validation_config": {
-       "source_config": {
-           "source_type": "Redshift",
-           "host": "<host>.<region>.redshift.amazonaws.com",
-           "port": "5439",
-           "user": "<source_db_username>",
-           "database": "<source_db_name>",
-           "password": "secret:<redshift_secret_name>"
-       },
-       "target_config": {
-           "target_type": "BigQuery",
-           "project-id": "<project-id>"
-       },
-       "source_target_schema_table": [
+    "unique_id": "unique_id_to_filter_bq_result_table",
+    "batchDistribution": 1,
+    "type": "data",
+    "source": "redshift",
+    "table_list_file": "gs://dmt-redshift-data-<project-id-or-customer-name-given-in-deployment>/tables_list.csv",
+    "transfer_config": {
+        "dataSourceId": "redshift",
+        "displayName": "unique_id_to_filter_bq_result_table",
+        "params": {
+            "jdbc_url": "jdbc:redshift://<host>.<region>.redshift.amazonaws.com:5439/dev",
+            "database_username": "<source_db_username>",
+            "database_password": "secret-<redshift_secret_name>",
+            "access_key_id": "<aws_access_key_id>",
+            "secret_access_key": "secret-<aws_access_key>",
+            "s3_bucket": "s3://<bucketname>/",
+            "redshift_schema": "<redshift_schema_name>",
+            "migration_infra_cidr": "<vpc>:<10.0.0.0/24(use this variable only when your Redshift cluster is private. If its public remove this line)>"
+        },
+        "emailPreferences": {
+            "enableFailureEmail": false
+        },
+        "notificationPubsubTopic": "projects/<project-id>/topics/dmt-redshift-dts-notification-topic-<project-id-or-customer-name-given-in-deployment>",
+        "destinationDatasetId": "<bq_target_dataset>"
+    },
+    "validation_config": {
+        "source_config": {
+            "source_type": "Redshift",
+            "host": "<host>.<region>.redshift.amazonaws.com",
+            "port": "5439",
+            "user": "<source_db_username>",
+            "database": "<source_db_name>",
+            "password": "secret-<redshift_secret_name>"
+        },
+        "target_config": {
+            "target_type": "BigQuery",
+            "project-id": "<project-id>"
+        },
+        "source_target_schema_table": [
             "<source_db_username>.<table_name>=<bq_target_dataset>"
-       ],
-       "validation_mode": "<gke/cloudrun>",
-       "validation_type": "<row/column>",
-       "pod_operator_mem" :"4000M",
-       "pod_operator_cpu" :"800m"
-   }
+        ],
+        "validation_mode": "<gke/cloudrun>",
+        "validation_type": "<row/column>",
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
+    }
 }

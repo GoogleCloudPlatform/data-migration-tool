@@ -79,16 +79,16 @@
             "port": 1521,
             "user": "<source_db_username>",
             "database": "<source_db_name>",
-            "password": "secret:<secret_name>"
+            "password": "secret-<secret_name>"
         },
         "target_config": {
             "source_type": "BigQuery",
             "project-id": "<project_id>"
         },
-        "validation_params_file_path" : "gs://<dmt-redshift-config-<project-id-or-customer-name-given-in-deployment>/validation/oracle/validation_params.csv",
+        "validation_params_file_path": "gs://<dmt-redshift-config-<project-id-or-customer-name-given-in-deployment>/validation/oracle/validation_params.csv",
         "validation_type": "schema",
         "validation_mode": "<gke/cloudrun>",
-        "pod_operator_mem" :"4000M",
-        "pod_operator_cpu" :"800m"
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
     }
 }

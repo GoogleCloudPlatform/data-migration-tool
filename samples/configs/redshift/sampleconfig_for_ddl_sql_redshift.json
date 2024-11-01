@@ -61,11 +61,11 @@
                         "source": {
                             "type": "SCHEMA",
                             "database": "<project_id>",
-                            "schema" : "<source_db_schema>"
+                            "schema": "<source_db_schema>"
                         },
                         "target": {
                             "database": "<project_id>",
-                            "schema" : "<bq_target_dataset>"
+                            "schema": "<bq_target_dataset>"
                         }
                     }
                 ]
@@ -79,16 +79,16 @@
             "port": 5439,
             "user": "<source_db_username>",
             "database": "<source_db_name>",
-            "password": "secret:<secret_name>"
+            "password": "secret-<secret_name>"
         },
         "target_config": {
             "source_type": "BigQuery",
             "project-id": "<project_id>"
         },
-        "validation_params_file_path" : "gs://<dmt-redshift-config-<project-id-or-customer-name-given-in-deployment>/validation/redshift/validation_params.csv",
+        "validation_params_file_path": "gs://<dmt-redshift-config-<project-id-or-customer-name-given-in-deployment>/validation/redshift/validation_params.csv",
         "validation_type": "schema",
-        "validation_mode":"<gke/cloudrun>",
-        "pod_operator_mem" :"4000M",
-        "pod_operator_cpu" :"800m"
+        "validation_mode": "<gke/cloudrun>",
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
     }
 }
