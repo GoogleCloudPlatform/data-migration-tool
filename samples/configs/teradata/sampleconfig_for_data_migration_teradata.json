@@ -1,67 +1,67 @@
 {
-    "unique_id":"unique_id_to_filter_bq_result_table",
-    "batchDistribution":1,
-    "type":"data",
-    "source":"teradata",
-    "table_list_file": "gs://dmt-teradata-data-<project-id-or-customer-name-given-in-deployment>/tables_list.csv",
-    "transfer_config":{
-        "dataSourceId":"on_premises",
-        "displayName":"unique_id_to_filter_bq_result_table",
-        "params":{
-           "database_type":"Teradata",
-           "bucket":"dmt-teradata-data-<project-id-or-customer-name-given-in-deployment>",
-           "database_name":"<database_name>",
-           "agent_service_account":"dmt-teradata-agent-vm@<project-id>.iam.gserviceaccount.com"
-        },
-        "emailPreferences":{
-           "enableFailureEmail":false
-        },
-        "notificationPubsubTopic": "projects/<project-id>/topics/dmt-teradata-dts-notification-topic-<project-id-or-customer-name-given-in-deployment>",
-        "destinationDatasetId":"<bq_target_dataset>"
-     },
-     "agent_config":{
-        "transfer-configuration":{
-           "project-id":"<project-id>",
-           "location":"us"
-        },
-        "source-type":"teradata",
-        "console-log":false,
-        "silent":false,
-        "teradata-config":{
-           "connection":{
-               "host":"<source_db_host_or_ip>",
-               "username": "<source_db_username>",
-               "secret_resource_id": "projects/<project-id>/secrets/secret-edw_credentials/versions/<version_no>"
-           },
-           "local-processing-space":"/opt/migration_project_teradata_bq/local_processing_space",
-           "max-local-storage":"200GB",
-           "gcs-upload-chunk-size":"32MB",
-           "use-tpt":true,
-           "retain-tpt-files":false,
-           "max-sessions":0,
-           "spool-mode":"NoSpool",
-           "max-parallel-upload":2,
-           "max-parallel-extract-threads":2,
-           "session-charset":"UTF8",
-           "max-unload-file-size":"2GB"
-        }
-     },
-     "validation_config": {
-         "source_config": {
-             "source_type": "Teradata",
-             "host": "<source_db_host_or_ip>",
-             "port": 1025,
-             "user-name": "<source_db_username>",
-             "password": "secret:<teradata_secret_name>"
+   "unique_id": "unique_id_to_filter_bq_result_table",
+   "batchDistribution": 1,
+   "type": "data",
+   "source": "teradata",
+   "table_list_file": "gs://dmt-teradata-data-<project-id-or-customer-name-given-in-deployment>/tables_list.csv",
+   "transfer_config": {
+      "dataSourceId": "on_premises",
+      "displayName": "unique_id_to_filter_bq_result_table",
+      "params": {
+         "database_type": "Teradata",
+         "bucket": "dmt-teradata-data-<project-id-or-customer-name-given-in-deployment>",
+         "database_name": "<database_name>",
+         "agent_service_account": "dmt-teradata-agent-vm@<project-id>.iam.gserviceaccount.com"
+      },
+      "emailPreferences": {
+         "enableFailureEmail": false
+      },
+      "notificationPubsubTopic": "projects/<project-id>/topics/dmt-teradata-dts-notification-topic-<project-id-or-customer-name-given-in-deployment>",
+      "destinationDatasetId": "<bq_target_dataset>"
+   },
+   "agent_config": {
+      "transfer-configuration": {
+         "project-id": "<project-id>",
+         "location": "us"
+      },
+      "source-type": "teradata",
+      "console-log": false,
+      "silent": false,
+      "teradata-config": {
+         "connection": {
+            "host": "<source_db_host_or_ip>",
+            "username": "<source_db_username>",
+            "secret_resource_id": "projects/<project-id>/secrets/secret-edw_credentials/versions/<version_no>"
          },
-         "target_config": {
-             "target_type": "BigQuery",
-             "project-id": "<project-id>"
-         },
-         "validation_params_file_path" : "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
-         "validation_type":"<row/column>",
-         "validation_mode":"<gke/cloudrun>",
-         "pod_operator_mem" :"4000M",
-         "pod_operator_cpu" :"800m"
-     }
-  }
+         "local-processing-space": "/opt/migration_project_teradata_bq/local_processing_space",
+         "max-local-storage": "200GB",
+         "gcs-upload-chunk-size": "32MB",
+         "use-tpt": true,
+         "retain-tpt-files": false,
+         "max-sessions": 0,
+         "spool-mode": "NoSpool",
+         "max-parallel-upload": 2,
+         "max-parallel-extract-threads": 2,
+         "session-charset": "UTF8",
+         "max-unload-file-size": "2GB"
+      }
+   },
+   "validation_config": {
+      "source_config": {
+         "source_type": "Teradata",
+         "host": "<source_db_host_or_ip>",
+         "port": 1025,
+         "user-name": "<source_db_username>",
+         "password": "secret-<teradata_secret_name>"
+      },
+      "target_config": {
+         "target_type": "BigQuery",
+         "project-id": "<project-id>"
+      },
+      "validation_params_file_path": "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
+      "validation_type": "<row/column>",
+      "validation_mode": "<gke/cloudrun>",
+      "pod_operator_mem": "4000M",
+      "pod_operator_cpu": "800m"
+   }
+}

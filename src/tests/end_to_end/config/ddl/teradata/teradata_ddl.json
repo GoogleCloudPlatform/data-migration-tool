@@ -1,5 +1,5 @@
 {
-    "batchDistribution": 1,  
+    "batchDistribution": 1,
     "unique_id": "{{ unique_id }}",
     "type": "ddl",
     "source": "teradata",
@@ -80,16 +80,16 @@
             "host": "{{ source_ip }}",
             "port": 1025,
             "user-name": "{{ source_username }}",
-            "password": "secret:{{ secret_name }}"
+            "password": "secret-{{ secret_name }}"
         },
         "target_config": {
             "target_type": "BigQuery",
             "project-id": "{{ project_id }}"
         },
-        "validation_params_file_path" : "gs://{{ config_bucket_name }}/validation/teradata/{{ validation_mapping_file }}",
-        "validation_mode":"{{ validation_mode }}",
+        "validation_params_file_path": "gs://{{ config_bucket_name }}/validation/teradata/{{ validation_mapping_file }}",
+        "validation_mode": "{{ validation_mode }}",
         "validation_type": "schema",
-        "pod_operator_mem" :"4000M",
-        "pod_operator_cpu" :"800m"
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
     }
 }

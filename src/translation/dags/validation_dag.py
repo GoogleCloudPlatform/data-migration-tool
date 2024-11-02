@@ -42,7 +42,6 @@ class ValidationEntity(enum.Enum):
 
 
 project_id = os.environ.get("GCP_PROJECT_ID")
-secret_prefix = "secret:"
 
 composer_k8s_cluster_region = os.environ.get("REGION")
 composer_name = os.environ.get("COMPOSER_ENV")
@@ -161,8 +160,6 @@ def connection_string(conn_config):
             conn_type = val
             conn_name = val + "_CONN"
             continue
-        if val.startswith(secret_prefix):
-            val = f"secret-{val[len(secret_prefix) :]}"
         conn_string = conn_string + f"--{key} '{val}' "
     if conn_type != "BigQuery":
         conn_string = (

@@ -220,7 +220,7 @@ The below list of logging tables are created by terraform templates and record a
              "host": "<source_db_host_or_ip>",
              "port": 1025,
              "user-name": "<source_db_username>",
-             "password": "secret:<teradata_secret_name>"
+             "password": "secret-<teradata_secret_name>"
          },
          "target_config": {
              "target_type": "BigQuery",
@@ -564,9 +564,9 @@ Source datawarehouse : Teradata
    </td>
    <td>Secret Manager key name
 <p>
-<strong>secret: &lt;secret key name></strong>
+<strong>secret- &lt;secret key name></strong>
 <p>
-For example - secret:edw_credentials
+For example - secret-edw_credentials
    </td>
   </tr>
   <tr>
@@ -665,7 +665,7 @@ Eg:
 
 **location:** same as data location for the dataset
 
-**teradata-config:** contains host, user and password keys for the teradata server. Provide password value as _secret:&lt;secret-name-suffix>_. This secret should be created in the Secret Manager as _secret-&lt;secret-name-suffix>_.
+**teradata-config:** contains host, user and password keys for the teradata server. Provide password value as _secret-&lt;secret-name-suffix>_. This secret should be created in the Secret Manager as _secret-&lt;secret-name-suffix>_.
 
 <span style="text-decoration:underline;">Note</span> that target table name case is sensitive due to case sensitive nature of bigquery. So in the case of only Data Migration, it needs to be always be in the same case as how they exist in source Teradata and ultimately match with validation_config source_target_table mapping in config.json for DVT validations
 

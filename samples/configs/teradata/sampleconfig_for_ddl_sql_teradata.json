@@ -80,16 +80,16 @@
             "host": "<source_db_host_ip>",
             "port": 1025,
             "user-name": "<source_db_username>",
-            "password": "secret:<secret_name>"
+            "password": "secret-<secret_name>"
         },
         "target_config": {
             "target_type": "BigQuery",
             "project-id": "<project_id>"
         },
-        "validation_params_file_path" : "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
-        "validation_mode":"<gke/cloudrun>",
+        "validation_params_file_path": "gs://<dmt-config-<project-id-or-customer-name-given-in-deployment>/validation/teradata/validation_params.csv",
+        "validation_mode": "<gke/cloudrun>",
         "validation_type": "column",
-        "pod_operator_mem" :"4000M",
-        "pod_operator_cpu" :"800m"
+        "pod_operator_mem": "4000M",
+        "pod_operator_cpu": "800m"
     }
 }

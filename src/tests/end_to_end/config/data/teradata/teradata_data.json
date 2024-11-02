@@ -1,49 +1,49 @@
 {
-  "unique_id":"{{ unique_id }}",
-  "batchDistribution":1,
-  "type":"data",
-  "source":"teradata",
+  "unique_id": "{{ unique_id }}",
+  "batchDistribution": 1,
+  "type": "data",
+  "source": "teradata",
   "table_list_file": "gs://{{ data_bucket_name }}/files/teradata/{{ data_mig_table_list_file }}",
-  "transfer_config":{
-    "dataSourceId":"on_premises",
-    "displayName":"{{ unique_id }}",
-    "params":{
-      "database_type":"Teradata",
-      "bucket":"{{ bucket_name }}",
-      "database_name":"{{ source_schema }}",
-      "agent_service_account":"dmt-teradata-agent-vm@{{ project_id }}.iam.gserviceaccount.com"
+  "transfer_config": {
+    "dataSourceId": "on_premises",
+    "displayName": "{{ unique_id }}",
+    "params": {
+      "database_type": "Teradata",
+      "bucket": "{{ bucket_name }}",
+      "database_name": "{{ source_schema }}",
+      "agent_service_account": "dmt-teradata-agent-vm@{{ project_id }}.iam.gserviceaccount.com"
     },
-    "emailPreferences":{
-      "enableFailureEmail":false
+    "emailPreferences": {
+      "enableFailureEmail": false
     },
     "notificationPubsubTopic": "projects/{{ project_id }}/topics/dmt-teradata-dts-notification-topic-{{ project_id }}",
-    "destinationDatasetId":"{{ target_schema }}"
+    "destinationDatasetId": "{{ target_schema }}"
   },
-  "agent_config":{
-    "transfer-configuration":{
-      "project-id":"{{ project_id }}",
-      "location":"us"
+  "agent_config": {
+    "transfer-configuration": {
+      "project-id": "{{ project_id }}",
+      "location": "us"
     },
-    "source-type":"teradata",
-    "console-log":false,
-    "silent":false,
-    "teradata-config":{
-      "connection":{
-        "host":"{{ source_ip }}",
+    "source-type": "teradata",
+    "console-log": false,
+    "silent": false,
+    "teradata-config": {
+      "connection": {
+        "host": "{{ source_ip }}",
         "username": "{{ source_username }}",
         "secret_resource_id": "projects/{{ project_id }}/secrets/secret-{{ secret_name }}/versions/latest"
       },
-      "local-processing-space":"/opt/migration_project_teradata_bq/local_processing_space",
-      "max-local-storage":"200GB",
-      "gcs-upload-chunk-size":"32MB",
-      "use-tpt":true,
-      "retain-tpt-files":false,
-      "max-sessions":0,
-      "spool-mode":"NoSpool",
-      "max-parallel-upload":2,
-      "max-parallel-extract-threads":2,
-      "session-charset":"UTF8",
-      "max-unload-file-size":"2GB"
+      "local-processing-space": "/opt/migration_project_teradata_bq/local_processing_space",
+      "max-local-storage": "200GB",
+      "gcs-upload-chunk-size": "32MB",
+      "use-tpt": true,
+      "retain-tpt-files": false,
+      "max-sessions": 0,
+      "spool-mode": "NoSpool",
+      "max-parallel-upload": 2,
+      "max-parallel-extract-threads": 2,
+      "session-charset": "UTF8",
+      "max-unload-file-size": "2GB"
     }
   },
   "validation_config": {
@@ -52,16 +52,16 @@
       "host": "{{ source_ip }}",
       "port": 1025,
       "user-name": "{{ source_username }}",
-      "password": "secret:{{ secret_name }}"
+      "password": "secret-{{ secret_name }}"
     },
     "target_config": {
       "target_type": "BigQuery",
       "project-id": "{{ project_id }}"
     },
-    "validation_params_file_path" : "gs://{{ config_bucket_name }}/validation/teradata/{{ validation_mapping_file }}",
-    "validation_mode":"{{ validation_mode }}",
-    "validation_type":"column",
-    "pod_operator_mem" :"4000M",
-    "pod_operator_cpu" :"800m"
+    "validation_params_file_path": "gs://{{ config_bucket_name }}/validation/teradata/{{ validation_mapping_file }}",
+    "validation_mode": "{{ validation_mode }}",
+    "validation_type": "column",
+    "pod_operator_mem": "4000M",
+    "pod_operator_cpu": "800m"
   }
 }

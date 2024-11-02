@@ -14,6 +14,9 @@ from google.cloud import bigquery, storage
 
 from common_utils import custom_user_agent
 from common_utils.operators.reporting_operator import ReportingOperator
+from translation.dags.translation_utils.input_validation_utils import (
+    normalize_and_validate_config,
+)
 
 CUSTOM_RUN_ID_KEY = "unique_id"
 DAG_ID = "controller_dag"
@@ -72,7 +75,8 @@ def _load_config(ti, **kwargs) -> None:
     )
     event_json = kwargs["dag_run"].conf
     event_type = event_json["message"]["attributes"]["eventType"]
-    if event_type == "OBJECT_FINALIZE":
+
+    if event_type == "OBJECT_FINALIZE":  # New config file dropped
         message = event_json["message"]
         print(f"message : {message}")
         bucket_id = message["attributes"]["bucketId"]
@@ -82,12 +86,16 @@ def _load_config(ti, **kwargs) -> None:
         bucket = client.get_bucket(bucket_id)
         blob = storage.Blob(object_id, bucket)
         raw_config = blob.download_as_bytes()
+
         config = json.loads(raw_config)
+        config = normalize_and_validate_config(PROJECT_ID, config)
         if CUSTOM_RUN_ID_KEY not in config:
             config[CUSTOM_RUN_ID_KEY] = datetime.datetime.now().strftime("%x %H:%M:%S")
+
         ti.xcom_push(key="config", value=config)
         ti.xcom_push(key="bucket_id", value=bucket_id)
         ti.xcom_push(key="object_id", value=object_id)
+
     elif event_type == "TRANSFER_RUN_FINISHED":
         config = json.loads(base64.b64decode(event_json["message"]["data"]))
         ti.xcom_push(key="config", value=config)
@@ -96,6 +104,7 @@ def _load_config(ti, **kwargs) -> None:
 
 def _prepare_data_for_next_dag(ti, **kwargs):
     event_type = ti.xcom_pull(key="event_type", task_ids="load_config")
+    next_dag_config = None
     if event_type == "OBJECT_FINALIZE":
         config = ti.xcom_pull(key="config", task_ids="load_config")
         bucket_id = ti.xcom_pull(key="bucket_id", task_ids="load_config")
@@ -107,7 +116,7 @@ def _prepare_data_for_next_dag(ti, **kwargs):
                 next_dag_config = {"config": config}
             else:
                 print(f"Unsupported data source : {data_source}")
-                next_dag_config = None
+
         elif op_type == "data":
             next_dag_config = {
                 "config": config,
@@ -116,7 +125,7 @@ def _prepare_data_for_next_dag(ti, **kwargs):
             }
         else:
             print(f"Error: Unsupported operation type: {op_type}")
-            next_dag_config = None
+
     elif event_type == "TRANSFER_RUN_FINISHED":
         config = ti.xcom_pull(key="config", task_ids="load_config")
         data_source = config["dataSourceId"]
@@ -136,13 +145,13 @@ def _prepare_data_for_next_dag(ti, **kwargs):
             }
     else:
         print(f"Unsupported event type: {event_type}")
-        next_dag_config = None
 
     ti.xcom_push(key="next_dag_config", value=next_dag_config)
 
 
 def _determine_next_dag(ti, **kwargs):
     event_type = ti.xcom_pull(key="event_type", task_ids="load_config")
+    next_dag_id = None
     if event_type == "OBJECT_FINALIZE":
         config = ti.xcom_pull(key="config", task_ids="load_config")
         op_type = config["type"]
@@ -165,7 +174,7 @@ def _determine_next_dag(ti, **kwargs):
                 next_dag_id = EXTRACT_DDL_DAG_ID
             else:
                 print(f"Error: Unsupported data source: {data_source}")
-                next_dag_id = None
+
         elif op_type == "data":
             if data_source == "teradata":
                 next_dag_id = DATA_LOAD_TERADATA_DAG_ID
@@ -177,7 +186,7 @@ def _determine_next_dag(ti, **kwargs):
                 next_dag_id = DATA_LOAD_REDSHIFT_DAG_ID
         else:
             print(f"Unsupported operation type: {op_type}")
-            next_dag_id = None
+
     elif event_type == "TRANSFER_RUN_FINISHED":
         config = ti.xcom_pull(key="config", task_ids="load_config")
         data_source = config["dataSourceId"]
@@ -187,7 +196,6 @@ def _determine_next_dag(ti, **kwargs):
             next_dag_id = REDSHIFT_TRANSFER_RUN_LOG_DAG_ID
     else:
         print(f"Unsupported event type: {event_type}")
-        next_dag_id = None
 
     if next_dag_id is None:
         next_task = "end_task"
