@@ -74,7 +74,6 @@ def split_gcs_path(gcs_path):
 
 
 def normalize_and_validate_config(project_id: str, config: dict) -> dict:
-    # TODO(dmedora): see what else can be validated, check actual existence. Also which fields should be present in which config types
     # Normalize source name
     if "source" in config:
         config["source"] = config["source"].lower()
@@ -114,7 +113,7 @@ def normalize_and_validate_config(project_id: str, config: dict) -> dict:
                 f"Validation config parameters file not found at validation_params_file_path={validation_params_file}."
             )
 
-        # Check that secret exists in Secret Manager.
+        # Check that secrets exist in Secret Manager.
         if "password" in config["validation_config"]["source_config"] and config[
             "validation_config"
         ]["source_config"]["password"].startswith(constants.SECRET_PREFIX):
@@ -130,7 +129,7 @@ def normalize_and_validate_config(project_id: str, config: dict) -> dict:
             tgt_pw_secret = config["validation_config"]["target_config"]["password"]
             if not check_secret_exists(project_id, tgt_pw_secret):
                 raise AirflowFailException(
-                    f"Secret not found in Secret Manager with the name {src_pw_secret}."
+                    f"Secret not found in Secret Manager with the name {tgt_pw_secret}."
                 )
 
     return config

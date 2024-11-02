@@ -1,36 +1,3 @@
-# from translation.dags.translation_utils import input_validation_utils
-
-
-# def test_check_gcs_bucket_exists():
-#     BUCKET_EXISTS = "gs://dmt-config-pso-data-migration-tool-test"
-#     BUCKET_DNE = "gs://dmt-config-pso-data-migration-tool-test-does-not-exist-123"
-#     expect_exists = input_validation_utils.check_gcs_bucket_exists(BUCKET_EXISTS)
-#     assert expect_exists is True
-
-#     expect_dne = input_validation_utils.check_gcs_bucket_exists(BUCKET_DNE)
-#     assert expect_dne is False
-
-# def test_check_gcs_file_exists():
-#     # Asserts whether a gcs file exists from two gcs paths
-
-
-# def test_check_gcs_directory_not_empty():
-
-
-# def test_check_secret_exists():
-
-# def test_split_gcs_path():
-
-# def normalize_and_validate_config():
-#     CONFIG_IN = {
-#         "source": "TeRADAtA"
-#         ""
-#     }
-#     CONFIG_OUT = {
-
-#     }
-
-
 # Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,10 +15,8 @@
 from unittest import mock
 
 import pytest
-from airflow.exceptions import AirflowFailException
 from google.api_core.exceptions import NotFound
 
-from common_utils import constants
 from translation.dags.translation_utils import input_validation_utils
 
 # python -m pytest tests/unit/input_validation_utils_test.py
