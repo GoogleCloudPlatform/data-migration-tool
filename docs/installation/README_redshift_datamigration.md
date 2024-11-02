@@ -4,7 +4,7 @@
 
 ### Tool Features
 
-* Initial release will support bulk load data transfer only. 
+* Initial release will support bulk load data transfer only.
 * Initial release will support Redshift to BigQuery translation using BQ DTS, row and column validation of the data in source and target.
 
 ### Things to Take Note of
@@ -21,10 +21,10 @@
 
 The user uploads a configuration json file to **dmt-config-&lt;customer_name provided in TF>**  bucket **data** folder which initiates data migration.
 
-As the configuration is uploaded, a new file create/update trigger is sent to pub/sub which triggers the DAG **controller_dag** via cloudrun. 
+As the configuration is uploaded, a new file create/update trigger is sent to pub/sub which triggers the DAG **controller_dag** via cloudrun.
 This DAG is responsible for triggering relevant schema/data migration dag based on operation type and data source given in user config, For redshit data migrationm it'll trigger  **redshift_data_load_dag** which is responsible for parallelizing the data transfer config creation, based on the user defined key - _batchDistribution_.
 
-### Prerequisites 
+### Prerequisites
 
 * Target dataset creation to be done by the user/concerned team before uploading the configuration file.
 * If your redshift cluster is **private**
@@ -99,9 +99,9 @@ The below list of logging tables are created by terraform templates and record a
   </tr>
 </table>
 
-## Trigger Data Migration Tool 
+## Trigger Data Migration Tool
 
-* Data Migration 
+* Data Migration
 * Data Validations
 * SQL Validations
 
@@ -120,9 +120,9 @@ The below list of logging tables are created by terraform templates and record a
        "params": {
            "jdbc_url": "jdbc:redshift://<host>.<region>.redshift.amazonaws.com:5439/dev",
            "database_username": "<username>",
-           "database_password": "secret:<redshift_secret_name>",
+           "database_password": "secret-<redshift_secret_name>",
            "access_key_id": "<aws_access_key_id>",
-           "secret_access_key": "secret:<aws_access_key>",
+           "secret_access_key": "secret-<aws_access_key>",
            "s3_bucket": "s3://<bucketname>/",
            "redshift_schema": "<redshift_schema_name>",
            "migration_infra_cidr": "<vpc>:<10.0.0.0/24(use this variable only when your Redshift cluster is private. If its public remove this line)>"
@@ -139,7 +139,7 @@ The below list of logging tables are created by terraform templates and record a
            "host": "<host>.<region>.redshift.amazonaws.com",
            "port": "5439",
            "user-name": "<source_db_username>",
-           "password": "secret:<redshift_secret_name>"
+           "password": "secret-<redshift_secret_name>"
        },
        "target_config": {
            "target_type": "BigQuery",
@@ -243,7 +243,7 @@ The below list of logging tables are created by terraform templates and record a
   <tr>
     <td> transfer_config:params:migration_infra_cidr </td>
     <td> <strong>Optional</strong>: Use this key if your redhsift cluster is not public and you have configured VPN to a VPC network in your GCP project</br>
-      Specify VPC network name and the private IP address range to use in the tenant project VPC network. Specify the IP address range as a CIDR block. 
+      Specify VPC network name and the private IP address range to use in the tenant project VPC network. Specify the IP address range as a CIDR block.
       <ul>
          <li>The form is VPC_network_name:CIDR, for example: my_vpc:10.251.1.0/24.</li>
          <li>Use standard private VPC network address ranges in the CIDR notation, starting with 10.x.x.x.</li>
@@ -275,8 +275,8 @@ The below list of logging tables are created by terraform templates and record a
   <tr>
     <td> validation_config:source_config:password </td>
     <td>Secret Manager key name <p> (Secret should be created in the Secret Manager as _secret-&lt;secret-key-name>_.)
-        <strong>secret: &lt;secret key name></strong>
-      <p> For example - secret:edw_credentials
+        <strong>secret- &lt;secret key name></strong>
+      <p> For example - secret-edw_credentials
     </td>
   </tr>
   <tr>
@@ -294,11 +294,11 @@ The below list of logging tables are created by terraform templates and record a
    <td>GCS location of the CSV file or Excel sheet, containing table or file names along with DVT Validation Flags.
    <p>
    Examples:
-   
+
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.csv
 
    gs://dmt-config-dmt-demo-project/validation/teradata/validation_params.xlsx
-   
+
 <strong><em>Read [Instructions](#instructions-to-populate-and-upload-validation-paramaters-file) below to understand how to populate and upload this file/sheet</em></strong>
    </td>
   </tr>
@@ -321,7 +321,7 @@ The below list of logging tables are created by terraform templates and record a
 </table>
 
 
-**unique_id:** name to uniquely identify the batches or DTS for this config file. 
+**unique_id:** name to uniquely identify the batches or DTS for this config file.
 
 _<span style="text-decoration:underline;">Note</span>_ if the user opted for data migration, along with schema migration through the tool, this unique id should be the same as the one used in the schema migration config file.
 
@@ -329,17 +329,17 @@ _<span style="text-decoration:underline;">Note</span>_ if the user opted for dat
 
 **notificationPubsubTopic:** field necessary to continue flow from Data Transfer Run Logging, including data validation. Given in the format _projects/&lt;project-name>/topics/edw-dts-notification-topic-**<customer_name provided in TF>.** Use the same topic as mentioned above, as required mappings are already done for this topic using the Foundations deployment.
 
-**destinationDatasetId:** Target dataset id for the particular schema migrated from redshift. 
+**destinationDatasetId:** Target dataset id for the particular schema migrated from redshift.
 
-**table_list_file:** file uploaded in GCS bucket same as the one used for uploading config file. This file should provide table names to be migrated from a particular schema in newlines. 
-Eg: 
+**table_list_file:** file uploaded in GCS bucket same as the one used for uploading config file. This file should provide table names to be migrated from a particular schema in newlines.
+Eg:
 - DEPARTMENT
 - EMPLOYEE
 - SALARY
 - HR_RECORDS
 
 
-<span style="text-decoration:underline;">Note</span> that this key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation). As such, tables structure is created by Bigquery DTS itself rather than the CompilerWorks schema migration feature from the tool. 
+<span style="text-decoration:underline;">Note</span> that this key only needs to be provided in case the user chooses to opt only for data migration through the tool (without schema translation). As such, tables structure is created by Bigquery DTS itself rather than the CompilerWorks schema migration feature from the tool.
 
 **_Tables in the CSV file should always be in the same case as how they exist in source Redshift and ultimately match the contents of CSV/Excel file uploaded as validation parameters file in GCS._**
 
@@ -355,7 +355,7 @@ Eg:
 
 **primary_key:** If validation_type is _row, _please provide another key called **primary_key** in the same section with the primary key for the particular table.
 
-Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud](https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig) for exhaustive keys under transfer_config sub json. 
+Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Cloud](https://cloud.google.com/bigquery/docs/reference/datatransfer/rest/v1/projects.locations.transferConfigs#TransferConfig) for exhaustive keys under transfer_config sub json.
 
 ## Instructions To Populate And Upload Validation Paramaters File
 
@@ -364,12 +364,12 @@ Refer [REST Resource: projects.locations.transferConfigs | BigQuery | Google Clo
    <br><strong>
    Fill the columns according to the use-case. Data Validation Rules within the sheet will help to fill the fields correctly.
    To know more about which flags are relevant for which translation (ddl,sql,custom-query) and migration (data), please refer to the tab named `DVT Guide`. This sheet contains link to DVT Github pages which explain about all possible flags in DVT CLI.
-   
+
    You can refer to the tab `Example Sheet` to get an idea of which flags can be supplied for which validation. </strong>
 * To follow along with Excel sheet
    * Open this [Excel Template File](/samples/validation_params_files/validation_params.xltx) in Microsoft Excel. (not in Google Sheets, as opening .xlsx in Google Sheets will corrupt the existing Data Validation Rules)
    * Fill the sheet `Validation` . Once filled, save the file in `.xlsx` format. (Excel will convert the template file format `.xltx` to `.xlsx` file for you)
-  
+
   <br>
  * To follow along with CSV file format
    * Open this <a href="https://docs.google.com/spreadsheets/d/1pNgvx23sBORssZj0de7mWgB8quYw6iCXngY_giijZhk/edit#gid=0">Google Sheet</a> in browser (Viewer Access).

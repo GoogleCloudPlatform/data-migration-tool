@@ -1006,9 +1006,9 @@ Source datawarehouse : Teradata
    </td>
    <td>Secret Manager key name
 <p>
-<strong>secret: &lt;secret key name></strong>
+<strong>secret- &lt;secret key name></strong>
 <p>
-For example - secret:edw_credentials
+For example - secret-edw_credentials
    </td>
   </tr>
   <tr>
@@ -1239,9 +1239,9 @@ Source datawarehouse : Teradata
    </td>
    <td>Secret Manager key name
 <p>
-<strong>secret: &lt;secret key name></strong>
+<strong>secret- &lt;secret key name></strong>
 <p>
-For example - secret:edw_credentials
+For example - secret-edw_credentials
    </td>
   </tr>
   <tr>
