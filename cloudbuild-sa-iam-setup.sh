@@ -30,6 +30,7 @@ gcloud services enable \
 roles=(
   "roles/artifactregistry.admin"
   "roles/bigquery.admin"
+  "roles/cloudbuild.builds.builder"
   "roles/composer.admin"
   "roles/compute.instanceAdmin.v1"
   "roles/compute.networkAdmin"
@@ -37,6 +38,7 @@ roles=(
   "roles/iam.serviceAccountUser"
   "roles/iam.serviceAccountDeleter"
   "roles/logging.viewer"
+  "roles/logging.logWriter"
   "roles/pubsub.admin"
   "roles/resourcemanager.projectIamAdmin"
   "roles/run.admin"
