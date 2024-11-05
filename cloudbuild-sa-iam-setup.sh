@@ -34,6 +34,7 @@ roles=(
   "roles/composer.admin"
   "roles/compute.instanceAdmin.v1"
   "roles/compute.networkAdmin"
+  "roles/container.viewer"
   "roles/iam.serviceAccountCreator"
   "roles/iam.serviceAccountUser"
   "roles/iam.serviceAccountDeleter"
