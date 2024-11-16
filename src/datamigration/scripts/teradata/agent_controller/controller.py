@@ -75,8 +75,9 @@ class Controller:
         else:
             password = agent_config["teradata-config"]["connection"]["password"]
             if password.startswith(SECRET_PREFIX):
-                secret_key = password.lstrip(SECRET_PREFIX)
-                secret_resource_id = f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
+                secret_resource_id = (
+                    f"projects/{_PROJECT_ID}/secrets/{password}/versions/latest"
+                )
             else:
                 secret_resource_id = None
 

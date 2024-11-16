@@ -162,12 +162,12 @@ def _create_bq_transfer_config_json(batch_idx, ti) -> None:
     database_password = redshift_params["database_password"]
     if database_password.startswith(constants.SECRET_PREFIX):
         database_password = Variable.get(
-            database_password.lstrip(constants.SECRET_PREFIX)
+            database_password.removeprefix(constants.SECRET_PREFIX)
         )
     secret_access_key = redshift_params["secret_access_key"]
     if secret_access_key.startswith(constants.SECRET_PREFIX):
         secret_access_key = Variable.get(
-            secret_access_key.lstrip(constants.SECRET_PREFIX)
+            secret_access_key.removeprefix(constants.SECRET_PREFIX)
         )
     table_name = ti.xcom_pull(
         key="batch_table_names_list", task_ids=GENERATE_BATCHES_DAG_TASK

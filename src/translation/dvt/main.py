@@ -115,7 +115,7 @@ def connection_string(conn_config):
             conn_name = val + "_CONN"
             continue
         if val.startswith(SECRET_PREFIX):
-            val = get_db_password(val.lstrip(SECRET_PREFIX))
+            val = get_db_password(val.removeprefix(SECRET_PREFIX))
         conn_string = conn_string + f"--{key} '{val}' "
     if conn_type != "BigQuery":
         conn_string = (

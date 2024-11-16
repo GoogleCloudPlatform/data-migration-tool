@@ -67,7 +67,7 @@ def split_gcs_path(gcs_path):
     # Splits a GCS path into bucket name and directory path.
     # Input: "gs://mybucket/dir1/dir2/file1.csv"
     # Output: "mybucket", "dir1/dir2/file1.csv"
-    path_parts = gcs_path.lstrip("gs://").split("/", 1)
+    path_parts = gcs_path.removeprefix("gs://").split("/", 1)
     bucket_name = path_parts[0]
     directory_path = path_parts[1] if len(path_parts) > 1 else ""
     return bucket_name, directory_path

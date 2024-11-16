@@ -37,7 +37,7 @@ def _extract_redshift_ddl(ti, **kwargs):
     username = source_config["user"].lower()
     password = source_config["password"]
     if password.startswith(constants.SECRET_PREFIX):
-        password = Variable.get(password.lstrip(constants.SECRET_PREFIX))
+        password = Variable.get(password.removeprefix(constants.SECRET_PREFIX))
 
     source_schema = config["migrationTask"]["translationConfigDetails"][
         "nameMappingList"

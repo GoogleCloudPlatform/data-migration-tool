@@ -97,7 +97,7 @@ def _prepare_arguments(ti, **kwargs) -> None:
 
     password = source_config["password"]
     if password.startswith(constants.SECRET_PREFIX):
-        password = Variable.get(password.lstrip(constants.SECRET_PREFIX))
+        password = Variable.get(password.removeprefix(constants.SECRET_PREFIX))
     connection_args += ",password:" + password
 
     source_schema = config["migrationTask"]["translationConfigDetails"][

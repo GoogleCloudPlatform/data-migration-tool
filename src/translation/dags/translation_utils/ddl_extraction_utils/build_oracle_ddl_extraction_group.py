@@ -55,7 +55,7 @@ def _extract_ddl(ti, **kwargs):
         port = config["validation_config"]["source_config"]["port"]
         serviceName = config["validation_config"]["source_config"]["database"]
         if password.startswith(constants.SECRET_PREFIX):
-            password = Variable.get(password.lstrip(constants.SECRET_PREFIX))
+            password = Variable.get(password.removeprefix(constants.SECRET_PREFIX))
         con = oracledb.connect(
             user=user, password=password, host=host, port=port, service_name=serviceName
         )
