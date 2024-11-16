@@ -107,11 +107,11 @@ def test_check_secret_exists(
         )
 
     assert (
-        input_validation_utils.check_secret_exists(project_id, secret_name)
+        input_validation_utils.check_secret_access(project_id, secret_name)
         == expected_result
     )
     mock_secretmanager.SecretManagerServiceClient.return_value.get_secret.assert_called_once_with(
-        request={"name": f"projects/{project_id}/secrets/{secret_name}"}
+        request={"name": f"projects/{project_id}/secrets/{secret_name}/versions/latest"}
     )
 
 

@@ -11,12 +11,10 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.trigger_rule import TriggerRule
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery, storage
+from translation_utils.input_validation_utils import normalize_and_validate_config
 
 from common_utils import custom_user_agent
 from common_utils.operators.reporting_operator import ReportingOperator
-from translation.dags.translation_utils.input_validation_utils import (
-    normalize_and_validate_config,
-)
 
 CUSTOM_RUN_ID_KEY = "unique_id"
 DAG_ID = "controller_dag"

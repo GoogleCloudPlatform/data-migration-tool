@@ -53,9 +53,9 @@ def check_gcs_directory_not_empty(gs_path: str) -> bool:
 
 def check_secret_exists(project_id: str, secret_name: str) -> bool:
     client = secretmanager.SecretManagerServiceClient()
-    name = f"projects/{project_id}/secrets/{secret_name}"
+    name = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
     try:
-        client.get_secret(request={"name": f"{name}"})
+        client.access_secret_version(request={"name": f"{name}"})
         return True
     except NotFound:
         return False
@@ -118,7 +118,7 @@ def normalize_and_validate_config(project_id: str, config: dict) -> dict:
             "validation_config"
         ]["source_config"]["password"].startswith(constants.SECRET_PREFIX):
             src_pw_secret = config["validation_config"]["source_config"]["password"]
-            if not check_secret_exists(project_id, src_pw_secret):
+            if not check_secret_access(project_id, src_pw_secret):
                 raise AirflowFailException(
                     f"Secret not found in Secret Manager with the name {src_pw_secret}."
                 )
@@ -127,7 +127,7 @@ def normalize_and_validate_config(project_id: str, config: dict) -> dict:
             "validation_config"
         ]["target_config"]["password"].startswith(constants.SECRET_PREFIX):
             tgt_pw_secret = config["validation_config"]["target_config"]["password"]
-            if not check_secret_exists(project_id, tgt_pw_secret):
+            if not check_secret_access(project_id, tgt_pw_secret):
                 raise AirflowFailException(
                     f"Secret not found in Secret Manager with the name {tgt_pw_secret}."
                 )
