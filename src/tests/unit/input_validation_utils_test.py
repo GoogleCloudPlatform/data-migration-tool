@@ -98,11 +98,11 @@ def test_check_secret_access(
     mock_secretmanager, project_id, secret_name, expected_result
 ):
     if expected_result is True:
-        mock_secretmanager.SecretManagerServiceClient.return_value.get_secret.return_value = (
+        mock_secretmanager.SecretManagerServiceClient.return_value.access_secret_version.return_value = (
             mock.MagicMock()
         )
     else:
-        mock_secretmanager.SecretManagerServiceClient.return_value.get_secret.side_effect = NotFound(
+        mock_secretmanager.SecretManagerServiceClient.return_value.access_secret_version.side_effect = NotFound(
             "testing"
         )
 
@@ -110,7 +110,7 @@ def test_check_secret_access(
         input_validation_utils.check_secret_access(project_id, secret_name)
         == expected_result
     )
-    mock_secretmanager.SecretManagerServiceClient.return_value.get_secret.assert_called_once_with(
+    mock_secretmanager.SecretManagerServiceClient.return_value.access_secret_version.assert_called_once_with(
         request={"name": f"projects/{project_id}/secrets/{secret_name}/versions/latest"}
     )
 
