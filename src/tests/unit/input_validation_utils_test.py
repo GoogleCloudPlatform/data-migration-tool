@@ -94,7 +94,7 @@ def test_check_gcs_directory_not_empty(mock_storage, gs_path, expected_result):
     ],
 )
 @mock.patch("translation.dags.translation_utils.input_validation_utils.secretmanager")
-def test_check_secret_exists(
+def test_check_secret_access(
     mock_secretmanager, project_id, secret_name, expected_result
 ):
     if expected_result is True:

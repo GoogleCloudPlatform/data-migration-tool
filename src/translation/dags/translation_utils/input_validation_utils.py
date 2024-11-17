@@ -51,7 +51,7 @@ def check_gcs_directory_not_empty(gs_path: str) -> bool:
     return False
 
 
-def check_secret_exists(project_id: str, secret_name: str) -> bool:
+def check_secret_access(project_id: str, secret_name: str) -> bool:
     client = secretmanager.SecretManagerServiceClient()
     name = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
     try:
