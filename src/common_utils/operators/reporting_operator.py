@@ -114,7 +114,7 @@ class ReportingOperator(BaseOperator):
                     )
 
                     # Task instance with map index not a -1 means task is Dynamically mapped task
-                    if task_instance.map_index is not -1:
+                    if task_instance.map_index != -1:
                         logging.info(
                             f"Failed task {task_instance.task_id} is part of Dynamic Task Mapping"
                         )

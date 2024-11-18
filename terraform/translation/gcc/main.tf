@@ -268,13 +268,13 @@ resource "null_resource" "upload_common_utils" {
 /* Set up firewall rule to allow Composer GKE cluster pods (KubernetesPodOperator) to reach the rest of the VPC network. */
 
 data "google_container_cluster" "composer_gke_cluster" {
-  name     = split("/", data.google_composer_environment.composer_env.config.0.gke_cluster)[5]
-  location = split("/", data.google_composer_environment.composer_env.config.0.gke_cluster)[3]
+  name     = split("/", google_composer_environment.composer_env.config.0.gke_cluster)[5]
+  location = split("/", google_composer_environment.composer_env.config.0.gke_cluster)[3]
 }
 
 resource "google_compute_firewall" "dmt-pod-operator" {
   name        = "dmt-allow-composer-gke-pods"
-  network     = data.google_composer_environment.composer_env.config.0.node_config.0.network
+  network     = google_composer_environment.composer_env.config.0.node_config.0.network
   description = "Allows Composer cluster GKE pods to reach the default VPC range."
 
   priority      = 1001

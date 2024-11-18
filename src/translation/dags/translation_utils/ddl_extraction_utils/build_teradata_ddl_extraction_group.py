@@ -18,11 +18,9 @@ from airflow.utils.task_group import TaskGroup
 from google.cloud import bigquery
 from translation_utils import csv_utils
 
-from common_utils import storage_utils
+from common_utils import constants, storage_utils
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
-
-SECRET_PREFIX = "secret:"
 
 # Script bucket name and folder name to copy in data directory
 CONFIG_BUCKET_NAME = os.environ.get("CONFIG_BUCKET_NAME")
@@ -98,8 +96,8 @@ def _prepare_arguments(ti, **kwargs) -> None:
     connection_args += ",user:" + source_config["user-name"]
 
     password = source_config["password"]
-    if password.startswith(SECRET_PREFIX):
-        password = Variable.get(password[len(SECRET_PREFIX) :])
+    if password.startswith(constants.SECRET_PREFIX):
+        password = Variable.get(password.removeprefix(constants.SECRET_PREFIX))
     connection_args += ",password:" + password
 
     source_schema = config["migrationTask"]["translationConfigDetails"][

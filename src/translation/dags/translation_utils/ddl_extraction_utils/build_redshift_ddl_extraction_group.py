@@ -12,11 +12,10 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.task_group import TaskGroup
 from google.cloud import bigquery
 
-from common_utils import storage_utils
+from common_utils import constants, storage_utils
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 
-SECRET_PREFIX = "secret:"
 
 # Storage utils object
 gcs_util = storage_utils.StorageUtils()
@@ -37,8 +36,8 @@ def _extract_redshift_ddl(ti, **kwargs):
     portno = source_config["port"]
     username = source_config["user"].lower()
     password = source_config["password"]
-    if password.startswith(SECRET_PREFIX):
-        password = Variable.get(password[len(SECRET_PREFIX) :])
+    if password.startswith(constants.SECRET_PREFIX):
+        password = Variable.get(password.removeprefix(constants.SECRET_PREFIX))
 
     source_schema = config["migrationTask"]["translationConfigDetails"][
         "nameMappingList"

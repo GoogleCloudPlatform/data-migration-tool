@@ -26,10 +26,10 @@ import os
 import nox
 
 # Python version used for linting.
-DEFAULT_PYTHON_VERSION = "3.8"
+DEFAULT_PYTHON_VERSION = "3.9"
 
 # Python versions used for testing.
-PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10"]
+PYTHON_VERSIONS = ["3.9", "3.10"]
 
 LINT_PACKAGES = ["flake8", "black==22.3.0", "isort"]
 

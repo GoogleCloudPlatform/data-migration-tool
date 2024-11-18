@@ -15,6 +15,7 @@ from googleapiclient import _auth as auth
 from googleapiclient.errors import HttpError
 
 from common_utils import (
+    constants,
     custom_user_agent,
     discovery_util,
     parallelization_utils,
@@ -51,8 +52,6 @@ REDSHIFT_TRANSFER_TRACKING_TABLE_NAME = "dmt_redshift_transfer_tracking"
 
 # DTS DAG constants
 DTS_TABLE_NAME_SEPARATOR = ";"
-
-SECRET_PREFIX = "secret:"
 
 DAG_ID = "redshift_data_load_dag"
 
@@ -161,11 +160,15 @@ def _create_bq_transfer_config_json(batch_idx, ti) -> None:
 
     redshift_params = user_config["transfer_config"]["params"]
     database_password = redshift_params["database_password"]
-    if database_password.startswith(SECRET_PREFIX):
-        database_password = Variable.get(database_password.split(SECRET_PREFIX)[1])
+    if database_password.startswith(constants.SECRET_PREFIX):
+        database_password = Variable.get(
+            database_password.removeprefix(constants.SECRET_PREFIX)
+        )
     secret_access_key = redshift_params["secret_access_key"]
-    if secret_access_key.startswith(SECRET_PREFIX):
-        secret_access_key = Variable.get(secret_access_key.split(SECRET_PREFIX)[1])
+    if secret_access_key.startswith(constants.SECRET_PREFIX):
+        secret_access_key = Variable.get(
+            secret_access_key.removeprefix(constants.SECRET_PREFIX)
+        )
     table_name = ti.xcom_pull(
         key="batch_table_names_list", task_ids=GENERATE_BATCHES_DAG_TASK
     )[batch_idx]

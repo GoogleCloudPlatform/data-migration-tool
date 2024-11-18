@@ -14,6 +14,8 @@ _AGENT_KILL_SCRIPT = os.path.join(_ROOT_DIR, "scripts", "kill_agent.sh")
 
 _LOGGER = logging.getLogger(__name__)
 
+SECRET_PREFIX = "secret-"
+
 
 class Controller:
     def __init__(self, data):
@@ -72,9 +74,10 @@ class Controller:
             ]
         else:
             password = agent_config["teradata-config"]["connection"]["password"]
-            if password.startswith("secret:"):
-                secret_key = password.split("secret:")[1]
-                secret_resource_id = f"projects/{_PROJECT_ID}/secrets/secret-{secret_key}/versions/latest"
+            if password.startswith(SECRET_PREFIX):
+                secret_resource_id = (
+                    f"projects/{_PROJECT_ID}/secrets/{password}/versions/latest"
+                )
             else:
                 secret_resource_id = None
 
