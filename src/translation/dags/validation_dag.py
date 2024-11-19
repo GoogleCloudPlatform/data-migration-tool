@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
 import datetime
 import enum
 import logging
@@ -123,6 +124,11 @@ validation_type_flags_mapping = {
 default_dag_args = {"start_date": datetime.datetime(2022, 1, 1)}
 
 
+def _get_config(ti, **kwargs):
+    config = ast.literal_eval(str(kwargs["dag_run"].conf["config"]))
+    ti.xcom_push(key="config", value=config)
+
+
 def get_additional_validation_flags(
     validation_entity_type,
     validation_entity_name,
@@ -171,8 +177,8 @@ def connection_string(conn_config):
     return conn_name, conn_string
 
 
-def _save_dvt_aggregated_results(**kwargs):
-    config = kwargs["dag_run"].conf["config"]
+def _save_dvt_aggregated_results(ti):
+    config = ti.xcom_pull(key="config", task_ids="get_config")
     unique_id = config["unique_id"]
     failed_validations_query = f"""
         SELECT COUNT(*) as failed_count FROM\
@@ -191,7 +197,7 @@ def _save_dvt_aggregated_results(**kwargs):
     successful_validations_count = [row["successful_count"] for row in query_job][0]
     total_validations_count = failed_validations_count + successful_validations_count
     op_type = config["type"]
-    if op_type in ["ddl", "data"]:
+    if op_type in ["ddl", "data", "dml"]:
         validation_type = config["validation_config"]["validation_type"]
     elif op_type == "sql":
         validation_type = (
@@ -330,9 +336,10 @@ def get_dvt_cmd_sql_validation(config, sql_file, validation_params_from_gcs):
 @task
 def parallelize_dvt_tasks(input_json):
     bash_cmds_list = []
-    config = input_json["config"]
+    config = ast.literal_eval(str(input_json["config"]))
     translation_type = config["type"]
     validation_type = config["validation_config"]["validation_type"]
+    validation_only = config["validation_only"]
     validation_params_file_path = config["validation_config"][
         "validation_params_file_path"
     ]
@@ -342,21 +349,33 @@ def parallelize_dvt_tasks(input_json):
     validation_params_from_gcs = gcs_util.get_validation_params_from_gcs(
         bucket_name, blob_name, translation_type, validation_type
     )
-    if translation_type in ["ddl", "data"]:
-        table_list = input_json["table_list"]
+    if translation_type in ["ddl", "data", "dml"]:
+        table_list = []
+        if validation_only == "yes":
+            for key in validation_params_from_gcs:
+                source_table = validation_params_from_gcs[key]["source-table"]
+                target_table = validation_params_from_gcs[key]["target-table"]
+                table_list.append(source_table + "=" + target_table)
+        else:
+            table_list = input_json["table_list"]
+
         for table in table_list:
             bash_cmd = get_dvt_cmd_ddl_validation(
                 config, table, validation_params_from_gcs
             )
             bash_cmds_list.append(bash_cmd)
     elif translation_type == "sql":
-        files = input_json["files"]
+        files = []
+        if validation_only == "yes":
+            for key in validation_params_from_gcs:
+                files.append(key)
+        else:
+            files = input_json["files"]
         for file in files:
-            if file.endswith(".sql"):
-                bash_cmd = get_dvt_cmd_sql_validation(
-                    config, file, validation_params_from_gcs
-                )
-                bash_cmds_list.append(bash_cmd)
+            bash_cmd = get_dvt_cmd_sql_validation(
+                config, file, validation_params_from_gcs
+            )
+            bash_cmds_list.append(bash_cmd)
     else:
         print(f"Unknown translation type: {translation_type}")
     return bash_cmds_list
@@ -379,7 +398,11 @@ with models.DAG(
         environment_id=composer_name,
         dag=dag,
     )
-
+    config_change = PythonOperator(
+        task_id="get_config",
+        python_callable=_get_config,
+        dag=dag,
+    )
     dvt_validation = KubernetesPodOperator.partial(
         task_id="ex-dvt",
         name="ex-dvt",
@@ -390,8 +413,8 @@ with models.DAG(
         service_account_name="sa-k8s",
         container_resources=k8s_models.V1ResourceRequirements(
             limits={
-                "memory": "{{ pod_mem(dag_run.conf['config']) }}",
-                "cpu": "{{ pod_cpu(dag_run.conf['config']) }}",
+                "memory": "{{ pod_mem(ti.xcom_pull(key='config', task_ids='get_config')) }}",
+                "cpu": "{{ pod_cpu(ti.xcom_pull(key='config', task_ids='get_config')) }}",
             }
         ),
         startup_timeout_seconds=1800,
@@ -414,4 +437,10 @@ with models.DAG(
         dag=dag,
     )
 
-    get_env >> dvt_validation >> save_dvt_aggregated_results >> dag_report
+    (
+        config_change
+        >> get_env
+        >> dvt_validation
+        >> save_dvt_aggregated_results
+        >> dag_report
+    )
