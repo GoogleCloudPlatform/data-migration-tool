@@ -273,7 +273,7 @@ def run():
     config = request_content["config"]
     validation_params_from_gcs = request_content["validation_params_from_gcs"]
     validation_type = config["type"]
-    if validation_type in ["ddl", "data"]:
+    if validation_type in ["ddl", "data", "dml"]:
         table = request_content["table"]
         dvt_cmd, cmd_errors = get_dvt_cmd_ddl_validation(
             config, table, validation_params_from_gcs
