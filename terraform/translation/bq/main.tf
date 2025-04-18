@@ -6,7 +6,7 @@
  */
 
 /******************************************
- Big Query Datasets Creation
+ BigQuery Datasets Creation
 *****************************************/
 
 /* Create DVT Dataset */
@@ -160,18 +160,18 @@ resource "google_bigquery_table" "hive_ddl_metadata" {
 }
 
 
-/*Create BQ Service Account */
-resource "google_service_account" "service_account" {
+/* Create BQ Service Account */
+resource "google_service_account" "bq" {
   project      = var.project_id
   account_id   = var.service_account_bq
-  display_name = "Service Account for big query tables"
+  display_name = "Service Account for BigQuery tables"
 }
 
 /* Provide BQ roles to BQ Service Account */
-resource "google_project_iam_member" "bq-roles" {
-  depends_on = [google_service_account.service_account]
+resource "google_project_iam_member" "bq_roles" {
+  depends_on = [google_service_account.bq]
   project    = var.project_id
   for_each   = toset(var.bq_roles)
   role       = each.value
-  member     = "serviceAccount:${var.service_account_bq}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.bq.member
 }

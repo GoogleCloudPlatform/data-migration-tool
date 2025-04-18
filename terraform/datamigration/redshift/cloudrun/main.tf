@@ -27,7 +27,7 @@ locals {
 
 /* Update Cloud Run Environment Variables */
 
-resource "null_resource" "crun_env_vars_updation" {
+resource "null_resource" "crun_env_vars_updating" {
   triggers = {
     always_run = "${timestamp()}"
   }
