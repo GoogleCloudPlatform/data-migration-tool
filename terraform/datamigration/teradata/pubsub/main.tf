@@ -63,7 +63,7 @@ resource "google_pubsub_topic_iam_member" "publisher" {
 /* IAM role assignment for Pub Sub Service Account. Change this if you require more control here */
 
 resource "google_pubsub_topic_iam_member" "invoker" {
-  depends_on = [google_pubsub_topic_iam_binding.binding]
+  depends_on = [google_pubsub_topic_iam_member.publisher]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
