@@ -146,6 +146,7 @@ resource "google_bigquery_table" "dmt_reporting" {
   dataset_id = google_bigquery_dataset.bq_logging_dataset.dataset_id
   table_id   = var.dmt_reporting_table
   schema     = file("bq_schemas/dmt_report_table.json")
+  deletion_protection = var.bq_tables_deletion_protection
 }
 
 
