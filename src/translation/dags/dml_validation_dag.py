@@ -306,7 +306,7 @@ def _determine_next_dag(ti):
 
 with models.DAG(
     DAG_ID,
-    schedule_interval=None,
+    schedule=None,
     default_args=default_dag_args,
     render_template_as_native_obj=True,
 ) as dag:

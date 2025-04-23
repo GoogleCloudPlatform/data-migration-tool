@@ -59,35 +59,31 @@ with DAG(
     "hive_data_load_dag",
     start_date=datetime(2021, 1, 1),
     max_active_runs=2,
-    schedule_interval=None,
+    schedule=None,
     default_args=default_args,
     catchup=False,
 ) as dag:
     set_required_vars = PythonOperator(
         task_id="set_required_vars",
         python_callable=set_required_vars,
-        provide_context=True,
     )
 
     get_hive_tables = PythonOperator(
         task_id="get_hive_tables",
         python_callable=get_hive_tables,
         op_kwargs={"config": Variable.get("data_load_config", default_var="")},
-        provide_context=True,
     )
 
     get_text_format_schema = PythonOperator(
         task_id="get_text_format_schema",
         python_callable=get_text_format_schema,
         op_kwargs={"config": Variable.get("data_load_config", default_var="")},
-        provide_context=True,
     )
 
     get_partition_clustering_info = PythonOperator(
         task_id="get_partition_clustering_info",
         python_callable=get_partition_clustering_info,
         op_kwargs={"config": Variable.get("data_load_config", default_var="")},
-        provide_context=True,
     )
 
     load_bq_tables = PythonOperator.partial(
@@ -104,7 +100,6 @@ with DAG(
         task_id="invoke_dvt_dag",
         python_callable=invoke_dvt_dag,
         op_kwargs={"config": Variable.get("data_load_config", default_var="")},
-        provide_context=True,
     )
     dag_report = ReportingOperator(
         task_id="dag_report",

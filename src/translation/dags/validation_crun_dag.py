@@ -181,7 +181,7 @@ def _save_dvt_aggregated_results(**kwargs):
 
 with models.DAG(
     "validation_crun_dag",
-    schedule_interval=None,
+    schedule=None,
     default_args=default_dag_args,
 ):
     _save_dvt_aggregated_results = _save_dvt_aggregated_results()

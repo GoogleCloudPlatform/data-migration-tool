@@ -5,7 +5,7 @@ import os
 from airflow.configuration import conf
 from airflow.exceptions import AirflowFailException
 from airflow.models.baseoperator import BaseOperator
-from airflow.utils.log.gcs_task_handler import GCSTaskHandler
+from airflow.providers.google.cloud.log.gcs_task_handler import GCSTaskHandler
 from airflow.utils.state import State
 from google.api_core.client_info import ClientInfo
 from google.cloud import bigquery

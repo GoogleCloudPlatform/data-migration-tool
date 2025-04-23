@@ -198,7 +198,6 @@ def build_oracle_ddl_extraction_group(dag: DAG) -> TaskGroup:
         python_callable=_extract_ddl,
         task_group=oracle_extraction_taskgroup,
         dag=dag,
-        provide_context=True,
     )
 
     invoke_batch_translator_dag = TriggerDagRunOperator(

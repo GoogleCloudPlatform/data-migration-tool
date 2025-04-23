@@ -70,14 +70,13 @@ with DAG(
     "hive_inc_data_load_dag",
     start_date=datetime(2023, 1, 1),
     max_active_runs=2,
-    schedule_interval=Variable.get("hive_inc_load_schedule_runtime_cron", "0 22 * * *"),
+    schedule=Variable.get("hive_inc_load_schedule_runtime_cron", "0 22 * * *"),
     default_args=default_args,
     catchup=False,
 ) as dag:
     read_config_file = PythonOperator(
         task_id="read_config_file",
         python_callable=read_config_file,
-        provide_context=True,
     )
 
     get_inc_gcs_files = PythonOperator(
@@ -88,7 +87,6 @@ with DAG(
             "bq_pubsub_audit_tbl": bq_pubsub_audit_tbl,
             "schedule_runtime": Variable.get("hive_inc_load_schedule_runtime", ""),
         },
-        provide_context=True,
     )
 
     get_inc_table_list_for_copy = PythonOperator(
@@ -114,7 +112,6 @@ with DAG(
         task_id="get_inc_table_list",
         python_callable=get_inc_table_list,
         op_kwargs={"config": Variable.get("hive_inc_load_config", default_var="")},
-        provide_context=True,
     )
 
     get_table_info_from_metadata = PythonOperator(
@@ -124,21 +121,18 @@ with DAG(
             "config": Variable.get("hive_inc_load_config", default_var=""),
             "bq_audit_dataset_id": bq_audit_dataset_id,
         },
-        provide_context=True,
     )
 
     get_text_format_schema = PythonOperator(
         task_id="get_text_format_schema",
         python_callable=get_text_format_schema,
         op_kwargs={"config": Variable.get("hive_inc_load_config", default_var="")},
-        provide_context=True,
     )
 
     get_partition_clustering_info = PythonOperator(
         task_id="get_partition_clustering_info",
         python_callable=get_partition_clustering_info,
         op_kwargs={"config": Variable.get("hive_inc_load_config", default_var="")},
-        provide_context=True,
     )
 
     load_bq_tables = PythonOperator.partial(

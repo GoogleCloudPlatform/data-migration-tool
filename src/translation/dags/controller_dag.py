@@ -243,7 +243,7 @@ def _determine_next_dag(ti, **kwargs):
 
 with models.DAG(
     DAG_ID,
-    schedule_interval=None,
+    schedule=None,
     default_args={"start_date": datetime.datetime(2022, 1, 1)},
 ) as dag:
     load_config = PythonOperator(

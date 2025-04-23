@@ -368,7 +368,7 @@ def _send_data_to_bq(batch_idx, ti) -> None:
 
 with models.DAG(
     DAG_ID,
-    schedule_interval=None,
+    schedule=None,
     default_args=default_dag_args,
     render_template_as_native_obj=True,
 ) as dag:

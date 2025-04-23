@@ -173,9 +173,9 @@ def _execute_queries(ti, dag_run):
             "sql_file_name": script.filename[len(LOCAL_DATA_DIRECTORY) + 1 :],
             "job_id": script.get_job().job_id,
             "status": "success" if script.done() else "fail",
-            "error_details": str(script.get_job().exception())
-            if script.failed()
-            else "",
+            "error_details": (
+                str(script.get_job().exception()) if script.failed() else ""
+            ),
             "execution_start_time": str(start_time),
             "gcs_source_path": config["migrationTask"]["translationConfigDetails"][
                 "gcsSourcePath"
@@ -219,7 +219,7 @@ DAG: Schema DAG to create BigQuery Schema from Ouput GCS Bucket SQL Translated f
 """
 with models.DAG(
     DAG_ID,
-    schedule_interval=None,
+    schedule=None,
     default_args=default_dag_args,
     render_template_as_native_obj=True,
 ) as dag:
