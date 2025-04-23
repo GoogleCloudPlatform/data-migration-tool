@@ -31,8 +31,8 @@ function terragrunt_destroy() {
   local working_dir=$1
 
   terragrunt run-all destroy \
-    --terragrunt-non-interactive \
-    --terragrunt-working-dir="${working_dir}"
+    --non-interactive \
+    --working-dir="${working_dir}"
 }
 
 #######################################
