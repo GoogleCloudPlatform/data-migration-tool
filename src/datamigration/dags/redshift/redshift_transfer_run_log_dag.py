@@ -487,7 +487,7 @@ def _determine_validation_dag(ti, **kwargs):
 
 with models.DAG(
     "redshift_transfer_run_log_dag",
-    schedule_interval=None,
+    schedule=None,
     default_args=default_dag_args,
     render_template_as_native_obj=True,
 ) as dag:

@@ -53,7 +53,7 @@ def _determine_next_taskgroup_from_source(ti, **kwargs):
 with DAG(
     DAG_ID,
     default_args=default_args,
-    schedule_interval=None,
+    schedule=None,
     render_template_as_native_obj=True,
 ) as dag:
     determine_next_taskgroup_from_source = BranchPythonOperator(

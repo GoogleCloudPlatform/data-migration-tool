@@ -23,7 +23,7 @@ from airflow.providers.google.cloud.operators.cloud_composer import (
 
 with models.DAG(
     "workload_identity_creator_dag",
-    schedule_interval="@once",
+    schedule="@once",
     default_args={"start_date": datetime.datetime(2022, 1, 1), "retries": 1},
 ) as dag:
     get_env = CloudComposerGetEnvironmentOperator(
