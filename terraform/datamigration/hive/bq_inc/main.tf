@@ -6,7 +6,7 @@
  */
 
 /******************************************
- Big Query table Creation
+ BigQuery Table Creation
 *****************************************/
 
 data "google_project" "project" {

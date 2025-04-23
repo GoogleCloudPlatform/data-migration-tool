@@ -6,7 +6,7 @@
  */
 
 /******************************************
- Pub Sub GCS notification                                                   
+ Pub Sub GCS notification
 *****************************************/
 
 /* Cloud Pub Sub Service Account creation*/
@@ -33,23 +33,23 @@ data "google_storage_project_service_account" "gcs_agent" {
 }
 
 resource "google_pubsub_topic_iam_member" "gcs_agent_binding" {
-  depends_on = [google_pubsub_topic.config_file_topic]
+  depends_on = [google_pubsub_topic.config_file_topic, data.google_storage_project_service_account.gcs_agent]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
   role       = "roles/pubsub.publisher"
-  member     = "serviceAccount:${data.google_storage_project_service_account.gcs_agent.email_address}"
+  member     = data.google_storage_project_service_account.gcs_agent.member
 }
 
 /* IAM role assignment for Pub Sub Service Account. Change this if you require more control here */
 
 resource "google_pubsub_topic_iam_member" "invoker" {
-  depends_on = [google_pubsub_topic_iam_member.gcs_agent_binding]
+  depends_on = [google_pubsub_topic_iam_member.gcs_agent_binding, google_service_account.service_account]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
   role       = "roles/pubsub.editor"
-  member     = "serviceAccount:${var.service_account_pubsub}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.service_account.member
 }
 
 
@@ -60,11 +60,11 @@ resource "google_storage_bucket_iam_member" "storage_object_admin" {
   for_each   = toset(var.bucket_names)
   bucket     = "${each.value}-${var.customer_name}"
   role       = "roles/storage.objectAdmin"
-  member     = "serviceAccount:${var.service_account_pubsub}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.service_account.member
 }
 
 
-/* Create a Storage Notification for config file*/
+/* Create a Storage Notification for config file */
 
 resource "google_storage_notification" "config_notification" {
   depends_on     = [google_pubsub_topic_iam_member.invoker]

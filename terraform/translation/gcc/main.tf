@@ -1,4 +1,3 @@
-#
 #Copyright 2021 Google LLC.
 #This software is provided as-is, without warranty or representation for any use or purpose.
 #Your use of it is subject to your agreement with Google.
@@ -52,7 +51,8 @@ resource "google_project_service_identity" "composer_service_agent_identity" {
 }
 
 resource "google_project_iam_member" "composer_service_agent_roles" {
-  project = data.google_project.project.project_id
+  depends_on = [google_project_service_identity.composer_service_agent_identity]
+  project    = data.google_project.project.project_id
   for_each = toset([
     "roles/composer.serviceAgent",
     "roles/composer.ServiceAgentV2Ext",

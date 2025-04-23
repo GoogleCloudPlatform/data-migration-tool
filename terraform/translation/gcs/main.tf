@@ -54,7 +54,7 @@ resource "google_storage_bucket_object" "folders" {
 
 /* Create a service account for Google Cloud Storage Bucket */
 
-resource "google_service_account" "service_account" {
+resource "google_service_account" "gcs" {
   depends_on   = [google_storage_bucket.buckets, google_storage_bucket_object.folders]
   project      = var.project_id
   account_id   = var.service_account_gcs
@@ -64,11 +64,11 @@ resource "google_service_account" "service_account" {
 /* Provide Admin authorization for Service Account to the created GCS bucket */
 
 resource "google_storage_bucket_iam_member" "storage_admin" {
-  depends_on = [google_service_account.service_account]
+  depends_on = [google_service_account.gcs]
   for_each   = toset(var.bucket_names)
   bucket     = "${each.value}-${var.customer_name}"
   role       = "roles/storage.objectAdmin"
-  member     = "serviceAccount:${var.service_account_gcs}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.gcs.member
 }
 
 /* Copy files to GCS bucket dmt-config hive ddl extraction scripts - translation  */

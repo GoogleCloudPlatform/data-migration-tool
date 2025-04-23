@@ -51,19 +51,19 @@ resource "google_pubsub_subscription" "dmt_dts_controller_subscription" {
 
 /* IAM role assignment for unique service account which is used as the identity for various Google Cloud Storage operations */
 
-resource "google_pubsub_topic_iam_binding" "binding" {
+resource "google_pubsub_topic_iam_member" "publisher" {
   depends_on = [google_pubsub_topic.dmt_dts_notification_topic, google_pubsub_topic.dmt_dts_controller_topic]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id
   role       = "roles/pubsub.publisher"
-  members    = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+  member     = data.google_storage_project_service_account.gcs_account.member
 }
 
 /* IAM role assignment for Pub Sub Service Account. Change this if you require more control here */
 
 resource "google_pubsub_topic_iam_member" "invoker" {
-  depends_on = [google_pubsub_topic_iam_binding.binding]
+  depends_on = [google_pubsub_topic_iam_member.publisher]
   for_each   = toset(var.topic_names)
   topic      = "${each.value}-${var.customer_name}"
   project    = var.project_id

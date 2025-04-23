@@ -25,7 +25,7 @@ locals {
 
 /* Cloud Run Service Account creation */
 
-resource "google_service_account" "service_account" {
+resource "google_service_account" "cloudrun" {
   project      = var.project_id
   account_id   = var.service_account_cloudrun
   display_name = "Service Account for Cloud Run"
@@ -34,7 +34,7 @@ resource "google_service_account" "service_account" {
 /* Cloud Run creation */
 
 resource "google_cloud_run_service" "dmt_run" {
-  depends_on                 = [google_service_account.service_account]
+  depends_on                 = [google_service_account.cloudrun]
   name                       = "${var.cloudrun_name}-${var.customer_name}"
   project                    = var.project_id
   location                   = var.location
@@ -49,7 +49,7 @@ resource "google_cloud_run_service" "dmt_run" {
     spec {
       container_concurrency = 50
       timeout_seconds       = 100
-      service_account_name  = "${var.service_account_cloudrun}@${var.project_id}.iam.gserviceaccount.com"
+      service_account_name  = google_service_account.cloudrun.email
       containers {
         image = var.event_listener_image
 
@@ -77,7 +77,7 @@ resource "google_cloud_run_service" "dmt_run" {
 /* DVT Cloud Run Creation */
 
 resource "google_cloud_run_service" "dvt_run" {
-  depends_on                 = [google_project_iam_member.secret-accesor]
+  depends_on                 = [google_project_iam_member.secret_accessor]
   name                       = "edw-dvt-tool-${var.customer_name}"
   project                    = var.project_id
   location                   = var.location
@@ -92,7 +92,7 @@ resource "google_cloud_run_service" "dvt_run" {
     spec {
       container_concurrency = 50
       timeout_seconds       = 100
-      service_account_name  = "${var.service_account_cloudrun}@${var.project_id}.iam.gserviceaccount.com"
+      service_account_name  = google_service_account.cloudrun.email
       containers {
         image = var.dvt_image
 
@@ -142,19 +142,19 @@ resource "google_cloud_run_service_iam_member" "run_invoker" {
 
 /* Provide Composer Worker IAM roles to Cloud Run Service Account */
 
-resource "google_project_iam_member" "composer-worker" {
-  depends_on = [google_service_account.service_account]
+resource "google_project_iam_member" "composer_worker" {
+  depends_on = [google_service_account.cloudrun]
   project    = var.project_id
   for_each   = toset(var.composer_roles)
   role       = each.value
-  member     = "serviceAccount:${var.service_account_cloudrun}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.cloudrun.member
 }
 
-resource "google_project_iam_member" "secret-accesor" {
-  depends_on = [google_service_account.service_account]
+resource "google_project_iam_member" "secret_accessor" {
+  depends_on = [google_service_account.cloudrun]
   project    = var.project_id
   role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${var.service_account_cloudrun}@${var.project_id}.iam.gserviceaccount.com"
+  member     = google_service_account.cloudrun.member
 }
 
 /* Make Cloud Run endpoint URL as subscriber to translation Pubsub topic */
