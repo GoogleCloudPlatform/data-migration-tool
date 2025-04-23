@@ -34,8 +34,8 @@ function terragrunt_apply() {
   local working_dir=$1
 
   terragrunt run-all apply \
-    --terragrunt-non-interactive \
-    --terragrunt-working-dir="${working_dir}"
+    --non-interactive \
+    --working-dir="${working_dir}"
 }
 
 #######################################
