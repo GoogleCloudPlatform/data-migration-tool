@@ -141,11 +141,12 @@ resource "google_bigquery_table" "ddl_extraction_log" {
 
 /* Create Report Master Logging Table with JSON schema */
 resource "google_bigquery_table" "dmt_reporting" {
-  depends_on = [google_bigquery_dataset.bq_logging_dataset]
-  project    = var.project_id
-  dataset_id = google_bigquery_dataset.bq_logging_dataset.dataset_id
-  table_id   = var.dmt_reporting_table
-  schema     = file("bq_schemas/dmt_report_table.json")
+  depends_on          = [google_bigquery_dataset.bq_logging_dataset]
+  project             = var.project_id
+  dataset_id          = google_bigquery_dataset.bq_logging_dataset.dataset_id
+  table_id            = var.dmt_reporting_table
+  schema              = file("bq_schemas/dmt_report_table.json")
+  deletion_protection = var.bq_tables_deletion_protection
 }
 
 
