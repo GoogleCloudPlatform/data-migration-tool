@@ -18,7 +18,7 @@ steps:
 #     terragrunt hclfmt
 - id: terragrunt_lint
   name: 'alpine/terragrunt'
-  args: [ 'terragrunt', 'hclfmt', '--terragrunt-check' ]
+  args: [ 'terragrunt', 'hclfmt', '--check' ]
   waitFor: [ '-' ]
 
 # If the terraform linter fails, run the following from the repo root to

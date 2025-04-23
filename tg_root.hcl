@@ -47,6 +47,7 @@ remote_state {
     location = "us"
     prefix   = "${path_relative_to_include()}/"
   }
+  disable_init = tobool(get_env("TERRAGRUNT_DISABLE_INIT", "false"))
 }
 
 /* Generate providers.tf dynamically for each GCP service module */
