@@ -94,12 +94,7 @@ def _load_parameters(ti, **kwargs) -> None:
     tracking_info = dts_logs_utils.get_tracking_info(
         transfer_config_id, BQ_TRANSFER_TRACKING_TABLE_NAME
     )
-    (
-        unique_id,
-        agent_id,
-        config_bucket_id,
-        config_object_path,
-    ) = (
+    (unique_id, agent_id, config_bucket_id, config_object_path,) = (
         tracking_info["unique_id"],
         tracking_info["agent_id"],
         tracking_info["config_bucket_id"],
@@ -353,15 +348,15 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["agent_id"] = (
-                            extraction_complete_match.group(1)
-                        )
-                        job_stats_jsons[table_name]["extract_duration"] = (
-                            extraction_complete_match.group(3)
-                        )
-                        dts_run_summary_json["agent_id"] = (
-                            extraction_complete_match.group(1)
-                        )
+                        job_stats_jsons[table_name][
+                            "agent_id"
+                        ] = extraction_complete_match.group(1)
+                        job_stats_jsons[table_name][
+                            "extract_duration"
+                        ] = extraction_complete_match.group(3)
+                        dts_run_summary_json[
+                            "agent_id"
+                        ] = extraction_complete_match.group(1)
                     continue
 
                 elif log_message.__contains__("Uploading"):
@@ -373,9 +368,9 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["gcs_file_path"] = (
-                            file_path_match.group(2)
-                        )
+                        job_stats_jsons[table_name][
+                            "gcs_file_path"
+                        ] = file_path_match.group(2)
                     continue
 
                 elif log_message.__contains__(": Extracting data"):
@@ -388,18 +383,18 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["extract_data_size"] = (
-                            extract_stat_match.group(3)
-                        )
+                        job_stats_jsons[table_name][
+                            "extract_data_size"
+                        ] = extract_stat_match.group(3)
                         job_stats_jsons[table_name]["extract_partitions"] = (
                             "[" + extract_stat_match.group(4) + "]"
                         )
-                        job_stats_jsons[table_name]["extract_files"] = (
-                            extract_stat_match.group(5)
-                        )
-                        job_stats_jsons[table_name]["extract_sessions"] = (
-                            extract_stat_match.group(6)
-                        )
+                        job_stats_jsons[table_name][
+                            "extract_files"
+                        ] = extract_stat_match.group(5)
+                        job_stats_jsons[table_name][
+                            "extract_sessions"
+                        ] = extract_stat_match.group(6)
                     continue
 
                 elif log_message.__contains__(": Running"):
@@ -412,9 +407,9 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["transfer_mode"] = (
-                            transfer_mode_match.group(2)
-                        )
+                        job_stats_jsons[table_name][
+                            "transfer_mode"
+                        ] = transfer_mode_match.group(2)
                     continue
 
                 elif log_message.__contains__("Number of records"):
@@ -427,15 +422,15 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["bq_job_id"] = (
-                            job_summary_match.group(1)
-                        )
-                        job_stats_jsons[table_name]["success_records"] = (
-                            job_summary_match.group(3)
-                        )
-                        job_stats_jsons[table_name]["error_records"] = (
-                            job_summary_match.group(4)
-                        )
+                        job_stats_jsons[table_name][
+                            "bq_job_id"
+                        ] = job_summary_match.group(1)
+                        job_stats_jsons[table_name][
+                            "success_records"
+                        ] = job_summary_match.group(3)
+                        job_stats_jsons[table_name][
+                            "error_records"
+                        ] = job_summary_match.group(4)
                     continue
 
                 elif log_message.__contains__("Summary:"):

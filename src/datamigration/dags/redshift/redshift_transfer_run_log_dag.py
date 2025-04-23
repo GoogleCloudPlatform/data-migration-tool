@@ -84,11 +84,7 @@ def _load_parameters(ti, **kwargs) -> None:
     tracking_info = dts_logs_utils.get_tracking_info(
         transfer_config_id, BQ_TRANSFER_TRACKING_TABLE_NAME
     )
-    (
-        unique_id,
-        config_bucket_id,
-        config_object_path,
-    ) = (
+    (unique_id, config_bucket_id, config_object_path,) = (
         tracking_info["unique_id"],
         tracking_info["config_bucket_id"],
         tracking_info["config_object_path"],
@@ -334,15 +330,15 @@ def _process_transfer_logs(ti) -> None:
                         if table_name not in job_stats_jsons:
                             job_stats_jsons[table_name] = job_stats_json_template.copy()
                         job_stats_jsons[table_name]["src_table_name"] = table_name
-                        job_stats_jsons[table_name]["bq_job_id"] = (
-                            job_summary_match.group(1)
-                        )
-                        job_stats_jsons[table_name]["success_records"] = (
-                            job_summary_match.group(3)
-                        )
-                        job_stats_jsons[table_name]["error_records"] = (
-                            job_summary_match.group(4)
-                        )
+                        job_stats_jsons[table_name][
+                            "bq_job_id"
+                        ] = job_summary_match.group(1)
+                        job_stats_jsons[table_name][
+                            "success_records"
+                        ] = job_summary_match.group(3)
+                        job_stats_jsons[table_name][
+                            "error_records"
+                        ] = job_summary_match.group(4)
                     continue
                 # Done
                 elif log_message.__contains__("Summary:"):
