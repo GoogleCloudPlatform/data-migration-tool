@@ -24,23 +24,124 @@ locals {
 
   /* Set sizing values for Scheduler, Worker and Web Server based on Composer Sizing Choice - Small, Medium, Large */
 
-  /* Determine Infrastructure attributes of Scheduler based on Environment Size */
-  scheduler_cpu        = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.scheduler.value["cpu"]
-  scheduler_memory_gb  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.scheduler.value["memory_gb"]
-  scheduler_storage_gb = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.scheduler.value["storage_gb"]
-  scheduler_count      = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.scheduler.value["count"]
+  /* Determine Infrastructure attributes based on use_custom_resource_sizing flag or environment_size */
+  # scheduler_cpu        = var.use_custom_resource_sizing ? var.scheduler.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.scheduler.cpu)
+  # scheduler_memory_gb  = var.use_custom_resource_sizing ? var.scheduler.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.scheduler.memory_gb)
+  # scheduler_storage_gb = var.use_custom_resource_sizing ? var.scheduler.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.scheduler.storage_gb)
+  # scheduler_count      = var.use_custom_resource_sizing ? var.scheduler.count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.scheduler.count)
 
-  /* Determine Infrastructure attributes of Web Server based on Environment Size */
-  web_server_cpu        = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 2 : var.web_server.value["cpu"]
-  web_server_memory_gb  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 7.5 : var.web_server.value["memory_gb"]
-  web_server_storage_gb = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.web_server.value["storage_gb"]
+  # web_server_cpu        = var.use_custom_resource_sizing ? var.web_server.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 2 : var.web_server.cpu)
+  # web_server_memory_gb  = var.use_custom_resource_sizing ? var.web_server.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 7.5 : var.web_server.memory_gb)
+  # web_server_storage_gb = var.use_custom_resource_sizing ? var.web_server.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.web_server.storage_gb)
 
-  /* Determine Infrastructure attributes of Worker based on Environment Size */
-  worker_cpu        = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.worker.value["cpu"]
-  worker_memory_gb  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.worker.value["memory_gb"]
-  worker_storage_gb = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.worker.value["storage_gb"]
-  worker_min_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.worker.value["min_count"]
-  worker_max_count  = var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.value["max_count"]
+  # worker_cpu        = var.use_custom_resource_sizing ? var.worker.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.worker.cpu)
+  # worker_memory_gb  = var.use_custom_resource_sizing ? var.worker.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.worker.memory_gb)
+  # worker_storage_gb = var.use_custom_resource_sizing ? var.worker.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.worker.storage_gb)
+  # worker_min_count  = var.use_custom_resource_sizing ? var.worker.min_count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.worker.min_count)
+  # worker_max_count  = var.use_custom_resource_sizing ? var.worker.max_count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.max_count)
+
+  scheduler_presets = {
+    "ENVIRONMENT_SIZE_SMALL" = {
+      "cpu"        = 0.5
+      "memory_gb"  = 2,
+      "storage_gb" = 1,
+      "count"      = 1,
+    },
+    "ENVIRONMENT_SIZE_MEDIUM" = {
+      "cpu"        = startswith(var.image_version, "composer-3") ? 1 : 2,
+      "memory_gb"  = startswith(var.image_version, "composer-3") ? 4 : 7.5,
+      "storage_gb" = 5,
+      "count"      = 2,
+    },
+    "ENVIRONMENT_SIZE_LARGE" = {
+      "cpu"        = startswith(var.image_version, "composer-3") ? 1 : 4,
+      "memory_gb"  = startswith(var.image_version, "composer-3") ? 4 : 15,
+      "storage_gb" = 10,
+      "count"      = 2,
+  } }
+  scheduler_config = var.scheduler != null ? var.scheduler : local.scheduler_presets[var.environment_size]
+
+  triggerer_presets = {
+    "ENVIRONMENT_SIZE_SMALL" = {
+      "cpu"       = 0.5,
+      "memory_gb" = 0.5,
+      "count"     = 1,
+    },
+    "ENVIRONMENT_SIZE_MEDIUM" = {
+      "cpu"       = 0.5,
+      "memory_gb" = 0.5,
+      "count"     = 1,
+    },
+    "ENVIRONMENT_SIZE_LARGE" = {
+      "cpu"       = 0.5,
+      "memory_gb" = 0.5,
+      "count"     = 1,
+  } }
+  triggerer_config = var.triggerer != null ? var.triggerer : local.triggerer_presets[var.environment_size]
+
+  web_server_presets = {
+    "ENVIRONMENT_SIZE_SMALL" = {
+      "cpu"        = 1,
+      "memory_gb"  = 2,
+      "storage_gb" = 1,
+    },
+    "ENVIRONMENT_SIZE_MEDIUM" = {
+      "cpu"        = 2,
+      "memory_gb"  = 7.5,
+      "storage_gb" = 5,
+    },
+    "ENVIRONMENT_SIZE_LARGE" = {
+      "cpu"        = 2,
+      "memory_gb"  = 7.5,
+      "storage_gb" = 10,
+  } }
+  web_server_config = var.web_server != null ? var.web_server : local.web_server_presets[var.environment_size]
+
+  worker_presets = {
+    "ENVIRONMENT_SIZE_SMALL" = {
+      "cpu"        = 0.5,
+      "memory_gb"  = 2,
+      "storage_gb" = startswith(var.image_version, "composer-3") ? 10 : 1,
+      "min_count"  = 1,
+      "max_count"  = 3,
+    },
+    "ENVIRONMENT_SIZE_MEDIUM" = {
+      "cpu"        = 2,
+      "memory_gb"  = 7.5,
+      "storage_gb" = startswith(var.image_version, "composer-3") ? 20 : 5,
+      "min_count"  = 2,
+      "max_count"  = 6,
+    },
+    "ENVIRONMENT_SIZE_LARGE" = {
+      "cpu"        = 4,
+      "memory_gb"  = 15,
+      "storage_gb" = startswith(var.image_version, "composer-3") ? 50 : 10,
+      "min_count"  = 3,
+      "max_count"  = 12,
+  } }
+  worker_config = var.worker != null ? var.worker : local.worker_presets[var.environment_size]
+
+  dag_processor_presets = {
+    "ENVIRONMENT_SIZE_SMALL" = {
+      "cpu"        = 1,
+      "memory_gb"  = 4,
+      "storage_gb" = 1,
+      "count"      = 1,
+    },
+    "ENVIRONMENT_SIZE_MEDIUM" = {
+      "cpu"        = 2,
+      "memory_gb"  = 7.5,
+      "storage_gb" = 5,
+      "count"      = 1,
+    },
+    "ENVIRONMENT_SIZE_LARGE" = {
+      "cpu"        = 4,
+      "memory_gb"  = 15,
+      "storage_gb" = 10,
+      "count"      = 2,
+  } }
+  dag_processor_config = var.dag_processor != null ? var.dag_processor : local.dag_processor_presets[var.environment_size]
+
 }
 
 resource "google_project_service_identity" "composer_service_agent_identity" {
@@ -105,7 +206,7 @@ resource "google_composer_environment" "composer_env" {
       subnetwork      = "projects/${local.network_project_id}/regions/${local.subnetwork_region}/subnetworks/${var.subnetwork}"
       service_account = google_service_account.composer_service_account.email
       dynamic "ip_allocation_policy" {
-        for_each = (var.pod_ip_allocation_range_name != null || var.service_ip_allocation_range_name != null) ? [1] : []
+        for_each = (startswith(var.image_version, "composer-2") && (var.pod_ip_allocation_range_name != null || var.service_ip_allocation_range_name != null)) ? [1] : []
         content {
           cluster_secondary_range_name  = var.pod_ip_allocation_range_name
           services_secondary_range_name = var.service_ip_allocation_range_name
@@ -144,9 +245,9 @@ resource "google_composer_environment" "composer_env" {
     }
 
     /* Check if Private IP is enabled for Cloud Composer Networking Type */
-
+    enable_private_environment = var.use_private_environment && startswith(var.image_version, "composer-3") ? true : null
     dynamic "private_environment_config" {
-      for_each = var.use_private_environment ? [
+      for_each = var.use_private_environment && startswith(var.image_version, "composer-2") ? [
         {
           enable_private_endpoint                = var.enable_private_endpoint
           cloud_composer_connection_subnetwork   = var.composer_private_service_connect_connectivity == true ? (var.cloud_composer_connection_subnetwork_name == null ? "projects/${local.network_project_id}/regions/${local.subnetwork_region}/subnetworks/${var.subnetwork}" : "projects/${local.network_project_id}/regions/${local.subnetwork_region}/subnetworks/${var.cloud_composer_connection_subnetwork_name}") : null
@@ -167,14 +268,14 @@ resource "google_composer_environment" "composer_env" {
 
     /* Allow only authorized networks to connect to Cluster Endpoints */
     dynamic "master_authorized_networks_config" {
-      for_each = local.master_authorized_networks_config
+      for_each = startswith(var.image_version, "composer-2") ? local.master_authorized_networks_config : []
       content {
         enabled = length(var.master_authorized_networks) > 0
         dynamic "cidr_blocks" {
           for_each = master_authorized_networks_config.value["cidr_blocks"]
           content {
-            cidr_block   = master_authorized_networks_config.value["cidr_block"]
-            display_name = master_authorized_networks_config.value["display_name"]
+            cidr_block   = cidr_blocks.value.cidr_block
+            display_name = cidr_blocks.value.display_name
           }
         }
       }
@@ -194,41 +295,42 @@ resource "google_composer_environment" "composer_env" {
         }
       }
     }
-    /* Composer Environment Resource Configuration for Scheduler, Worker & Web Server */
 
+    /* Composer Environment Resource Configuration */
     workloads_config {
-
-      dynamic "scheduler" {
-        for_each = var.scheduler != null ? [var.scheduler] : []
-        content {
-          cpu        = local.scheduler_cpu
-          memory_gb  = local.scheduler_memory_gb
-          storage_gb = local.scheduler_storage_gb
-          count      = local.scheduler_count
-        }
+      scheduler {
+        cpu        = local.scheduler_config.cpu
+        memory_gb  = local.scheduler_config.memory_gb
+        storage_gb = local.scheduler_config.storage_gb
+        count      = local.scheduler_config.count
       }
-
-      dynamic "web_server" {
-        for_each = var.web_server != null ? [var.web_server] : []
-        content {
-          cpu        = local.web_server_cpu
-          memory_gb  = local.web_server_memory_gb
-          storage_gb = local.web_server_storage_gb
-        }
+      triggerer {
+        cpu       = local.triggerer_config.cpu
+        memory_gb = local.triggerer_config.memory_gb
+        count     = local.triggerer_config.count
       }
-
-      dynamic "worker" {
-        for_each = var.worker != null ? [var.worker] : []
+      web_server {
+        cpu        = local.web_server_config.cpu
+        memory_gb  = local.web_server_config.memory
+        storage_gb = local.web_server_config.storage_gb
+      }
+      worker {
+        cpu        = local.worker_config.cpu
+        memory_gb  = local.worker_config.memory_gb
+        storage_gb = local.worker_config.storage_gb
+        min_count  = local.worker_config.min_count
+        max_count  = local.worker_config.max_count
+      }
+      dynamic "dag_processor" {
+        for_each = startswith(var.image_version, "composer-3") ? [1] : []
         content {
-          cpu        = local.worker_cpu
-          memory_gb  = local.worker_memory_gb
-          storage_gb = local.worker_storage_gb
-          min_count  = local.worker_min_count
-          max_count  = local.worker_max_count
+          cpu        = local.dag_processor_config.cpu
+          memory_gb  = local.dag_processor_config.memory_gb
+          storage_gb = local.dag_processor_config.storage_gb
+          count      = local.dag_processor_config.count
         }
       }
     }
-
     environment_size = var.environment_size
 
   }
@@ -265,14 +367,15 @@ resource "null_resource" "upload_common_utils" {
 }
 
 
-/* Set up firewall rule to allow Composer GKE cluster pods (KubernetesPodOperator) to reach the rest of the VPC network. */
-
+/* Composer 2: Set up firewall rule to allow Composer GKE cluster pods (KubernetesPodOperator) to reach the rest of the VPC network. */
 data "google_container_cluster" "composer_gke_cluster" {
+  count    = startswith(var.image_version, "composer-2") ? 1 : 0
   name     = split("/", google_composer_environment.composer_env.config.0.gke_cluster)[5]
   location = split("/", google_composer_environment.composer_env.config.0.gke_cluster)[3]
 }
 
 resource "google_compute_firewall" "dmt-pod-operator" {
+  count       = startswith(var.image_version, "composer-2") ? 1 : 0
   name        = "dmt-allow-composer-gke-pods"
   network     = google_composer_environment.composer_env.config.0.node_config.0.network
   description = "Allows Composer cluster GKE pods to reach the default VPC range."
