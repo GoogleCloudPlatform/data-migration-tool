@@ -293,7 +293,7 @@ resource "google_composer_environment" "composer_env" {
       }
       web_server {
         cpu        = local.web_server_config.cpu
-        memory_gb  = local.web_server_config.memory
+        memory_gb  = local.web_server_config.memory_gb
         storage_gb = local.web_server_config.storage_gb
       }
       worker {
