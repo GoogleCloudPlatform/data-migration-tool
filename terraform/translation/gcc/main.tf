@@ -1,13 +1,12 @@
-#Copyright 2021 Google LLC.
-#This software is provided as-is, without warranty or representation for any use or purpose.
-#Your use of it is subject to your agreement with Google.
+# Copyright 2021 Google LLC.
+# This software is provided as-is, without warranty or representation for any use or purpose.
+# Your use of it is subject to your agreement with Google.
 
-#/************************* TERADATA TO GOOGLE BIGQUERY END TO END MIGRATION INFRASTRUCTURE*************************
+#/************************* DMT END-TO-END MIGRATION INFRASTRUCTURE*************************
 
 /*****************************************
- Cloud Composer V2 Deployment
+ Cloud Composer Deployment
 *****************************************/
-
 data "google_project" "project" {
   project_id = var.project_id
 }
@@ -22,24 +21,7 @@ locals {
     cidr_blocks : var.master_authorized_networks
   }]
 
-  /* Set sizing values for Scheduler, Worker and Web Server based on Composer Sizing Choice - Small, Medium, Large */
-
-  /* Determine Infrastructure attributes based on use_custom_resource_sizing flag or environment_size */
-  # scheduler_cpu        = var.use_custom_resource_sizing ? var.scheduler.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.scheduler.cpu)
-  # scheduler_memory_gb  = var.use_custom_resource_sizing ? var.scheduler.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.scheduler.memory_gb)
-  # scheduler_storage_gb = var.use_custom_resource_sizing ? var.scheduler.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.scheduler.storage_gb)
-  # scheduler_count      = var.use_custom_resource_sizing ? var.scheduler.count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.scheduler.count)
-
-  # web_server_cpu        = var.use_custom_resource_sizing ? var.web_server.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 2 : var.web_server.cpu)
-  # web_server_memory_gb  = var.use_custom_resource_sizing ? var.web_server.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 7.5 : var.web_server.memory_gb)
-  # web_server_storage_gb = var.use_custom_resource_sizing ? var.web_server.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.web_server.storage_gb)
-
-  # worker_cpu        = var.use_custom_resource_sizing ? var.worker.cpu : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 0.5 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 4 : var.worker.cpu)
-  # worker_memory_gb  = var.use_custom_resource_sizing ? var.worker.memory_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1.875 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 7.5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 15 : var.worker.memory_gb)
-  # worker_storage_gb = var.use_custom_resource_sizing ? var.worker.storage_gb : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 5 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 10 : var.worker.storage_gb)
-  # worker_min_count  = var.use_custom_resource_sizing ? var.worker.min_count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 1 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 2 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 3 : var.worker.min_count)
-  # worker_max_count  = var.use_custom_resource_sizing ? var.worker.max_count : (var.environment_size == "ENVIRONMENT_SIZE_SMALL" ? 3 : var.environment_size == "ENVIRONMENT_SIZE_MEDIUM" ? 6 : var.environment_size == "ENVIRONMENT_SIZE_LARGE" ? 12 : var.worker.max_count)
-
+  /* Set sizing for Airflow components based on user values, or other environment sizing presets - Small, Medium, Large. */
   scheduler_presets = {
     "ENVIRONMENT_SIZE_SMALL" = {
       "cpu"        = 0.5

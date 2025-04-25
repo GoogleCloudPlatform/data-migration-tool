@@ -4,7 +4,7 @@
  * This software is provided as-is, without warranty or representation for any use or purpose.
  * Your use of it is subject to your agreement with Google.
  */
-/************************* TERADATA TO GOOGLE BIGQUERY END TO END MIGRATION INFRASTRUCTURE*************************/
+/************************* DMT END-TO-END MIGRATION INFRASTRUCTURE*************************/
 variable "project_id" {
   description = "Project ID where Cloud Composer Environment is created."
   type        = string
@@ -19,11 +19,11 @@ variable "customer_name" {
 variable "image_version" {
   type        = string
   description = "The version of the Airflow running in the cloud composer environment."
-  default     = "composer-2-airflow-2.9.3"
+  default     = "composer-3-airflow-2.9.3"
 }
 /*****************************************************************************/
 
-/****** Composer 2 and 3 common configuration, fill in regardless of which version you intend to use. ******/
+/****** Composer 2 and 3 common configuration, applicable regardless of which version you intend to use. ******/
 /*****************************************************************************/
 variable "composer_env_name" {
   description = "Name of Cloud Composer Environment that will be created"
@@ -144,16 +144,6 @@ variable "worker" {
   default     = null
   description = "Configuration for resources used by Airflow workers."
 }
-variable "dag_processor" {
-  type = object({
-    cpu        = number
-    memory_gb  = number
-    storage_gb = number
-    count      = number
-  })
-  default     = null
-  description = "Configuration for resources used by Airflow DAG processors (Composer 3 only)."
-}
 /*****************************************************************************/
 
 
@@ -164,18 +154,13 @@ variable "dag_processor" {
 /* TODO: Add Composer3-specific flags. */
 variable "dag_processor" {
   type = object({
-    cpu        = string
+    cpu        = number
     memory_gb  = number
     storage_gb = number
     count      = number
   })
-  default = {
-    cpu        = 2
-    memory_gb  = 7.5
-    storage_gb = 5
-    count      = 1
-  }
-  description = "Configuration for resources used by Airflow DAG processor."
+  default     = null
+  description = "Configuration for resources used by Airflow DAG processors (Composer 3 only)."
 }
 /*****************************************************************************/
 
