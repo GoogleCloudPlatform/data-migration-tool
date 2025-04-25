@@ -46,17 +46,17 @@ locals {
   triggerer_presets = {
     "ENVIRONMENT_SIZE_SMALL" = {
       "cpu"       = 0.5,
-      "memory_gb" = 0.5,
+      "memory_gb" = 1,
       "count"     = 1,
     },
     "ENVIRONMENT_SIZE_MEDIUM" = {
       "cpu"       = 0.5,
-      "memory_gb" = 0.5,
+      "memory_gb" = 1,
       "count"     = 1,
     },
     "ENVIRONMENT_SIZE_LARGE" = {
       "cpu"       = 0.5,
-      "memory_gb" = 0.5,
+      "memory_gb" = 1,
       "count"     = 1,
   } }
   triggerer_config = var.triggerer != null ? var.triggerer : local.triggerer_presets[var.environment_size]
