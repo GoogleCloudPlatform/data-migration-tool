@@ -364,7 +364,7 @@ resource "google_compute_firewall" "dmt-pod-operator" {
 
   priority      = 1001
   direction     = "INGRESS"
-  source_ranges = [data.google_container_cluster.composer_gke_cluster.ip_allocation_policy.0.cluster_ipv4_cidr_block]
+  source_ranges = [data.google_container_cluster.composer_gke_cluster[0].ip_allocation_policy.0.cluster_ipv4_cidr_block]
   allow {
     protocol = "all"
   }
