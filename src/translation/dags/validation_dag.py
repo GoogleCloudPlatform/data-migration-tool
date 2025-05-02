@@ -405,10 +405,9 @@ with models.DAG(
         task_id="ex-dvt",
         name="ex-dvt",
         max_active_tis_per_dag=3,
-        namespace="default",
+        namespace="composer-user-workloads",
         image=dvt_image,
         cmds=["bash", "-cx"],
-        service_account_name="sa-k8s",
         container_resources=k8s_models.V1ResourceRequirements(
             limits={
                 "memory": "{{ pod_mem(ti.xcom_pull(key='config', task_ids='get_config')) }}",

@@ -4,7 +4,7 @@
  * This software is provided as-is, without warranty or representation for any use or purpose.
  * Your use of it is subject to your agreement with Google.
  */
-/************************* TERADATA TO GOOGLE BIGQUERY END TO END MIGRATION INFRASTRUCTURE*************************/
+/************************* DMT END-TO-END MIGRATION INFRASTRUCTURE*************************/
 variable "project_id" {
   description = "Project ID where Cloud Composer Environment is created."
   type        = string
@@ -13,6 +13,18 @@ variable "customer_name" {
   type        = string
   description = "Name of the customer to append in all service names"
 }
+
+/****** The image version controls whether Composer 2 or 3 is deployed. ******/
+/* Fill in the Composer 2 or 3 variables in the sections below as required. */
+variable "image_version" {
+  type        = string
+  description = "The version of the Airflow running in the cloud composer environment."
+  default     = "composer-3-airflow-2.9.3"
+}
+/*****************************************************************************/
+
+/****** Composer 2 and 3 common configuration, applicable regardless of which version you intend to use. ******/
+/*****************************************************************************/
 variable "composer_env_name" {
   description = "Name of Cloud Composer Environment that will be created"
   type        = string
@@ -22,11 +34,6 @@ variable "location" {
   description = "Region where the Cloud Composer Environment is created."
   type        = string
   default     = "us-central1"
-}
-variable "image_version" {
-  type        = string
-  description = "The version of the Airflow running in the cloud composer environment."
-  default     = "composer-2-airflow-2.9.3"
 }
 variable "service_account_gcc" {
   type        = string
@@ -65,6 +72,7 @@ variable "subnetwork" {
   description = "The subnetwork to host the composer cluster."
   default     = "default"
 }
+
 /* The variables network_project_id and subnetwork_region assume a shared VPC network topology where network details of host project are required*/
 variable "network_project_id" {
   type        = string
@@ -76,6 +84,90 @@ variable "subnetwork_region" {
   description = "The subnetwork region of the shared VPC's host (for shared vpc support)"
   default     = ""
 }
+
+variable "use_private_environment" {
+  description = "Enable private environment."
+  type        = bool
+  default     = true
+}
+
+variable "environment_size" {
+  type        = string
+  description = "The environment size controls the performance parameters of the managed Cloud Composer infrastructure that includes the Airflow database. Values for environment size are: ENVIRONMENT_SIZE_SMALL, ENVIRONMENT_SIZE_MEDIUM, and ENVIRONMENT_SIZE_LARGE."
+  default     = "ENVIRONMENT_SIZE_MEDIUM"
+  validation {
+    condition     = can(regex("^(ENVIRONMENT_SIZE_SMALL|ENVIRONMENT_SIZE_MEDIUM|ENVIRONMENT_SIZE_LARGE)$", var.environment_size))
+    error_message = "Composer environment_size must be one of ENVIRONMENT_SIZE_SMALL, ENVIRONMENT_SIZE_MEDIUM, ENVIRONMENT_SIZE_LARGE."
+  }
+}
+variable "use_custom_resource_sizing" {
+  type        = bool
+  description = "If true, uses cpu/mem/storage values provided for the scheduler/triggerer/web_server/worker/dag_processor. If false, uses predefined sizing based on environment_size."
+  default     = false
+}
+variable "scheduler" {
+  type = object({
+    cpu        = number
+    memory_gb  = number
+    storage_gb = number
+    count      = number
+  })
+  default     = null
+  description = "Configuration for resources used by Airflow schedulers."
+}
+variable "triggerer" {
+  type = object({
+    cpu       = number
+    memory_gb = number
+    count     = number
+  })
+  default     = null
+  description = "Configuration for resources used by the Airflow triggerer."
+}
+variable "web_server" {
+  type = object({
+    cpu        = number
+    memory_gb  = number
+    storage_gb = number
+  })
+  default     = null
+  description = "Configuration for resources used by Airflow web server."
+}
+variable "worker" {
+  type = object({
+    cpu        = number
+    memory_gb  = number
+    storage_gb = number
+    min_count  = number
+    max_count  = number
+  })
+  default     = null
+  description = "Configuration for resources used by Airflow workers."
+}
+/*****************************************************************************/
+
+
+/****** Composer 3 configuration ******/
+/*****************************************************************************/
+/* Only used if Composer version is composer-3. */
+
+/* TODO: Add Composer3-specific flags. */
+variable "dag_processor" {
+  type = object({
+    cpu        = number
+    memory_gb  = number
+    storage_gb = number
+    count      = number
+  })
+  default     = null
+  description = "Configuration for resources used by Airflow DAG processors (Composer 3 only)."
+}
+/*****************************************************************************/
+
+
+/******* Composer 2 configuration *******/
+/*****************************************************************************/
+/* Only used if Composer version is composer-2. */
 variable "pod_ip_allocation_range_name" {
   description = "The name of the cluster's secondary range used to allocate IP addresses to pods."
   type        = string
@@ -86,8 +178,10 @@ variable "service_ip_allocation_range_name" {
   description = "The name of the services' secondary range used to allocate IP addresses to the cluster."
   default     = null
 }
-variable "use_private_environment" {
-  description = "Enable private environment."
+
+/* Enabling private endpoint will be left false by default with the option to provide authorized master network to access Composer endpoints from only */
+variable "enable_private_endpoint" {
+  description = "Configure public access to the cluster endpoint through authorized network."
   type        = bool
   default     = true
 }
@@ -104,9 +198,8 @@ variable "cloud_composer_connection_subnetwork_name" {
   type        = string
   default     = null
 }
-/* Cloud Composer Network and Cloud SQL IPv4 CIDR block is needed whe Composer Connectivity type is VPC PEERING */
-variable "cloud_composer_network_ipv4_cidr_block" {
-  description = "The CIDR block from which IP range in tenant project will be reserved."
+variable "master_ipv4_cidr" {
+  description = "The CIDR block from which IP range in tenant project will be reserved for the master."
   type        = string
   default     = null
 }
@@ -120,17 +213,14 @@ variable "web_server_ipv4_cidr" {
   type        = string
   default     = null
 }
-variable "master_ipv4_cidr" {
-  description = "The CIDR block from which IP range in tenant project will be reserved for the master."
+/* Cloud Composer Network and Cloud SQL IPv4 CIDR block is needed whe Composer Connectivity type is VPC PEERING */
+variable "cloud_composer_network_ipv4_cidr_block" {
+  description = "The CIDR block from which IP range in tenant project will be reserved."
   type        = string
   default     = null
 }
-/* Enabling private endpoint will be left false by default with the option to provide authorized master network to accessComposer endpoints from only */
-variable "enable_private_endpoint" {
-  description = "Configure public access to the cluster endpoint through authorized network."
-  type        = bool
-  default     = true
-}
+
+
 variable "master_authorized_networks" {
   type = list(object({
     cidr_block   = string
@@ -139,6 +229,7 @@ variable "master_authorized_networks" {
   default     = []
   description = "List of master authorized networks. If none are provided, disallow external access (except the cluster node IPs, which GKE automatically allows)."
 }
+
 variable "web_server_allowed_ip_ranges" {
   type = list(object({
     value       = string,
@@ -147,6 +238,10 @@ variable "web_server_allowed_ip_ranges" {
   default     = null
   description = "The network-level access control policy for the Airflow web server. If unspecified, no network-level access restrictions will be applied."
 }
+/*****************************************************************************/
+
+
+
 /* List of buckets created for E2E migration - Composer Service Account will be provided Storage Access to these Buckets */
 variable "bucket_names" {
   type        = list(string)
@@ -154,56 +249,6 @@ variable "bucket_names" {
   default = [
     "dmt-translation",
   ]
-}
-variable "environment_size" {
-  type        = string
-  description = "The environment size controls the performance parameters of the managed Cloud Composer infrastructure that includes the Airflow database. Values for environment size are: ENVIRONMENT_SIZE_SMALL, ENVIRONMENT_SIZE_MEDIUM, and ENVIRONMENT_SIZE_LARGE."
-  default     = "ENVIRONMENT_SIZE_MEDIUM"
-}
-variable "scheduler" {
-  type = object({
-    cpu        = string
-    memory_gb  = number
-    storage_gb = number
-    count      = number
-  })
-  default = {
-    cpu        = 2
-    memory_gb  = 7.5
-    storage_gb = 5
-    count      = 2
-  }
-  description = "Configuration for resources used by Airflow schedulers."
-}
-variable "web_server" {
-  type = object({
-    cpu        = string
-    memory_gb  = number
-    storage_gb = number
-  })
-  default = {
-    cpu        = 2
-    memory_gb  = 7.5
-    storage_gb = 5
-  }
-  description = "Configuration for resources used by Airflow web server."
-}
-variable "worker" {
-  type = object({
-    cpu        = string
-    memory_gb  = number
-    storage_gb = number
-    min_count  = number
-    max_count  = number
-  })
-  default = {
-    cpu        = 2
-    memory_gb  = 7.5
-    storage_gb = 5
-    min_count  = 2
-    max_count  = 6
-  }
-  description = "Configuration for resources used by Airflow workers."
 }
 variable "translation_dag_source_path" {
   type        = string
