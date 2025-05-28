@@ -337,7 +337,7 @@ def parallelize_dvt_tasks(input_json):
     config = ast.literal_eval(str(input_json["config"]))
     translation_type = config["type"]
     validation_type = config["validation_config"]["validation_type"]
-    validation_only = config["validation_only"]
+    validation_only = config.get("validation_only", "no")
     validation_params_file_path = config["validation_config"][
         "validation_params_file_path"
     ]
