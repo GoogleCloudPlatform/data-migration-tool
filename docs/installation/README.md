@@ -1,5 +1,9 @@
 # DMT User Guide
 
+> [!CAUTION]
+> DMT is no longer under active development.
+
+
 * For DMT introduction, please refer to [/README.md](/README.md)
 * For Teradata data migration deployment user guide, please refer to [/docs/installation/README_teradata_datamigration.md](/docs/installation/README_teradata_datamigration.md)
 * For Hive data migration deployment user guide, please refer to [/docs/installation/README_hive_datamigration.md](/docs/installation/README_hive_datamigration.md)
