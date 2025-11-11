@@ -1,5 +1,5 @@
 apache-airflow[google,ssh,cncf.kubernetes]==2.5.3
-redshift_connector==2.0.910
+redshift_connector==2.1.7
 oracledb==1.2.2
 configparser
 pendulum==2.1.2
