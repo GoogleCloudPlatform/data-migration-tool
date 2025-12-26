@@ -47,7 +47,7 @@ column_validation = "data-validation validate column --source-conn {source_conn}
 # stores result in <project_id>.dmt_logs.dmt_dvt_results BQ table (assumes it must be created)
 row_validation = "data-validation validate row --source-conn {source_conn} --target-conn {target_conn} --tables-list {table} --bq-result-handler {project_id}.dmt_logs.dmt_dvt_results -l unique_id={unique_id},table_name={bq_table}"
 
-copy_sql_files = 'gsutil cp "{source_gcs}/{sql_file}" "source_{sql_file}" & gsutil cp "{target_gcs}/{sql_file}" "target_{sql_file}"'
+copy_sql_files = 'gcloud storage cp "{source_gcs}/{sql_file}" "source_{sql_file}" & gcloud storage cp "{target_gcs}/{sql_file}" "target_{sql_file}"'
 
 # dvt custom query column type command string
 # stores result in <project_id>.dmt_logs.dmt_dvt_results BQ table (assumes it must be created)

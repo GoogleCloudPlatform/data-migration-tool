@@ -155,7 +155,7 @@ def get_table_size(tbl, table_gs_path):
     """
     get Table size in TBs
     """
-    cmd = "gsutil du -s {}".format(table_gs_path)
+    cmd = "gcloud storage du --summarize {}".format(table_gs_path)
     truncate_result = subprocess.run(
         cmd, capture_output=True, shell=True, encoding="utf-8"
     )

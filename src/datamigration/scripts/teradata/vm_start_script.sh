@@ -39,7 +39,7 @@ project_id=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/a
 controller_sub=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/controller-sub" -H "Metadata-Flavor: Google")
 transfer_run_base_dir="/opt/transfer_configs_and_logs"
 
-gsutil -m cp -r gs://$script_bucket/scripts/datamigration/teradata/* .
+gcloud storage cp --recursive gs://$script_bucket/scripts/datamigration/teradata/* .
 
 echo "Wrapper Scripts to Start/Kill Migration Agent - "
 chmod 775 ./agent_controller/scripts/start_agent.sh

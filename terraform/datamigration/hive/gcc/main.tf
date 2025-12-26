@@ -41,7 +41,7 @@ resource "null_resource" "upload_hive_datamigration_dags" {
     })
   }
   provisioner "local-exec" {
-    command = "gsutil -m cp -r ${var.datamigration_hive_dag_source_path}/* ${data.google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
+    command = "gcloud storage cp --recursive ${var.datamigration_hive_dag_source_path}/* ${data.google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
   }
 }
 
@@ -56,6 +56,6 @@ resource "null_resource" "upload_datamigration_utils" {
     })
   }
   provisioner "local-exec" {
-    command = "gsutil -m cp -r ${var.datamigration_utils} ${data.google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
+    command = "gcloud storage cp --recursive ${var.datamigration_utils} ${data.google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
   }
 }

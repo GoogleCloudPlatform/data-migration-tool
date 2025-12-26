@@ -75,7 +75,7 @@ resource "google_storage_bucket_iam_member" "storage_admin" {
 resource "null_resource" "file_copy_gcs_py" {
   depends_on = [google_storage_bucket_object.folders]
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.translation_hive_script}/*.py gs://${var.config_bucket}-${var.customer_name}/scripts/translation/hive/"
+    command = "gcloud storage cp --recursive ${var.translation_hive_script}/*.py gs://${var.config_bucket}-${var.customer_name}/scripts/translation/hive/"
   }
 }
 
@@ -83,7 +83,7 @@ resource "null_resource" "file_copy_gcs_py" {
 resource "null_resource" "file_copy_gcs_yaml" {
   depends_on = [google_storage_bucket_object.folders]
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.translation_hive_script}/*.yaml gs://${var.config_bucket}-${var.customer_name}/scripts/translation/hive/"
+    command = "gcloud storage cp --recursive ${var.translation_hive_script}/*.yaml gs://${var.config_bucket}-${var.customer_name}/scripts/translation/hive/"
   }
 }
 
@@ -92,6 +92,6 @@ resource "null_resource" "file_copy_gcs_yaml" {
 resource "null_resource" "teradata_file_copy_gcs" {
   depends_on = [google_storage_bucket_object.folders]
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.translation_teradata_script}/*.sh gs://${var.config_bucket}-${var.customer_name}/scripts/translation/teradata/"
+    command = "gcloud storage cp --recursive ${var.translation_teradata_script}/*.sh gs://${var.config_bucket}-${var.customer_name}/scripts/translation/teradata/"
   }
 }
