@@ -1,10 +1,10 @@
 steps:
-- name: gcr.io/cloud-builders/gsutil
+- name: gcr.io/cloud-builders/gcloud
   entrypoint: 'bash'
   id: download
   args:
     - '-c'
-    - '[ -z "${_ORACLE_INSTANTCLIENT_FILE_PATH}" ] && echo "File name is blank..." || gsutil cp ${_ORACLE_INSTANTCLIENT_FILE_PATH} ${_FILE_NAME}'
+    - '[ -z "${_ORACLE_INSTANTCLIENT_FILE_PATH}" ] && echo "File name is blank..." || gcloud storage cp ${_ORACLE_INSTANTCLIENT_FILE_PATH} ${_FILE_NAME}'
 - name: 'gcr.io/cloud-builders/docker'
   waitFor: ['download']
   args: ['build',

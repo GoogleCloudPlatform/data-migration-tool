@@ -329,7 +329,7 @@ resource "null_resource" "upload_translation_dags" {
     })
   }
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.translation_dag_source_path}/* ${google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
+    command = "gcloud storage cp --recursive ${var.translation_dag_source_path}/* ${google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
   }
 }
 
@@ -344,7 +344,7 @@ resource "null_resource" "upload_common_utils" {
     })
   }
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.common_utils} ${google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
+    command = "gcloud storage cp --recursive ${var.common_utils} ${google_composer_environment.composer_env.config.0.dag_gcs_prefix}/"
   }
 }
 

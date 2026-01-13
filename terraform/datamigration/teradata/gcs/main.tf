@@ -77,6 +77,6 @@ resource "google_storage_bucket_iam_member" "storage_object_admin" {
 resource "null_resource" "file_copy_gcs" {
   depends_on = [google_storage_bucket_object.folders]
   provisioner "local-exec" {
-    command = "gsutil -o \"GSUtil:parallel_process_count=1\" -m cp -r ${var.datamigration_teradata_script}/* gs://${var.config_gcs_bucket}-${var.customer_name}/scripts/datamigration/teradata/"
+    command = "gcloud storage cp --recursive ${var.datamigration_teradata_script}/* gs://${var.config_gcs_bucket}-${var.customer_name}/scripts/datamigration/teradata/"
   }
 }
