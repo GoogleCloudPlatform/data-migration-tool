@@ -72,7 +72,7 @@ _DATA_SOURCE=teradata
     4. Copy the utility from _&lt;temp-bucket>_ to Agent VM
         _(Can also be done via web ssh console upload feature or sftp client)_
         ```
-        sudo gsutil cp gs://<temp-bucket>/TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz /opt/migration_project_teradata_bq/
+        sudo gcloud storage cp gs://<temp-bucket>/TeradataToolsAndUtilitiesBase__ubuntu_<version>.tar.gz /opt/migration_project_teradata_bq/
         ```
     5. Go to the `migration_project_teradata_bq` directory
        ```
@@ -93,7 +93,7 @@ _DATA_SOURCE=teradata
     3. SSH into the Agent VM and switch user to root
     4. Copy the Teradata JDBC JAR from _&lt;temp-bucket>_ to Agent VM (ensure it is named `terajdbc4.jar`)
         ```
-        gsutil cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
+        gcloud storage cp gs://<temp-bucket>/terajdbc4.jar /opt/migration_project_teradata_bq/
         ```
 
 

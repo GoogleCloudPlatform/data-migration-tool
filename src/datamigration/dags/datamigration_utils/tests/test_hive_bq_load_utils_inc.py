@@ -686,7 +686,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=0,
             stdout="8            gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv\n",
             stderr="",
@@ -696,7 +696,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=0,
             stdout="8            gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv\n",
             stderr="stderr1 stderr2 bq_job_id",
@@ -706,7 +706,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=0,
             stdout="stdoutput1:stdoutput2:bq_job_id",
             stderr="",
@@ -716,7 +716,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=400,
             stdout="stdoutput1:reason_for_failure",
             stderr="",
@@ -726,7 +726,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=400,
             stdout="stdoutput1:reason_for_failure:bq_job_id",
             stderr="",
@@ -736,7 +736,7 @@ input_expected_output_mapping = [
     (
         "tbl1",
         CompletedProcess(
-            args="gsutil du -s  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
+            args="gcloud storage du --summarize  gs://dmt-teradata-data-oracle-dev-testing/files/teradata/teradata_data_mig_table_list_integration_testing_cloudrun.csv",
             returncode=400,
             stdout="stdoutput1:reason_for_failure:bq_job_id",
             stderr="stderr1 stderr2 bq_job_id",

@@ -227,7 +227,7 @@ Guideline to download oracle_client_rpm_file and upload in GCS bucket -
    2) Upload the file in GCS bucket
 
    ```
-   gsutil cp <downloaded_oracle_client_rpm_file> gs://<gcs_bucket>/<nested_folders_if_any>/
+   gcloud storage cp <downloaded_oracle_client_rpm_file> gs://<gcs_bucket>/<nested_folders_if_any>/
    ```
    (File can also be uploaded using cloud console)
 
